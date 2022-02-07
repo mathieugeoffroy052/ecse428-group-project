@@ -1,28 +1,62 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
-
+  - main
+pr:
+  - main
 pool:
   vmImage: ubuntu-latest
+stages:
+  - stage: Test
+    jobs:
+      - job: TestBackend
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.10"
+          - script: git checkout $(Build.SourceBranchName)
+            displayName: "Checkout the current branch"
+          - script: cd taskit-backend
+            displayName: "Change to the taskit-backend directory"
+          - script: python -m pip install --upgrade pip setuptools wheel
+            displayName: "Install or upgrade pip, setuptools and wheel"
+          - script: python -m pip install -r requirements.txt
+            displayName: "Install requirements"
+          - script: python -m pytest
+            displayName: "Run unit tests"
+          - script: python manage.py behave
+            displayName: "Run acceptance tests"
+          - script: python -m black --check --diff
+            displayName: "Check code style"
+      - job: TestFrontend
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "16.x"
+          - script: git checkout $(Build.SourceBranchName)
+            displayName: "Checkout the current branch"
+          - script: cd taskit-frontend
+            displayName: "Change to the taskit-frontend directory"
+          - script: npm install
+            displayName: "Install dependencies"
+          - script: npm run lint
+            displayName: "Lint"
 
-steps:
-- script: |
-    git checkout $(Build.SourceBranchName)
-  displayName: 'Checkout the current branch'
+  - stage: Deploy
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: Deploy
+        steps:
+          - script: git checkout $(Build.SourceBranchName)
+            displayName: "Checkout the current branch"
 
-- script: |
-    git remote add heroku-backend https://heroku:$(Heroku Token)@git.heroku.com/taskitbackend.git
-    git remote add heroku-frontend https://heroku:$(Heroku Token)@git.heroku.com/taskitfrontend.git
-  displayName: 'Add the heroku remotes for the frontend and backend'
+          - script: |
+              git remote add heroku-backend https://heroku:$(Heroku Token)@git.heroku.com/taskitbackend.git
+              git remote add heroku-frontend https://heroku:$(Heroku Token)@git.heroku.com/taskitfrontend.git
+            displayName: "Add the heroku remotes for the frontend and backend"
 
-- script: |
-    git push heroku-backend $(Build.SourceBranchName)
-  displayName: 'Deploy the backend'
+          - script: |
+              git push heroku-backend $(Build.SourceBranchName)
+            displayName: "Deploy the backend"
 
-- script: |
-    git push heroku-frontend $(Build.SourceBranchName)
-  displayName: 'Deploy the frontend'
+          - script: |
+              git push heroku-frontend $(Build.SourceBranchName)
+            displayName: "Deploy the frontend"
