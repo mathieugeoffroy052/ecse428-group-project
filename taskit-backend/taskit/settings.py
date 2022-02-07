@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-(^glqg@qq&3f+g0=16mw2ldlp=9d9)g#gv56v3xnul(sob^0h4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["taskitbackend.herokuapp.com"]
 
 
 # Application definition
@@ -140,4 +140,5 @@ REST_FRAMEWORK = {
 # django-cors-headers settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
+    "http://taskitfrontend.herokuapp.com",
 ]
