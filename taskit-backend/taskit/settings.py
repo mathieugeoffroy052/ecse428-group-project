@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "tasklists",
     "rest_framework",
     "corsheaders",
+    "behave_django"
 ]
 
 MIDDLEWARE = [
