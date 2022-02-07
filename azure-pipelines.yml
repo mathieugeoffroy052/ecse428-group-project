@@ -10,10 +10,19 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- script: |
+    git checkout $(Build.SourceBranchName)
+  displayName: 'Checkout the current branch'
 
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    git remote add heroku-backend https://heroku:$(Heroku Token)@git.heroku.com/taskitbackend.git
+    git remote add heroku-frontend https://heroku:$(Heroku Token)@git.heroku.com/taskitfrontend.git
+  displayName: 'Add the heroku remotes for the frontend and backend'
+
+- script: |
+    git push heroku-backend $(Build.SourceBranchName)
+  displayName: 'Deploy the backend'
+
+- script: |
+    git push heroku-frontend $(Build.SourceBranchName)
+  displayName: 'Deploy the frontend'
