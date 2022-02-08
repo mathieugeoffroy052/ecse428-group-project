@@ -10,23 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(^glqg@qq&3f+g0=16mw2ldlp=9d9)g#gv56v3xnul(sob^0h4"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["taskitbackend.herokuapp.com"]
-
 
 # Application definition
 
@@ -40,7 +28,7 @@ INSTALLED_APPS = [
     "tasklists",
     "rest_framework",
     "corsheaders",
-    "behave_django"
+    "behave_django",
 ]
 
 MIDDLEWARE = [
@@ -73,17 +61,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "taskit.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
 
 # Password validation
@@ -121,12 +98,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "static"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # Django Rest Framework settings
 REST_FRAMEWORK = {
@@ -137,9 +115,3 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ],
 }
-
-# django-cors-headers settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://taskitfrontend.herokuapp.com",
-]

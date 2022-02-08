@@ -26,6 +26,8 @@ stages:
             displayName: "Run acceptance tests"
           - script: python -m black --check --diff
             displayName: "Check code style"
+          - script: DJANGO_SETTINGS_MODULE=taskit.settings.production python manage.py check --deploy
+            displayName: "Check Django deployment checklist"
       - job: TestFrontend
         steps:
           - task: NodeTool@0
