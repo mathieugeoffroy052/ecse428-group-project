@@ -32,8 +32,6 @@ DATABASES["default"] = dj_database_url.config(conn_max_age=600)
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_ROOT = BASE_DIR / "static"
-
 
 # django-cors-headers settings
 CORS_ALLOWED_ORIGINS = [

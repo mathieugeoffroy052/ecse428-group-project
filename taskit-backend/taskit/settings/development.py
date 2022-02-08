@@ -13,6 +13,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+INSTALLED_APPS.insert(0, "whitenoise.runserver_nostatic")
+
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
