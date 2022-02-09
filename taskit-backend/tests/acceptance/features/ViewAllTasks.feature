@@ -23,7 +23,7 @@ Feature: Create task
       | __obi-wan-kenobi__   | Train Anakin, Train Luke                              | 
       | __anakin-skywalker__ | See through the lies of the Jedi, Kill the younglings |
 
-  Scenario Outline: Unsuccessfully list all tasks (normal flow)
+  Scenario Outline: Unsuccessfully list all tasks (error flow)
     Given "<username>" is logged in
     Given user "<username>" has tasks "<task_names>"
     Then the view function will not return this list of tasks
