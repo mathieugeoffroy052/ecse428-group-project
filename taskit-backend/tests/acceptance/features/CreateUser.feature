@@ -28,7 +28,7 @@ Feature: Sign up for user
       | name             | username             | password       |error                         |
       | Princess Lea     | __princess-lea__     |                | No password entered          |
       | Princess Lea     | __princess-lea__     | NULL           | No password entered          |
-      | Han Solo         | __Han-Solo__         | ladiesman70    | 
+      | Han Solo         | __Han-Solo__         | ladiesman70    |    
       | Boba Fett        | NULL                 | rocketman7     | No username entered          |
       | Boba Fett        |                      | rocketman7     | No username entered          |
-      | Bob Skywalker    | __Luke-Skywalker__   | jediknight450  | This username is taken       | 
+      | Bob Skywalker    | __luke-Skywalker__   | jediknight450  | This username is taken       | 
