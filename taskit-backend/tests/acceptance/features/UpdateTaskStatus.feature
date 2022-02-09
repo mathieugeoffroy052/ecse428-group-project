@@ -1,7 +1,7 @@
 Feature: Update task status
   As a user, I wish to update the status of my task.
 
-    Background:
+  Background:
     Given The following users exist:
       | name             | username             | password      |
       | Obi-Wan Kenobi   | __obi-wan-kenobi__   | jedimaster123 |
@@ -14,7 +14,7 @@ Feature: Update task status
       | __anakin-skywalker__ | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    |
       | __obi-wan-kenobi__   | Train Luke                       | NULL       | NULL               | 100    | Not started |
 
-  Scenario: Successfully update the task status (normal flow)
+  Scenario Outline: Successfully update the task status (normal flow)
     Given "<username>" is logged in
     When The user "<username>" attempts to update the task "<name>", with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", and state "<state>" to "new_state<>"
     Then the task "<name>" shall be updated to "<new_state>"
@@ -28,7 +28,7 @@ Feature: Update task status
       | __anakin-skywalker__ | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    | Complete    |
       | __obi-wan-kenobi__   | Train Luke                       | NULL       | NULL               | 100    | Not started | In progress |
 
-  Scenario: Update task with invalid parameters (error flow)
+  Scenario Outline: Update task with invalid parameters (error flow)
     Given "<username>" is logged in
     When The user "<username>" attempts to update the status of the task "<name>", with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", and status "<status>" to "<new_state>"  
     Then new task shall be updated
