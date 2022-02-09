@@ -2,19 +2,19 @@ Feature: Create task
   As a user, I wish to create a task.
 
     Background:
-    Given The following users exist:
-      | name             | username             | password      |
-      | Obi-Wan Kenobi   | __obi-wan-kenobi__   | jedimaster123 |
-      | Anakin Skywalker | __anakin-skywalker__ | jediknight456 |
-      | Luke   Skywalker | __luke-skywalker__   | jediknight457 |
-    Given The following tasks exist:
-      | username             | task_name                        | due_date   | estimated_duration | weight | state       |
-      | __obi-wan-kenobi__   | Train Anakin                     | 2022-02-06 | 1576800            | 90     | Not started |
-      | __anakin-skywalker__ | See through the lies of the Jedi | 2022-02-07 | 30                 | 75     | In progress |
-      | __anakin-skywalker__ | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    |
-      | __obi-wan-kenobi__   | Train Luke                       | NULL       | NULL               | 100    | Not started |
+      Given The following users exist:
+        | name             | username             | password      |
+        | Obi-Wan Kenobi   | __obi-wan-kenobi__   | jedimaster123 |
+        | Anakin Skywalker | __anakin-skywalker__ | jediknight456 |
+        | Luke   Skywalker | __luke-skywalker__   | jediknight457 |
+      Given The following tasks exist:
+        | username             | task_name                        | due_date   | estimated_duration | weight | state       |
+        | __obi-wan-kenobi__   | Train Anakin                     | 2022-02-06 | 1576800            | 90     | Not started |
+        | __anakin-skywalker__ | See through the lies of the Jedi | 2022-02-07 | 30                 | 75     | In progress |
+        | __anakin-skywalker__ | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    |
+        | __obi-wan-kenobi__   | Train Luke                       | NULL       | NULL               | 100    | Not started |
 
-  Scenario: Successfully edit task filters (normal flow)
+  Scenario Outline: Successfully edit task filters (normal flow)
     Given "<username>" is logged in
     When The user "<username>" attempts to create the task "<name>", with due date "<due_date>", duration "<estimated_duration>", and weight "<weight>"
     Then the task "<name>" shall exist in the system
@@ -28,7 +28,7 @@ Feature: Create task
       | __anakin-skywalker__ | Be the worst    | 2022-02-09 |     1576800        | 100       | 
       | __luke-skywalker__   | Kiss sister     | 2022-02-10 |     2              | 10        | 
 
-  Scenario: Create a task with invalid parameters (error flow)
+  Scenario Outline: Create a task with invalid parameters (error flow)
     Given "<username>" is logged in
     When the user "<username>" attempts to create the task "<name>", with due date "<due_date>", duration "<estimated_duration>", and weight "<weight>"    
     Then no new task shall be created
@@ -48,4 +48,4 @@ Feature: Create task
 
     Examples: 
       | username             | name            | due_date   | estimated_duration | weight    |
-      | __obi-wan-kenobi__   | Die a sad death | 2022-02-08 |     30             | NULL      | 
+      | __obi-wan-kenobi__   | Die a sad death | 2022-02-08 |     30             | NULL      |

@@ -14,10 +14,10 @@ Feature: Remove task
       | __anakin-skywalker__ | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    |
       | __obi-wan-kenobi__   | Train Luke                       | NULL       | NULL               | 100    | Not started |
 
-  Scenario: A user successfully removes a task from their task list (normal flow)
+  Scenario Outline: A user successfully removes a task from their task list (normal flow)
     Given "<username>" is logged in to their account
     When "<username>" attempts to remove their "<task_name>" due on "<due_date>"
-    Then "<username>"'s "<task_name>" task due on "<due_date>" shall be removed from the task list
+    Then The task of "<username>" called "<task_name>" shall be removed from the task list
     Then there shall be 1 less task in the task list
 
     Examples: 
@@ -25,7 +25,7 @@ Feature: Remove task
       | __obi-wan-kenobi__   | Train Anakin                     | 2022-02-06 |
       | __anakin-skywalker__ | See through the lies of the Jedi | 2022-02-07 |
 
-  Scenario: A user tries to remove a task using invalid parameters (error flow)
+  Scenario Outline: A user tries to remove a task using invalid parameters (error flow)
     Given "<username>" is logged in to their account
     When "<username>" attempts to remove their "<task_name>" task due on "due_date"
     Then the system shall report "<error>"
