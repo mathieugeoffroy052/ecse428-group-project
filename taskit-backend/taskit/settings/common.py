@@ -25,10 +25,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "tasklists",
     "rest_framework",
     "corsheaders",
     "behave_django",
+    "accounts",
+    "tasklists",
 ]
 
 MIDDLEWARE = [
@@ -81,6 +82,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+# User authentication
+# https://docs.djangoproject.com/en/4.0/topics/auth/customizing/
+AUTH_USER_MODEL = "accounts.User"
 
 
 # Internationalization
