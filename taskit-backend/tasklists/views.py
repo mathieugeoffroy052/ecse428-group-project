@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -16,7 +16,7 @@ def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
 
 
-
+# Login upon request
 def login_request(request):
     if(request.method == "POST"):
         form = AuthenticationForm(request, data=request.POST)
@@ -36,3 +36,10 @@ def login_request(request):
 
     form = AuthenticationForm()
     return render(request, "main/login.html", {"form":form})
+
+
+# Logout upon request
+def logout_request(request):
+    logout(request)
+    messages.inf(request, "Successfully logged out")
+    return redirect("main:Home")
