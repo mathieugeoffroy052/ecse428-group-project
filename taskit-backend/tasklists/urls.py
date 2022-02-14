@@ -1,9 +1,7 @@
 from django.urls import path
-from tasklists.views import public, private, sign_up
-
+from tasklists.views import public, private
 
 urlpatterns = [
     path("public/", public),
-    path("private/", private),
-    path("sign_up/", sign_up),
+    path("private/", private)
 ]

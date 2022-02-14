@@ -14,18 +14,3 @@ def public(request):
 def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
 
-
-'''
-{
-	"username": "john1",
-	"email": "john@email.com",
-	"password": "johnpassword"
-}
-'''
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def sign_up(request):
-    request = request.data
-    user = User.objects.create_user(request["username"], request["email"], request["password"])
-    user.save()
-    return Response({'success':'user created'}, status=status.HTTP_201_CREATED)
