@@ -1,7 +1,7 @@
 <template>
-  <form action="action_page.php">
+ <form @submit.prevent="handleSubmit">
+  <h1>TaskIt</h1>
   <div class="container">
-    <h1>TaskIt</h1>
     <h2>Sign Up</h2>
     <p>Please fill in this form to create an account.</p>
     <hr>
@@ -9,23 +9,24 @@
     <label for="firstname"><b>First Name</b></label>
     <input type="text" placeholder="Enter First Name" name="fName" id="fName" required>
 
-    <label for="lastName"><b>Email</b></label>
+    <label for="lastName"><b>Last Name</b></label>
     <input type="text" placeholder="Enter Last Name" name="lName" id="lName" required>
 
     <label for="email"><b>Email</b></label>
-    <input type="text" placeholder="Enter Email" name="email" id="email" required>
+    <input type="email" placeholder="Enter Email" name="email" id="email" required>
 
-    <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+    <label for="pswd"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="pswd" id="pswd" required>
 
-    <label for="psw-repeat"><b>Re-type Password</b></label>
-    <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
+    <label for="pswd-repeat"><b>Re-type Password</b></label>
+    <input type="password" placeholder="Repeat Password" name="pswd-repeat" id="pswd-repeat" required>
+    <div v-if="passwordError" class="error">{{ passwordError }} </div>
     <hr>
 
     <div class="btn-group">
-      <button type="back" class="backbtn" style="border-radius: 10px; width: 20%"> Back </button>
+      <button onclick="location.href='../'" type="back" class="backbtn" style="border-radius: 10px; width: 20%">Back</button>
       &ensp;
-      <button type="submit" class="submitbtn" style="border-radius: 10px; width: 20%">Sign Up</button>
+      <button type="submit" class="submit" style="border-radius: 10px; width: 20%">Sign Up</button>
     </div>
   </div>
 
@@ -35,8 +36,29 @@
 </form>
 </template>
 
-<script src="./signup.js">
+<script>
+export default{
+    data() {
+        return {
+            email: '',
+            password: '',
+            firstName: '',
+            lastName: '',
+            passwordError: ''
+        }
+    },
+    methods: {
+        handleSubmit() {
+            var pswd = document.getElementById("pswd").value;
+            var pswdRepeat = document.getElementById("pswd-repeat").value;
+            console.log(pswd);
+            console.log(pswdRepeat);
+            this.passwordError = pswd === pswdRepeat ? '' : 'Passwords do not match';
+        }
+    }
+}
 </script>
+
 
 <style>
   * {box-sizing: border-box}
@@ -53,7 +75,7 @@
     border-radius: 10px;
   }
 
-  input[type=text], input[type=password] {
+  input[type=text], input[type=password], input[type=email] {
     width: 100%;
     padding: 15px;
     margin: 5px 0 22px 0;
@@ -82,7 +104,7 @@
     opacity: 0.9;
   }
 
-  .submitbtn {
+  .submit {
     background-color:rgba(146, 119, 255, 1);
     color: white;
     padding: 16px 20px;
@@ -92,11 +114,17 @@
     opacity: 0.9;
   }
 
-  .submitbtn:hover {
+  .submit:hover {
     opacity:1;
   }
 
   a {
     color: dodgerblue;
   }
+
+  .error {
+    color: #ff0000;
+    font-size: 14px;
+    font-weight: bold;
+}
 </style>
