@@ -6,6 +6,12 @@ from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 
+from django.shortcuts import render, redirect
+from django.http import request
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
+
 '''
 {
 	"email": "john@email.com",

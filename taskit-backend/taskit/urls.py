@@ -20,10 +20,6 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("tasklists.urls")),
-<<<<<<< HEAD
     path("accounts/", include("accounts.urls")),
-=======
-    path("login/", views.login_request, name="login"),
-    path("logout/", views.logout_request, name="logout"),
->>>>>>> 0b22fbc0654ebc3f49b557b2b6547ca48351c9f2
+
 ]
