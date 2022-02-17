@@ -1,5 +1,5 @@
+from types import NoneType
 from rest_framework.decorators import api_view
-from django.http import HttpResponse
 from accounts.models import User
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,8 +7,7 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 
 from django.shortcuts import render, redirect
-from django.http import request
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 
@@ -41,7 +40,7 @@ def login_request(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
-            if user is not NONE:
+            if user is not NoneType:
                 login(request, user)
                 messages.info(request, f"Successfully logged in as {username}")
                 return redirect("main:Home")
