@@ -1,0 +1,8 @@
+# Your virtual environment
+.venv/
+.vs
+.vs/slnx.sqlite
+
+__pycache__
+db.sqlite3
+tests/reports/
