@@ -68,21 +68,18 @@ export default{
             var pswd = document.getElementById("pswd").value;
             var pswdRepeat = document.getElementById("pswd-repeat").value;
             this.passwordError = pswd === pswdRepeat ? '' : 'Passwords do not match';
-            console.log("Password error:" + this.passwordError);
             if(this.passwordError === ''){
-              axios ({
-                method: 'post',
-                url: 'http://127.0.0.1:8000/signup/',
-                data: {
-                    'email': email,
-                    'password': pswd
-                }
-              }).catch( e => {
-                  this.error = e.response.data.message;
-              })
+              let data = new FormData();
+              data.append("email", email);
+              data.append("password", pswd);
               console.log("Sending email: " + email + " and password: " + pswd);
+
+              axios.post('sign_up/', data)
+                .then(alert("Sign Up Form Submitted"))
+                .catch(errors => console.log(errors))
+              
             } else{
-              console.log("boooo");
+              console.log("Form not submitted due to password mismatch");
             }
         }
     }
