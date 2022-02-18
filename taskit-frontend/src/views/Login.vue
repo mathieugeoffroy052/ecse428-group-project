@@ -9,15 +9,16 @@
               >Log In</el-divider
             >
           </el-row>
-          <el-form label-position="top">
+          <el-form label-position="top" :model="logInForm">
             <el-form-item label="Email:" required>
-              <el-input placeholder="Email" v-model="email" />
+              <el-input placeholder="Email" v-model="logInForm.email" />
             </el-form-item>
             <el-form-item label="Password:" required>
               <el-input
                 type="password"
                 placeholder="Password"
-                v-model="password"
+                show-password
+                v-model="logInForm.password"
               />
             </el-form-item>
           </el-form>
@@ -34,14 +35,15 @@
             >
           </el-row>
         </div>
-        <el-alert
-          v-if="showError"
-          title="error"
-          type="error"
-          center
-          show-icon
-        />
       </el-row>
+        <div style="width:395px; margin:auto; padding:20px">
+          <el-alert
+          v-if="showError"
+          title="Invalid log in attempt"
+          type="error"
+          show-icon
+        >{{error}}</el-alert>
+        </div>
     </el-main>
   </el-container>
 </template>
@@ -57,22 +59,22 @@ export default {
         password: "",
       },
       error: "",
-      showError: true,
+      showError: false,
     };
   },
   methods: {
     onLogIn() {
-      const form = new FormData();
-
-      form.append("email", this.logInForm.email);
-      form.append("password", this.logInForm.password);
-
-      axios.post("/login", form)
-        .then((response) => response)
-        .catch((e) => {
+      axios ({
+          method: 'post',
+          url: 'http://127.0.0.1:8000/login/',
+          data: {
+              'username': this.logInForm.email,
+              'password': this.logInForm.password
+          }
+      }).catch( e => {
           this.error = e.response.data.message;
           this.showError = true;
-        });
+      })
     },
   },
 };
@@ -105,10 +107,5 @@ body {
 .main-button {
   width: 165px;
   padding-bottom: 0px;
-}
-.el-alert {
-  margin: 20px;
-  padding: 20px;
-  width: 350px;
 }
 </style>
