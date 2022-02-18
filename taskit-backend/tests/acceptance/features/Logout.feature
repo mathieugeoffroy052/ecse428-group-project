@@ -3,19 +3,19 @@ Feature: Logout for user
 
   Background:
     Given The following users exist:
-      | name             | username             | password      |
-      | Obi-Wan Kenobi   | __obi-wan-kenobi__   | jedimaster123 |
-      | Anakin Skywalker | __anakin-skywalker__ | jediknight456 |
-      | Luke Skywalker   | __luke-skywalker__   | jediknight457 |
+      | email                        | password      |
+      | obi-wan.kenobi@gar.gov       | jedimaster123 |
+      | anakin.skywalker@gar.gov     | jediknight456 |
+      | luke.skywalker@rebellion.com | jediknight457 |
 
   Scenario Outline: Successfully log out (normal flow)
-    Given "<username>" is logged in
-    When "<username>" attempts to log out
+    Given "<email>" is logged in
+    When "<email>" attempts to log out
     Then The user shall be logged out
     And The user shall be at the login page
 
     Examples:
-      | username             |
-      | __obi-wan-kenobi__   |
-      | __anakin-skywalker__ |
-      | __luke-skywalker__   |
+      | email                        |
+      | obi-wan.kenobi@gar.gov       |
+      | anakin.skywalker@gar.gov     |
+      | luke.skywalker@rebellion.com |
