@@ -7,6 +7,6 @@ class Task(models.Model):
     '''
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
-    due_datetime = models.DateTimeField()
-    estimated_duration = models.DurationField()
-    weight = models.IntegerField()
+    due_datetime = models.DateTimeField(default=None, blank=True, null=True)
+    estimated_duration = models.DurationField(default=None, blank=True, null=True)
+    weight = models.IntegerField(default=None, blank=True, null=True)
