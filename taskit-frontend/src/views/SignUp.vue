@@ -31,17 +31,12 @@
               <input type="password" placeholder="Repeat Password" name="pswd-repeat" id="pswd-repeat" required> </el-row>
               
             <div v-if="passwordError" class="error">{{ passwordError }} </div>
-            <hr>
 
-            <div class="btn-group">
-              <button onclick="location.href='../'" type="back" class="backbtn" style="border-radius: 10px; width: 30%">Back</button>
-              &ensp;
-              <button type="submit" class="submit" style="border-radius: 10px; width: 30%">Sign Up</button>
-            </div>
+            <button type="submit" class="submit" style="border-radius: 10px; width: 30%">Sign Up</button>
 
-          <div class="signin">
-            <p>Already have an account? <a href="#" onclick="location.href='../login'">Log in</a>.</p>
-          </div>
+          <el-row justify="center">
+            <p>Already have an account? Head back to <a href="#" onclick="location.href='../login'"> login</a>.</p>
+          </el-row>
         </el-form>
         </div>
       </el-row>
@@ -67,7 +62,7 @@ export default{
             var email = document.getElementById("email").value;
             var pswd = document.getElementById("pswd").value;
             var pswdRepeat = document.getElementById("pswd-repeat").value;
-            this.passwordError = pswd === pswdRepeat ? '' : 'Passwords do not match';
+            this.passwordError = pswd === pswdRepeat ? '' : 'Passwords don\'t match';
             if(this.passwordError === ''){
               let data = new FormData();
               data.append("email", email);
