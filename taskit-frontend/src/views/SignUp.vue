@@ -18,7 +18,8 @@
             <el-row>
               <el-label class="required" for="email"><b>Email</b></el-label> </el-row>
             <el-row>
-              <input type="email" placeholder="Enter Email" name="email" id="email" required> </el-row>
+              <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" oninvalid="this.setCustomValidity('Please enter a valid email address')"
+  oninput="this.setCustomValidity('')" placeholder="Enter Email" name="email" id="email" required> </el-row>
 
             <el-row>
               <label class="required" for="pswd"><b>Password</b></label> </el-row>
