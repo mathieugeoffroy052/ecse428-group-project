@@ -18,3 +18,5 @@ def sign_up(request):
     request = request.data
     User.objects.create_user(request["email"], request["password"])
     return Response({'success':'user created'}, status=status.HTTP_201_CREATED)
+
+
