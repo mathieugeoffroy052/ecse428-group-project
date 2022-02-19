@@ -29,7 +29,7 @@ def sign_up(request):
 # Login upon request
 '''
 {
-    "username": "johnsmith",
+    "email": "john@smith.com",
     "password": "johnpassword"
 }
 '''
@@ -37,17 +37,17 @@ def login_request(request):
     if(request.method == "POST"):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = authenticate(email=email, password=password)
             if user is not NoneType:
                 login(request, user)
-                messages.info(request, f"Successfully logged in as {username}")
+                messages.info(request, f"Successfully logged in as {email}")
                 return redirect("main:Home")
             else:
-                messages.error(request, "Invalid username or password")
+                messages.error(request, "Invalid email or password")
         else:
-            messages.error(request, "Invalid username or password")
+            messages.error(request, "Invalid email or password")
           
 
     form = AuthenticationForm()
