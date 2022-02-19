@@ -27,7 +27,7 @@ Feature: Update task status
       | anakin.skywalker@gar.gov | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    |
       | obi-wan.kenobi@gar.gov   | Train Luke                       | NULL       | NULL               | 100    | In progress |
 
-  Scenario Outline: Update task with invalid parameters (error flow)
+  Scenario Outline: Update task with invalid status (error flow)
     Given "<email>" is logged in
     When The user attempts to update the status of the task "<name>" to "<new_state>"
     Then no task shall be updated
@@ -35,10 +35,10 @@ Feature: Update task status
     And The error message "<error>" shall be displayed
 
     Examples:
-      | email                    | name                             | due_date   | estimated_duration | weight | old_state   | new_state   | error |
-      | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-06 | 1576800            | NULL   | Not started | In progress |       |
-      | anakin.skywalker@gar.gov | See through the lies of the Jedi | 2022-02-07 | 30                 | 75     | In progress | Complete    |       |
-      | obi-wan.kenobi@gar.govs  | Train Luke                       | NULL       | NULL               | 100    | Not started | In progress |       |
+      | email                    | name                             | due_date   | estimated_duration | weight | old_state   | new_state                 | error |
+      | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-06 | 1576800            | NULL   | Not started | Working on it             | "Invalid task state" |
+      | anakin.skywalker@gar.gov | See through the lies of the Jedi | 2022-02-07 | 30                 | 75     | In progress | Master of organization    |  "Invalid task state"  |
+      | obi-wan.kenobi@gar.govs  | Train Luke                       | NULL       | NULL               | 100    | Not started | BOB                       |  "Invalid task state"  |
 
   Scenario Outline: Attempt to update a task without being logged in (error flow)
     Given All users are logged out
