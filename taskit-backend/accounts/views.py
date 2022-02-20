@@ -42,8 +42,8 @@ def login_request(request):
             user = authenticate(email=email, password=password)
             if user is not NoneType:
                 login(request, user)
-                messages.info(request, f"Successfully logged in as {email}")
-                return redirect("main:Home")
+                redirect("main:Home")
+                return Response({'success':'user created'}, status=status.HTTP_201_CREATED)
             else:
                 messages.error(request, "Invalid email or password")
         else:
@@ -51,11 +51,13 @@ def login_request(request):
           
 
     form = AuthenticationForm()
-    return render(request, "main/login.html", {"form":form})
+    render(request, "main/login.html", {"form":form})
+    return Response({'success':'user created'}, status=status.HTTP_403_FORBIDDEN)
 
 
 # Logout upon request
 def logout_request(request):
     logout(request)
     messages.inf(request, "Successfully logged out")
-    return redirect("main:Home")
+    redirect("main:Home")
+    return Response({'success':'user logged out'}, status=status.HTTP_201_CREATED)

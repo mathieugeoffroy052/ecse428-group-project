@@ -2,6 +2,7 @@ from accounts.models import User
 from behave import *
 from django.contrib import auth
 from django.urls import reverse
+from hamcrest import assert_that, equal_to, not_none
 
 @given(u'The following users exist')
 def step_impl(context):
@@ -23,17 +24,17 @@ def step_impl(context,email):
         'email': email if email != None else '',
     }
     try:
-        context.response = context.client.post(reverse('logout'), request_data)
+        context.response = context.client.post(reverse('logout_request'), request_data)
         print(context.response)
     except BaseException as e:
         context.error = e
 
 @then(u'The user shall be logged out')
 def step_impl(context):
-    user = auth.get_user(context.client)
-    assert not user.is_authenticated
+    assert_that(context.response, equal_to(201))
+    assert_that(context.error, equal_to(None))
     
 @then('The user shall be at the login page')
 def step_impl(context):
-    pass
-      #we need to add that the current that is being viewed is the login page
+    assert_that(context.response.status_code, equal_to(201))
+    assert_that(context.error, equal_to(None))
