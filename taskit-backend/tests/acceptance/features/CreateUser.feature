@@ -35,6 +35,7 @@ Feature: Sign up for user
     Then an error message "<error>" shall be raised
 
     Examples:
+      | email                        | password      | error                                 |
       | luke.skywalker@rebellion.com | jediknight450 | This email address is already in use. |
 
   Scenario Outline: Create user using invalid email (error flow)
