@@ -11,13 +11,19 @@
           </el-row>
           <el-form label-position="top" :model="logInForm">
             <el-form-item label="Email:" required>
-              <el-input placeholder="Email" v-model="logInForm.email" />
+              <input 
+                placeholder="Enter Email" 
+                type="email" 
+                v-model="logInForm.email" 
+                pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" 
+                @oninvalid="this.setCustomValidity('Please enter a valid email address')"
+                @oninput="this.setCustomValidity('')"
+                />
             </el-form-item>
             <el-form-item label="Password:" required>
-              <el-input
+              <input
                 type="password"
-                placeholder="Password"
-                show-password
+                placeholder="Enter Password"
                 v-model="logInForm.password"
               />
             </el-form-item>
@@ -107,5 +113,13 @@ body {
 .main-button {
   width: 165px;
   padding-bottom: 0px;
+}
+input[type=text], input[type=password], input[type=email] {
+  width: 100%;
+  padding: 10px;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+  border-radius: 3px;
 }
 </style>
