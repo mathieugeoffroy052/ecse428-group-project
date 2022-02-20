@@ -4,19 +4,15 @@
       <el-row>
         <div class="card">
         <el-form @submit.prevent="handleSubmit" :model="signUpForm">
-          <h1>TaskIt</h1>
+          <h1 style="padding: 5px; padding-bottom: 5px">TaskIt</h1>
             <el-row>
               <el-divider style="margin: 0px; padding: 0px"
                 >Sign Up
                 </el-divider>
             </el-row>
-            <el-row justify="center">
-              <p style="font-family: 'Noteworthy Light'; font-style: italic;  padding-bottom: 10px">
-                Please fill in this form to create an account.</p>
-            </el-row>
 
-            <el-row>
-              <el-label class="required" for="email"><b>Email</b></el-label> </el-row>
+            <el-row >
+              <el-label style="padding-top: 25px" class="required" for="email"><b>Email</b></el-label> </el-row>
             <el-row>
               <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" oninvalid="this.setCustomValidity('Please enter a valid email address')"
   oninput="this.setCustomValidity('')" placeholder="Enter Email" name="email" id="email" required> </el-row>
@@ -70,7 +66,7 @@ export default{
               data.append("password", pswd);
               console.log("Sending email: " + email + " and password: " + pswd);
 
-              axios.post('sign_up/', data)
+              axios.post('signup/', data)
                 .then(alert("Sign Up Form Submitted"))
                 .catch(errors => console.log(errors))
               
@@ -84,7 +80,7 @@ export default{
 
 
 <style>
-  * {box-sizing: border-box}
+  * {box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;}
 
   .required:before {
     content:" *";
@@ -143,18 +139,9 @@ export default{
     margin-bottom: 25px;
   }
 
-  .backbtn {
-    background-color: rgba(146, 119, 255, 0.5);
-    color: white;
-    padding: 16px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    opacity: 0.9;
-  }
-
   .submit {
     background-color:rgba(146, 119, 255, 1);
+    font-size: 16px;
     color: white;
     padding: 16px 20px;
     margin: 8px 0;
