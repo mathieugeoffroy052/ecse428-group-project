@@ -44,4 +44,5 @@ Feature: Sign up for user
     Then an error message "<error>" shall be raised
 
     Examples:
+      | email              | password      | error         |
       | blablablablablabla | jediknight450 | Invalid email |
