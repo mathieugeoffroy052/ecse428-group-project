@@ -69,6 +69,7 @@ export default{
               axios.post('signup/', data)
                 .then(alert("Sign Up Form Submitted"))
                 .catch(errors => console.log(errors))
+              window.location.href = '../'
               
             } else{
               console.log("Form not submitted due to password mismatch");
