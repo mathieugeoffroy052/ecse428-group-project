@@ -11,7 +11,7 @@ def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
 
 
-@api_view("GET")
+@api_view(["GET"])
 def view_all_tasks(request):
     return Task.objects.filter(pk=request.user.id).all()
 
