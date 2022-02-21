@@ -81,20 +81,16 @@ export default{
 
 
 <style>
+  @import 'generalStyle.css';
   * {box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;}
 
   .required:before {
     content:" *";
     color: red;
   }
-  body{
-    background-color: rgba(146, 119, 255, 0.28);
-    padding-right: 150px;
-    padding-left: 150px;
-  }
 
   h1 {
-    font-family: "Noteworthy Light";
+    font-family: var(--titleFont);
     font-size: 50px;
     padding: 0px;
     margin: 0px;
@@ -103,7 +99,7 @@ export default{
   .card {
     border-style: solid;
     border-radius: 5px;
-    border-color: #9277ff;
+    border-color: var(--lavender);
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding-left: 20px;
@@ -114,35 +110,23 @@ export default{
     margin: auto;
   }
 
-  .container {
-    border: 5px solid rgba(146, 119, 255, 1);
-    padding-right: 16px;
-    padding-left: 16px;
-    border-radius: 10px;
-  }
-
   input[type=text], input[type=password], input[type=email] {
     width: 100%;
     padding: 15px;
     margin: 5px 0 22px 0;
     display: inline-block;
     border: none;
-    background: #f1f1f1;
+    background: var(--lightGray);
     border-radius:3px;
   }
 
-  input[type=text]:focus, input[type=password]:focus {
-    background-color: #ddd;
+  input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
+    background-color: var(--darkGray);
     outline: none;
   }
 
-  hr {
-    border: 1px solid #f1f1f1;
-    margin-bottom: 25px;
-  }
-
   .submit {
-    background-color:rgba(146, 119, 255, 1);
+    background-color: var(--lavender);
     font-size: 16px;
     color: white;
     padding: 16px 20px;
@@ -161,7 +145,7 @@ export default{
   }
 
   .error {
-    color: #ff0000;
+    color: red;
     font-size: 14px;
     font-weight: bold;
 }
