@@ -33,10 +33,10 @@
               color="#9277FF"
               plain
               class="main-button"
-              @submit="onLogIn()"
+              @click="onLogIn()"
               >Log In</el-button
             >
-            <el-button color="#9277FF" style="color: white" class="main-button"
+            <el-button color="#9277FF" style="color: white" class="main-button" @click="onSignUpClick()"
               >Sign Up</el-button
             >
           </el-row>
@@ -72,16 +72,23 @@ export default {
     onLogIn() {
       axios ({
           method: 'post',
-          url: 'http://127.0.0.1:8000/login/',
+          url: 'http://127.0.0.1:8000/accounts/login/',
           data: {
               'username': this.logInForm.email,
               'password': this.logInForm.password
           }
-      }).catch( e => {
-          this.error = e.response.data.message;
-          this.showError = true;
+      }).then (
+        this.logInForm.email = '',
+        this.logInForm.password = '',
+        window.location.href = '../tasks'
+        ).catch( e => {
+        this.error = e.response.data.message;
+        this.showError = true;
       })
     },
+    onSignUpClick() {
+      window.location.href = '../signup'
+    }
   },
 };
 </script>
