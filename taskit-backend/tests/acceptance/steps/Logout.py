@@ -1,8 +1,7 @@
 from accounts.models import User
 from behave import *
-from django.contrib import auth
 from django.urls import reverse
-from hamcrest import assert_that, equal_to, not_none
+from hamcrest import assert_that, equal_to
 
 @given(u'The following users exist')
 def step_impl(context):
@@ -31,10 +30,10 @@ def step_impl(context,email):
 
 @then(u'The user shall be logged out')
 def step_impl(context):
-    assert_that(context.response, equal_to(201))
+    assert_that(context.response, equal_to(200))
     assert_that(context.error, equal_to(None))
     
 @then('The user shall be at the login page')
 def step_impl(context):
-    assert_that(context.response.status_code, equal_to(201))
+    assert_that(context.response.status_code, equal_to(200))
     assert_that(context.error, equal_to(None))
