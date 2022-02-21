@@ -66,10 +66,10 @@ export default{
               data.append("password", pswd);
               console.log("Sending email: " + email + " and password: " + pswd);
 
-              axios.post('signup/', data)
-                .then(alert("Sign Up Form Submitted"))
+              axios.post("http://localhost:8000/accounts/signup", data)
+                .then(resp => console.log(resp.data))
                 .catch(errors => console.log(errors))
-              window.location.href = '../'
+              // window.location.href = '../'
               
             } else{
               console.log("Form not submitted due to password mismatch");
