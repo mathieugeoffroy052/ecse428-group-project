@@ -14,18 +14,18 @@
             <el-row >
               <el-label style="padding-top: 25px" class="required" for="email"><b>Email</b></el-label> </el-row>
             <el-row>
-              <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" oninvalid="this.setCustomValidity('Please enter a valid email address')"
+              <input type="email" v-model="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" oninvalid="this.setCustomValidity('Please enter a valid email address')"
   oninput="this.setCustomValidity('')" placeholder="Enter Email" name="email" id="email" required> </el-row>
 
             <el-row>
               <label class="required" for="pswd"><b>Password</b></label> </el-row>
             <el-row>
-            <input type="password" placeholder="Enter Password" name="pswd" id="pswd" required> </el-row>
+            <input type="password" v-model="password" placeholder="Enter Password" name="pswd" id="pswd" required> </el-row>
 
             <el-row>
               <label class="required" for="pswd-repeat"><b>Re-type Password</b></label> </el-row>    
             <el-row>
-              <input type="password" placeholder="Repeat Password" name="pswd-repeat" id="pswd-repeat" required> </el-row>
+              <input type="password" v-model="pswdRepeat" placeholder="Repeat Password" name="pswd-repeat" id="pswd-repeat" required> </el-row>
               
             <div v-if="passwordError" class="error">{{ passwordError }} </div>
 
@@ -50,32 +50,30 @@ export default{
           email: "",
           password: "",
         },
+        pswdRepeat: "",
         error: "",
         passwordError: false,
       };
     },
     methods: {
         handleSubmit() {
-            let email = document.getElementById("email").value;
-            let pswd = document.getElementById("pswd").value;
-            let pswdRepeat = document.getElementById("pswd-repeat").value;
-            this.passwordError = pswd === pswdRepeat ? '' : 'Passwords don\'t match';
-            if(this.passwordError === ''){
-              let data = new FormData();
-              data.append("email", email);
-              data.append("password", pswd);
-              console.log("Sending email: " + email + " and password: " + pswd);
+          this.signUpForm.email = this.email
+          this.signUpForm.password = this.password
+          if(this.password === this.pswdRepeat){
+            this.passwordError = '';
+            console.log("Sending email: " + this.signUpForm.email + " and password: " + this.signUpForm.password);
 
-              axios.post("http://localhost:8000/accounts/signup", data)
-                .then(resp => console.log(resp.data))
-                .catch(errors => console.log(errors))
-              // window.location.href = '../'
-              
-            } else{
-              console.log("Form not submitted due to password mismatch");
-            }
+            axios.post("http://localhost:8000/accounts/signup", this.signUpForm)
+              .then(resp => console.log(resp.data))
+              .catch(errors => console.log(errors))
+            // window.location.href = '../'
+          } 
+          else{
+            this.passwordError = 'Passwords don\'t match'
+            console.log("Form not submitted due to password mismatch");
+          }
         }
-    }
+    } 
 }
 </script>
 
