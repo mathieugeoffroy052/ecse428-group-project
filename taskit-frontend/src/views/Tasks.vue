@@ -9,7 +9,7 @@
           <el-button class = logobutton type="text">TaskIt</el-button>
         </div>
         <div class = options>
-          <el-button class = logout color = #ccbfff>Logout</el-button>
+          <el-button class = logout color = #ccbfff @change="onLogOut()">Logout</el-button>
         </div>
         <div class= avatar>
           <el-avatar :size="40" :src="circleUrl"></el-avatar>
@@ -101,6 +101,7 @@
 </template>
 
 <script lang="js" setup>
+import axios from 'axios'
 export default {
     name: 'Tasks',
     data () {
@@ -115,6 +116,16 @@ export default {
             value1: ''
         }
     },
+    methods: {
+      onLogOut() {
+        axios({
+          method: 'post',
+          url: 'http://127.0.0.1:8000/accounts/logout/'
+        }).then(
+          window.location.href = '../login'
+        )
+      }
+    }
     
 }
 </script>
