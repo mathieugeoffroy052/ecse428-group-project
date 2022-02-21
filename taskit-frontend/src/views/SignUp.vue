@@ -128,6 +128,7 @@ export default{
     display: inline-block;
     border: none;
     background: #f1f1f1;
+    border-radius:3px;
   }
 
   input[type=text]:focus, input[type=password]:focus {
