@@ -16,5 +16,13 @@ from rest_framework.permissions import AllowAny
 @permission_classes([AllowAny])
 def sign_up(request):
     request = request.data
-    User.objects.create_user(request["email"], request["password"])
-    return Response({'success':'user created'}, status=status.HTTP_201_CREATED)
+    try:
+        if "password" not in request: 
+            return Response({'No password entered.'},  status=status.HTTP_401_UNAUTHORIZED)
+        if "email" not in request:
+            return Response({'No email address entered.'},  status=status.HTTP_401_UNAUTHORIZED)
+        User.objects.create_user(request["email"], request["password"])
+        return Response({'user created'}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        if str(e) == "UNIQUE constraint failed: accounts_user.email":
+            return Response({'This email address is already in use.'}, status=status.HTTP_401_UNAUTHORIZED)
