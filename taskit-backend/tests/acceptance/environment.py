@@ -7,9 +7,8 @@ from django.test import Client
 
 def before_all(context):
     context.client = Client()
-#     setup_test_environment()
 
 def before_scenario(context, _):
     context.response = None
     context.error = None
-    context.username = None
+    context.email = None

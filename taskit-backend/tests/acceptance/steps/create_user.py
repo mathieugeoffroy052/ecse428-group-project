@@ -10,20 +10,20 @@ optional.init_opt_()
 @given(u'The following users exist')
 def step_impl(context):
     for row in context.table:
-        user = User.objects.create_user(row['username'], row['password'])
+        user = User.objects.create_user(row['email'], row['password'])
         user.save()
 
-@given(u'there is no existing username "{username}"')
-def step_impl(context, username):
+@given(u'there is no existing account with email address "{email}"')
+def step_impl(context, email):
     for user in User.objects.all():
-        if user.username == username:
+        if user.email == email:
             user.delete()
 
-@when(u'the user provides a new username "{username:opt_?}" and a password "{password:opt_?}"')
-def step_impl(context, username, password):
-    context.username = username
+@when(u'the user provides a new email address "{email:opt_?}" and a password "{password:opt_?}"')
+def step_impl(context, email, password):
+    context.email = email
     request_data = {
-        'email': username if username != None else '',
+        'email': email if email != None else '',
         'password': password if password != None else ''
     }
     try:
@@ -37,9 +37,9 @@ def step_impl(context):
     assert_that(context.response.status_code, equal_to(201))
     assert_that(context.error, equal_to(None))
 
-@then(u'the account shall have username "{username}" and password "{password}"')
-def step_impl(context, username, password):
-    user = User.objects.get(email=username)
+@then(u'the account shall have email address "{email}" and password "{password}"')
+def step_impl(context, email, password):
+    user = User.objects.get(email=email)
     assert_that(user.check_password(password), 'Invalid password')
 
 @then(u'no new account shall be created')
