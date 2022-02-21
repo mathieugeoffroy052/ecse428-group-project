@@ -56,9 +56,9 @@ export default{
     },
     methods: {
         handleSubmit() {
-            var email = document.getElementById("email").value;
-            var pswd = document.getElementById("pswd").value;
-            var pswdRepeat = document.getElementById("pswd-repeat").value;
+            let email = document.getElementById("email").value;
+            let pswd = document.getElementById("pswd").value;
+            let pswdRepeat = document.getElementById("pswd-repeat").value;
             this.passwordError = pswd === pswdRepeat ? '' : 'Passwords don\'t match';
             if(this.passwordError === ''){
               let data = new FormData();
