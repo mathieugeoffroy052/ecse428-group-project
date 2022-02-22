@@ -3,7 +3,12 @@ from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
 import optional
+
+
+
 optional.init_opt_()
+
+
 @given('All users are logged out')
 def step_impl(context):
     client = context.test.client
@@ -20,6 +25,7 @@ def step_when_the_user_attempts_to(context,email,password):
         print(context.response)
     except BaseException as e:
         context.error = e
+
 @then('The user shall be logged in')
 def step_impl(context):
     assert_that(context.response.status_code, equal_to(200))

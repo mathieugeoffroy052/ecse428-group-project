@@ -9,4 +9,4 @@ def before_all(context):
 def before_scenario(context, _):
     context.response = None
     context.error = None
-    context.username = None
+    context.email = None
