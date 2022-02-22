@@ -47,11 +47,11 @@
               
             <div v-if="passwordError" class="error">{{ passwordError }} </div>
 
-            <el-button  type="submit" 
+            <button  type="submit" 
                         class="submit" 
                         style="border-radius: 10px; width: 30%; height: 10%">
                         Sign Up
-            </el-button>
+            </button>
 
           <el-row justify="center">
             <p>Already have an account? Head back to <a href="#" onclick="location.href='../login'"> login</a>.</p>
