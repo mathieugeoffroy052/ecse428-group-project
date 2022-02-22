@@ -67,8 +67,6 @@ def step_impl(context):
         number_of_tasks += 1
     assert number_of_tasks == 5
 
-
-
 @then(u'The message "Task created successfully." shall be displayed')
 def step_impl(context):
 #I genuinely do not know if this works
