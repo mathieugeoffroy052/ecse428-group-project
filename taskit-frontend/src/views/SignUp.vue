@@ -3,33 +3,55 @@
     <el-main>
       <el-row>
         <div class="card">
-        <el-form @submit.prevent="handleSubmit" :model="signUpForm">
-          <h1 style="padding: 5px; padding-bottom: 5px">TaskIt</h1>
+        <el-form  label-position="top"  
+                  @submit.prevent="handleSubmit" 
+                  :model="signUpForm">
+          <h1 style="padding: 5px; padding-bottom: 5px">
+            TaskIt
+          </h1>
             <el-row>
-              <el-divider style="margin: 0px; padding: 0px"
+              <el-divider style="margin: 0px; padding: 0px; padding-bottom: 20px"
                 >Sign Up
                 </el-divider>
             </el-row>
 
-            <el-row >
-              <el-label style="padding-top: 25px" class="required" for="email"><b>Email</b></el-label> </el-row>
-            <el-row>
-              <input type="email" v-model="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" oninvalid="this.setCustomValidity('Please enter a valid email address')"
-  oninput="this.setCustomValidity('')" placeholder="Enter Email" name="email" id="email" required> </el-row>
+           <el-form-item label="Email:" required> 
+             <input type="email" 
+                    v-model="email" 
+                    pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$" 
+                    oninvalid="this.setCustomValidity('Please enter a valid email address')"
+                    oninput="this.setCustomValidity('')" 
+                    placeholder="Enter Email" 
+                    name="email" 
+                    id="email" 
+                    required> 
+           </el-form-item>
 
-            <el-row>
-              <label class="required" for="pswd"><b>Password</b></label> </el-row>
-            <el-row>
-            <input type="password" v-model="password" placeholder="Enter Password" name="pswd" id="pswd" required> </el-row>
+           <el-form-item label="Password:" required> 
+            <input  type="password" 
+                    v-model="password" 
+                    placeholder="Enter Password" 
+                    name="pswd" 
+                    id="pswd" 
+                    required>
+           </el-form-item>
 
-            <el-row>
-              <label class="required" for="pswd-repeat"><b>Re-type Password</b></label> </el-row>    
-            <el-row>
-              <input type="password" v-model="pswdRepeat" placeholder="Repeat Password" name="pswd-repeat" id="pswd-repeat" required> </el-row>
+           <el-form-item label="Re-type password:" required> 
+             <input type="password" 
+                    v-model="pswdRepeat" 
+                    placeholder="Repeat Password" 
+                    name="pswd-repeat" 
+                    id="pswd-repeat" 
+                    required>
+           </el-form-item>
               
             <div v-if="passwordError" class="error">{{ passwordError }} </div>
 
-            <button type="submit" class="submit" style="border-radius: 10px; width: 30%">Sign Up</button>
+            <el-button  type="submit" 
+                        class="submit" 
+                        style="border-radius: 10px; width: 30%; height: 10%">
+                        Sign Up
+            </el-button>
 
           <el-row justify="center">
             <p>Already have an account? Head back to <a href="#" onclick="location.href='../login'"> login</a>.</p>
@@ -82,11 +104,6 @@ export default{
   @import 'generalStyle.css';
   * {box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;}
 
-  .required:before {
-    content:" *";
-    color: red;
-  }
-
   h1 {
     font-family: var(--titleFont);
     font-size: 50px;
@@ -111,7 +128,6 @@ export default{
   input[type=text], input[type=password], input[type=email] {
     width: 100%;
     padding: 15px;
-    margin: 5px 0 22px 0;
     display: inline-block;
     border: none;
     background: var(--lightGray);
@@ -146,5 +162,5 @@ export default{
     color: red;
     font-size: 14px;
     font-weight: bold;
-}
+  }
 </style>
