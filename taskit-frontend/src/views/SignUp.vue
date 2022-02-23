@@ -65,6 +65,10 @@
 
 <script>
 import axios from "axios";
+const axios_instance = axios.create({
+    baseURL: process.env.VUE_APP_BACKEND_URL,
+});
+
 export default{
     data() {
         return {
@@ -85,10 +89,10 @@ export default{
             this.passwordError = '';
             console.log("Sending email: " + this.signUpForm.email + " and password: " + this.signUpForm.password);
 
-            axios.post("http://localhost:8000/accounts/signup", this.signUpForm)
+            axios_instance.post("/accounts/signup", this.signUpForm)
               .then(resp => console.log(resp.data))
+              //.then(window.location.href = '../home')
               .catch(errors => console.log(errors))
-            // window.location.href = '../'
           } 
           else{
             this.passwordError = 'Passwords don\'t match'
