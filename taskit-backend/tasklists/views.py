@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from django.http import HttpResponse
 from tasklists.models import Task
 
+
 def public(request):
     return HttpResponse("You don't need to be authenticated to see this")
 
