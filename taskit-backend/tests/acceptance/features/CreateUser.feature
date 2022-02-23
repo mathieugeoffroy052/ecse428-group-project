@@ -47,4 +47,4 @@ Feature: Sign up for user
 
     Examples:
       | email              | password      | error         |
-      | blablablablablabla | jediknight450 | Invalid email |
+      | blablablablablabla | jediknight456 | Invalid email |
