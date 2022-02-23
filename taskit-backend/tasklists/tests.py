@@ -1,7 +1,7 @@
 from django.test import TestCase
 from tasklists.models import Task
 from accounts.models import User
-from views import view_all_tasks
+from tasklists.views import view_all_tasks
 
 class TestClass(TestCase):
         # Create your tests here.

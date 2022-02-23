@@ -1,4 +1,4 @@
-from types import NoneType
+# from types import NoneType
 from rest_framework.decorators import api_view
 from accounts.models import User
 from rest_framework.response import Response
