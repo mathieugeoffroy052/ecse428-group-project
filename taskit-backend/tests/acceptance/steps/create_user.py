@@ -12,6 +12,7 @@ def step_impl(context):
     for row in context.table:
         user = User.objects.create_user(row['email'], row['password'])
         user.save()
+        print(f"Created user {row['email']}")
 
 @given(u'there is no existing account with email address "{email}"')
 def step_impl(context, email):
@@ -28,8 +29,9 @@ def step_impl(context, email, password):
     }
     try:
         context.response = context.client.post(reverse('sign_up'), request_data)
-        print(context.response)
+        print(f"Response: {context.response}")
     except BaseException as e:
+        print(f"Exception: {e}")
         context.error = e
 
 @then(u'a new customer account shall be created')
@@ -44,11 +46,16 @@ def step_impl(context, email, password):
 
 @then(u'no new account shall be created')
 def step_impl(context):
+    print(context.response)
     if context.response != None:
-        assert_that(context.response.status_code, not(equal_to(201)))
+        # Check that status code is 4xx
+        status_first_digit = context.response.status_code // 100
+        assert_that(status_first_digit, equal_to(4))
 
 @then(u'an error message "{error}" shall be raised')
 def step_impl(context, error):
     e = context.error
-    assert_that(e, not_none())
-    assert_that(e.message, equal_to(error))
+    if context.error is not None:
+        assert_that(e.message, equal_to(error))
+    else:
+        assert_that(error in context.response.data)
