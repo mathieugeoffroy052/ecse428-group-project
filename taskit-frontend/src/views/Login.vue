@@ -33,15 +33,19 @@
             </el-form-item>
             <el-row justify="center">
               <button
-                style="border-radius: 4px;"
+                style="border-radius: 4px"
                 type="submit"
                 class="main-button"
                 @submit="onLogIn()"
-                >Log In</button
               >
+                Log In
+              </button>
             </el-row>
             <el-row justify="center">
-              <p>Don't have an account? Head to <a href="#" onclick="location.href='../signup'"> sign up</a>.</p>
+              <p>
+                Don't have an account? Head to
+                <a href="#" onclick="location.href='../signup'"> sign up</a>.
+              </p>
             </el-row>
           </el-form>
         </div>
@@ -138,11 +142,13 @@
     border: none;
     cursor: pointer;
     opacity: 0.9;
-    color: #f1f1f1;
-
+    color: white;
   }
   .main-button:hover {
-    background-color: #9277ffce;   
+    opacity: 1;
+  }
+  a {
+    color: dodgerblue;
   }
   input[type="text"],
   input[type="password"],
@@ -153,5 +159,11 @@
     border: none;
     background: #f1f1f1;
     border-radius: 3px;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="email"]:focus {
+    background-color: var(--darkGray);
+    outline: none;
   }
 </style>
