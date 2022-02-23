@@ -12,6 +12,7 @@
           <el-form
             label-position="top"
             :model="logInForm"
+            @submit.prevent="onLogIn"
           >
             <el-form-item label="Email:" required>
               <input
@@ -20,7 +21,7 @@
                 v-model="logInForm.email"
                 pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$"
                 oninvalid="this.setCustomValidity('Please enter a valid email address')"
-                oninput="this.setCustomValidity('')" 
+                oninput="this.setCustomValidity('')"
               />
             </el-form-item>
             <el-form-item label="Password:" required>
@@ -30,23 +31,19 @@
                 v-model="logInForm.password"
               />
             </el-form-item>
+            <el-row justify="center">
+              <button
+                style="border-radius: 4px;"
+                type="submit"
+                class="main-button"
+                @submit="onLogIn()"
+                >Log In</button
+              >
+            </el-row>
+            <el-row justify="center">
+              <p>Don't have an account? Head to <a href="#" onclick="location.href='../signup'"> sign up</a>.</p>
+            </el-row>
           </el-form>
-          <el-row justify="space-between">
-            <el-button
-              color="#9277FF"
-              plain
-              class="main-button"
-              @click="onLogIn()"
-              >Log In</el-button
-            >
-            <el-button
-              color="#9277FF"
-              style="color: white"
-              class="main-button"
-              @click="onSignUpClick()"
-              >Sign Up</el-button
-            >
-          </el-row>
         </div>
       </el-row>
       <div style="width: 395px; margin: auto; padding: 20px">
@@ -91,11 +88,11 @@
               this.logInForm.email = "";
               this.logInForm.password = "";
             })
-            .then(window.location.href = "../tasks")
             .catch((e) => {
               this.error = e.response.data.message;
               this.showError = true;
             })
+            .then((window.location.href = "../tasks"));
         } else {
           this.error = "Please fill in all input fields to login.";
           this.showError = true;
@@ -117,7 +114,7 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding-left: 20px;
     padding-right: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     margin: 20px;
     width: 350px;
     margin: auto;
@@ -133,14 +130,25 @@
     background-color: #9277ff47;
   }
   .main-button {
-    width: 165px;
-    padding-bottom: 0px;
+    background-color: #9277ff;
+    padding: 12px 16px;
+    width: 100px; /* was 165 */
+    font-size: 16px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+    color: #f1f1f1;
+
+  }
+  .main-button:hover {
+    background-color: #9277ffce;   
   }
   input[type="text"],
   input[type="password"],
   input[type="email"] {
     width: 100%;
-    padding: 10px;
+    padding: 15px;
     display: inline-block;
     border: none;
     background: #f1f1f1;
