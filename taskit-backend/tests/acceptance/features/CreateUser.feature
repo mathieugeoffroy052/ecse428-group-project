@@ -32,7 +32,7 @@ Feature: Sign up for user
   Scenario Outline: Create user using an email that is already taken (error flow)
     When the user provides a new email address "<email>" and a password "<password>"
     Then no new account shall be created
-    Then there will exist a user with email address "<email>" and a password "<password>"
+    Then there will exist no user with email address "<email>" and a password "<password>"
     Then an error message "<error>" shall be raised
 
     Examples:

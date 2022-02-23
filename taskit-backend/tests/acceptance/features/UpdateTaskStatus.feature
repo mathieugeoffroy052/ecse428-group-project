@@ -30,8 +30,7 @@ Feature: Update task status
   Scenario Outline: Update task with invalid status (error flow)
     Given "<email>" is logged in
     When The user attempts to update the status of the task "<name>" to "<new_state>"
-    Then no task shall be updated
-    And "<email>" shall have a task called "<name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", and state "<old_state>"
+    Then "<email>" shall have a task called "<name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", and state "<old_state>"
     And The error message "<error>" shall be displayed
 
     Examples:
