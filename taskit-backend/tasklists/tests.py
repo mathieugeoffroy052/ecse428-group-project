@@ -2,7 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 from tasklists.models import Task
-
+from django.urls import reverse
 import json
 
 User = get_user_model()
@@ -18,7 +18,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_with_all_fields(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            "/api/tasks/",
+            reverse("task_list"),
             json.dumps(
                 {
                     "description": "eat chocolate",
@@ -43,7 +43,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_with_just_a_description(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            "/api/tasks/",
+            reverse("task_list"),
             json.dumps(
                 {
                     "description": "eat chocolate",
@@ -65,7 +65,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_with_a_blank_description(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            "/api/tasks/",
+            reverse("task_list"),
             json.dumps({"description": ""}),
             content_type="application/json",
         )
@@ -80,7 +80,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_without_a_description(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            "/api/tasks/",
+            reverse("task_list"),
             json.dumps({}),
             content_type="application/json",
         )
@@ -94,7 +94,7 @@ class TaskListTestCase(TestCase):
 
     def test_create_task_without_being_authenticated(self):
         response = self.client.post(
-            "/api/tasks/",
+            reverse("task_list"),
             json.dumps({"description": "eat chocolate"}),
             content_type="application/json",
         )
@@ -107,7 +107,7 @@ class TaskListTestCase(TestCase):
             email="other@example.com", password="password123"
         )
         Task.objects.create(owner=other_user, description="eat toothpaste")
-        response = self.client.get("/api/tasks/")
+        response = self.client.get(reverse("task_list"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
