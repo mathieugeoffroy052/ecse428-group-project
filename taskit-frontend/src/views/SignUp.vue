@@ -49,7 +49,7 @@
 
             <button  type="submit" 
                         class="submit" 
-                        style="border-radius: 10px; width: 30%; height: 10%">
+                        style="border-radius: 4px;">
                         Sign Up
             </button>
 
@@ -106,7 +106,7 @@ export default{
 
 <style>
   @import 'generalStyle.css';
-  * {box-sizing: border-box; font-family: Arial, Helvetica, sans-serif;}
+  * {box-sizing: border-box; }
 
   h1 {
     font-family: var(--titleFont);
@@ -123,7 +123,7 @@ export default{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding-left: 20px;
     padding-right: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     margin: 20px;
     width: 400px;
     margin: auto;
@@ -147,11 +147,12 @@ export default{
     background-color: var(--lavender);
     font-size: 16px;
     color: white;
-    padding: 16px 20px;
+    padding: 12px 16px;
     margin: 8px 0;
     border: none;
     cursor: pointer;
     opacity: 0.9;
+    width: 100px;
   }
 
   .submit:hover {
