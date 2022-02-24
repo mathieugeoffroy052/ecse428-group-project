@@ -16,9 +16,9 @@ from rest_framework.permissions import AllowAny
 @permission_classes([AllowAny])
 def sign_up(request):
     request = request.data
-    if "email" not in request or request["email"].strip() == "":
+    if "email" not in request or request["email"].strip():
         return Response({'No email address entered.'},  status=status.HTTP_400_BAD_REQUEST)
-    if "password" not in request or request["password"].strip() == "": 
+    if "password" not in request or request["password"].strip(): 
         return Response({'No password entered.'},  status=status.HTTP_400_BAD_REQUEST)
     if User.objects.filter(email=request["email"]):
         return Response({'This email address is already in use.'}, status=status.HTTP_409_CONFLICT)
