@@ -37,7 +37,7 @@ stages:
               testResultsFiles: "taskit-backend/tests/acceptance/reports/TEST-*.xml"
               testRunTitle: "Unit Tests"
             condition: succeededOrFailed()
-          - script: python -m black --check --diff
+          - script: python -m black --check --diff .
             workingDirectory: taskit-backend
             displayName: "Check code style"
           - script: DJANGO_SETTINGS_MODULE=taskit.settings.production python manage.py check --deploy
