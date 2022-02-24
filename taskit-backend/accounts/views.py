@@ -9,19 +9,18 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth import login, logout
 
-'''
+"""
 {
 	"email": "johnsmith@email.com",
 	"password": "password123"
 }
-'''
+"""
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
     request = request.data
     User.objects.create_user(request["email"], request["password"])
-    return Response({'success':'user created'}, status=status.HTTP_201_CREATED)
-
+    return Response({"success": "user created"}, status=status.HTTP_201_CREATED)
 
 # Login
 class Login(KnoxLoginView):
@@ -41,3 +40,4 @@ def logout_view(request):
     return Response(
         {"success": "User successfully logged out"}, status=status.HTTP_200_OK
     )
+
