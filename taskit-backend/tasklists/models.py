@@ -18,7 +18,7 @@ class Task(models.Model):
     NotStarted = 'NS'
     InProgres = 'IP'
     Completed = 'C'
-    TaskState = models.TextChoices(
+    TaskState = (
         (NotStarted, 'Not Started'),
         (InProgres, 'In ProgresS'),
         (Completed, 'Completed')
