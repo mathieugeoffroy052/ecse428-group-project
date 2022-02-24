@@ -7,12 +7,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 
 '''
 {
-	"email": "john@email.com",
-	"password": "johnpassword"
+	"email": "johnsmith@email.com",
+	"password": "password123"
 }
 '''
 @api_view(["POST"])
@@ -33,3 +33,11 @@ class Login(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(Login, self).post(request, format=None)
+
+# Logout 
+@api_view(["POST"])
+def logout_view(request):
+    logout(request)
+    return Response(
+        {"success": "User successfully logged out"}, status=status.HTTP_200_OK
+    )
