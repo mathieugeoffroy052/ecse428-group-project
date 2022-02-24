@@ -1,7 +1,7 @@
 from tasklists.models import Task
 from behave import *
 from django.urls import reverse
-from hamcrest import assert_that, equal_to, not_none
+from hamcrest import assert_that, equal_to, not_none, is_none
 import optional
 
 optional.init_opt_()
@@ -47,32 +47,32 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
 
 @then(u'the task "{name}" shall exist in the system')
 def step_impl(context, name):
-    for task in Task.objects.all():
-        if task.name == name:
-            assert True
     assert_that(context.response.status_code, equal_to(201))
-    assert_that(context.error, equal_to(None))
+    assert_that(context.error, equal_to(is_none))
+    
+    task = Task.objects.filter(name=name)
+    assert_that(task, not_none())
 
 
 @then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"')
 def step_impl(context,email,name,due_date,estimated_duration,weight):
-    for task in Task.objects.all():
-        if task.email == email & task.name == name & task.due_date == due_date & task.estimated_duration == estimated_duration & task.weight == weight & task.state == "Not started":
-            assert True
+    task = Task.objects.filter(name=name)
+    assert task.email == email
+    assert task.name == name
+    assert task.due_date == due_date
+    assert task.estimated_duration == estimated_duration
+    assert task.weight == weight
 
 @then(u'the number of tasks in the system shall be "5"')
 def step_impl(context):
-    number_of_tasks = 0
-    for task in Task.objects.all():
-        number_of_tasks += 1
-    assert number_of_tasks == 5
+    assert len(Task.objects) == 5
 
 @then(u'The message "Task created successfully." shall be displayed')
 def step_impl(context):
 #I genuinely do not know if this works
-    msg = context.response
+    msg = context.response.data
     assert_that(msg, not_none())
-    assert_that(msg, equal_to("Task created successfully"))
+    assert_that("Task created successfully." in context.response.data)
 
 @then(u'no new task shall be created')
 def step_impl(context):
@@ -88,10 +88,12 @@ def step_impl(context):
 @then(u'The message "Task created succesfully." shall be displayed')
 def step_impl(context):
     assert_that(context.response.status_code, equal_to(201))
-    assert_that(context.error, equal_to(None))
+    assert_that(context.error, equal_to(is_none()))
 
 @then(u'an error message "{error}" shall be raised')
 def step_impl(context, error):
     e = context.error
-    assert_that(e, not_none())
-    assert_that(e.message, equal_to(error))
+    if context.error is not None:
+        assert_that(e.message, equal_to(error))
+    else:
+        assert_that(error in context.response.data)
