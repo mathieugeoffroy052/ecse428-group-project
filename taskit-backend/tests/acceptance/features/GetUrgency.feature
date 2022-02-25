@@ -1,4 +1,4 @@
-Feature: Calculate task Urgency
+Feature: Calculate task Priority
   As a user, I wish order tasks by Priority or Urgency
 
   Background:
