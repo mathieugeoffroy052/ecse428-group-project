@@ -16,13 +16,13 @@ Feature: Calculate task Urgency
       | Urgency                  |
       | Importance               |
 
-  Scenario Outline: Successfully order tasks (normal flow)
+  Scenario: Successfully order tasks (normal flow)
     Given "<email>" is logged in
     When The user attempts to order their tasks by "<Urgency>"
     Then The tasks shall be ordered
     And Then the ordering will be <"Train Anakin, die, Train Luke">
 
-  Scenario Outline: Successfully order tasks (alternate flow)
+  Scenario: Successfully order tasks (alternate flow)
     Given "<email>" is logged in
     When The user attempts to order their tasks by "<Importance>"
     Then The tasks shall be ordered
