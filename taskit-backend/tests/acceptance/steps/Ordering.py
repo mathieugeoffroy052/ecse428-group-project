@@ -1,3 +1,4 @@
+from black import assert_equivalent
 from tasklists.models import Task
 from tasklists.views import task_list
 from behave import *
@@ -42,19 +43,21 @@ def step_impl(context,order):
         ordered_tasks = []
         current_smallest = None
         for t in tasks:
-            for x in range(len(tasks)):
+            for x in range(len(ordered_tasks)):
                 if(current_smallest == None):
                     ordered_tasks.append(t)
                     current_smallest = t
+                    break
                 elif (t.priority >= ordered_tasks[x].priority):
                     ordered_tasks.insert(x,t)
+                    break
                 elif (t.priority < current_smallest.priority):
                     ordered_tasks.append(t)
                     current_smallest = t
+                    break
 
         for x in range(len(tasks)):
-            if(ordered_tasks[x].description != order[x]):
-                raise ValueError('Incorrect order by priority')
+            assert_equivalent(ordered_tasks[x].description, order[x])
     except ValueError as e:
         context.error = e
 
@@ -71,18 +74,22 @@ def step_impl(context,order):
         ordered_tasks = []
         current_smallest = None
         for t in tasks:
-            for x in range(len(tasks)):
+            for x in range(len(ordered_tasks)):
                 if(current_smallest == None):
                     ordered_tasks.append(t)
+                    current_smallest = t
+                    break
                 elif (t.importance >= ordered_tasks[x].importance):
                     ordered_tasks.insert(x,t)
+                    break
                 elif (t.priority < current_smallest.importance):
                     ordered_tasks.append(t)
                     current_smallest = t
+                    break
+                    
 
         for x in range(len(tasks)):
-            if(ordered_tasks[x].description != order[x]):
-                raise ValueError('Incorrect order by importance')
+            assert_equivalent(ordered_tasks[x].description, order[x])
     except ValueError as e:
         context.error = e
 
@@ -98,17 +105,21 @@ def step_impl(context,order):
         ordered_tasks = []
         current_smallest = None
         for t in tasks:
-            for x in range(len(tasks)):
+            for x in range(len(ordered_tasks)):
                 if(current_smallest == None):
                     ordered_tasks.append(t)
+                    current_smallest = t
+                    break
                 elif (t.priority >= ordered_tasks[x].urgency):
                     ordered_tasks.insert(x,t)
+                    break
                 elif (t.priority < current_smallest.urgency):
                     ordered_tasks.append(t)
                     current_smallest = t
+                    break
+                    
 
         for x in range(len(tasks)):
-            if(ordered_tasks[x].description != order[x]):
-                raise ValueError('Incorrect order by urgency')
+            assert_equivalent(ordered_tasks[x].description, order[x])
     except ValueError as e:
         context.error = e
