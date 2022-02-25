@@ -1,20 +1,22 @@
 <template>
   <el-container class="viewtasks" style="height: 100vh">
     <el-container>
+
       <el-header>
         <div class="logo">
           <el-button class="logobutton" type="text">TaskIt</el-button>
         </div>
         <div class="options">
-          <el-button class="logout" color="#ccbfff" @click="onLogOut()"
-            >Logout</el-button
-          >
+          <el-button class="logout" color="#ccbfff" @click="onLogOut()">
+            Logout
+          </el-button>
         </div>
         <div class="avatar">
           <el-avatar :size="40" :src="circleUrl"></el-avatar>
         </div>
-        <div class="username">email123@email.email</div>
+        <div class="username">{{ username }}</div>
       </el-header>
+
       <el-container>
         <el-aside width="300px">
           <div class="card">
@@ -26,9 +28,9 @@
           <div class="maincard">
             <span>Current Task List</span>
             <el-divider content-position="center">o</el-divider>
-            <el-button class="addtaskbutton" circle @click="drawer = true"
-              >+</el-button
-            >
+            <el-button class="addtaskbutton" circle @click="add_task_drawer = true">
+              +
+            </el-button>
             <el-table
               :data="tableData"
               height= "55vh"
@@ -36,20 +38,18 @@
               border
               row-style="color:black"
               header-row-style="color:#9277ff"
-              
             >
-              <el-table-column prop="taskName" label="Task Name" />
-              <el-table-column prop="priority" sortable label="Priority" />
-              <el-table-column prop="length" sortable label="Length" />
-              <el-table-column prop="category" label="Category" />
-              <el-table-column prop="state" label="State">
-                
-              </el-table-column>
+              <el-table-column prop="description" label="Description" />
+              <el-table-column prop="due_date" sortable label="Due Date" />
+              <el-table-column prop="estimated_duration" sortable label="Duration" />
+              <el-table-column prop="weight" sortable label="Weight" />
+              <el-table-column prop="state" label="State" />
+              
               <el-table-column fixed="right" label="Operations" >
               <template #default = "scope">
-                <el-button size="small" @click="drawer2 = true; onEditTask()"
-                  >Edit</el-button
-                >
+                <el-button size="small" @click="edit_drawer = true; onEditTask()">
+                  Edit
+                </el-button>
                 <el-popconfirm
                   confirm-button-text="OK"
                   cancel-button-text="No, Thanks"
@@ -63,19 +63,17 @@
                   <el-button
                     size="small"
                     type="danger"
-                    @click="handleDelete(scope.$index, scope.row)"
-                    >Delete</el-button
-                  >
+                    @click="handleDelete(scope.$index, scope.row)">
+                    Delete
+                  </el-button>
                 </template>
                 </el-popconfirm>
-                
               </template>
             </el-table-column>
             </el-table>
             
-            
             <el-drawer
-              v-model="drawer"
+              v-model="add_task_drawer"
               title="I am the title"
               :with-header="false"
             >
@@ -101,59 +99,58 @@
 
                 <el-row>
                   <el-label class="required" for="taskName"
-                    ><b>Task Name</b></el-label
+                    ><b>Task Description</b></el-label
                   >
                 </el-row>
                 <el-row>
                   <input
                     type="taskName"
-                    v-model="taskName"
-                    placeholder="Enter Task Name"
+                    v-model="task_description"
+                    placeholder="Enter Task Description"
                     required
                   />
                 </el-row>
                 <el-row>
-                  <label class="required" for="pswd"><b>Task Priority</b></label>
+                  <label class="required" for="pswd"><b>Task Due Date</b></label>
                 </el-row>
                 <el-row>
-                  <input
-                    type="taskName"
-                    v-model="priority"
-                    placeholder="Enter Task Priority"
-                    required
-                  />
+                  <el-date-picker
+                    v-model="task_due_date"
+                    type="datetime"
+                    placeholder="Select date and time"
+                    style = "height: 45px; width: 600px; background-color: #EEEEEE; padding-top: 7px"
+                  >
+                  </el-date-picker>
                 </el-row>
 
 
                 <el-row>
-                  <label class="required" for="pswd"><b>Task Length</b></label>
+                  <label class="required" for="pswd"><b>Task Duration</b></label>
                 </el-row>
                 <el-row>
                   <input
                     type="taskLength"
-                    v-model="length"
-                    placeholder="Enter Task Length"
+                    v-model="task_duration"
+                    placeholder="Enter Task Duration"
                     required
                   />
                 </el-row>
 
                 <el-row>
                   <label class="required" for="pswd-repeat"
-                    ><b>Task Category</b></label
+                    ><b>Task Weight</b></label
                   >
                 </el-row>
                 <el-row>
                   <input
                     type="taskCategory"
-                    v-model="category"
-                    placeholder="Enter Task Category"
+                    v-model="task_weight"
+                    placeholder="Enter Task Weight"
                     required
                   />
                 </el-row>
 
-                <div v-if="passwordError" class="error">
-                  {{ passwordError }}
-                </div>
+                
                 <hr />
 
                 <div>
@@ -161,7 +158,7 @@
                     type="submit"
                     class="submit"
                     style="border-radius: 10px; width: 30%"
-                    @click = "onAddTask(taskName,priority,length,category)"
+                    @click = "onAddTask()"
                   >
                     Add Task
                   </el-button>
@@ -169,7 +166,7 @@
               </el-form>
             </el-drawer>
             <el-drawer
-              v-model="drawer2"
+              v-model="edit_drawer"
               title="I am the title2"
               :with-header="false"
             >
@@ -221,22 +218,38 @@
   import axios from 'axios'
 
   const axios_instance = axios.create({
-  baseURL: process.env.VUE_APP_BACKEND_URL,
+  baseURL: "http://localhost:8000",
   });
 
   export default {
       name: 'Tasks',
       data () {
           return {
-              taskName: '',
-              priority: '',
-              length: '',
-              category: '',
+              tasktest: {
+                description: "sleep",
+                due_datetime:"2022-02-26T01:34:41+00:00",
+                estimated_duration: "03:00:00",
+                weight: "10000"
+              },
+              task_params : {
+                description: "",
+                due_datetime: "",
+                estimated_duration: "",
+                weight: ""
+              },
+              logintest: {
+                email: "john2@smith.com",
+                password: "johnpassword"
+              },
+              task_description: '',
+              task_due_date: '',
+              task_duration: '',
+              task_weight: '',
               state: '',
               value: '',
-              test: '',
-              drawer: false,
-              drawer2: false,
+              username: '',
+              add_task_drawer: false,
+              edit_drawer: false,
               options: [{
                 value: 'toDo',
                 label: 'To Do',
@@ -251,52 +264,40 @@
               }
               
               ],
-              tableData: [
-                {taskName: "Reach Masters", priority: "1", length:"2 months", category: "mental health", state: "in progress"},
-                {taskName: "Eat Food", priority: "2", length:"1 month", category: "mental health", state: "in progress"},
-                {taskName: "School", priority: "3", length:"2 months", category: "!mentalhealth", state: "in progress"},
-                {taskName: "Sleep", priority: "no", length:"2 months", category: "mental health", state: "in progress"},
-                {taskName: "Reach Masters", priority: "1", length:"2 months", category: "mental health", state: "in progress"},
-                {taskName: "Eat Food", priority: "2", length:"1 month", category: "mental health", state: "in progress"},
-                {taskName: "School", priority: "3", length:"2 months", category: "!mentalhealth", state: "in progress"},
-                {taskName: "Sleep", priority: "no", length:"2 months", category: "mental health", state: "in progress"},
-                {taskName: "Reach Masters", priority: "1", length:"2 months", category: "mental health", state: "in progress"},
-                {taskName: "Eat Food", priority: "2", length:"1 month", category: "mental health", state: "in progress"},
-                {taskName: "School", priority: "3", length:"2 months", category: "!mentalhealth", state: "in progress"},
-                {taskName: "Sleep", priority: "no", length:"2 months", category: "mental health", state: "in progress"}
+              tableData: [{description: "Reach Masters", due_date: "2/25/2022", estimated_duration:"2 months", weight: "5", state: "in progress"},
                 ],
-              value1: '',
-              tableDataReal: []
           }
       },
       created: function () {
-        // axios.get('/view_all_tasks/')
-        // .then(response => {
-        //   this.tableData = response.data
-        // })
-        // .catch(e => {
-        //   alert(e + " bruh")
-
-        // })
+        axios_instance
+          .post("/accounts/login/", this.logintest)
+          
+        axios_instance
+          .get("/api/tasks/")
+          .then(response => {
+            this.tableData = response.data
+          })
       },
       methods: {
         onLogOut() {
           axios_instance
-          .post("/logout")
-          .then(
-            window.location.href = '../test'
-          )
+          .get("/api/tasks/")
+          
         },
-        onAddTask(name,prio,length,cate) {
-          this.tableData.push({taskName: name, priority: prio, length: length, category: cate, state: "To Do"})
-          axios.post('/addTask/')
+        onAddTask() {
+          this.task_params.description = this.task_description
+          this.task_params.due_datetime = this.task_due_date
+          this.task_params.estimated_duration = this.task_duration
+          this.task_params.weight = this.task_weight
+          axios_instance
+            .post('/api/tasks/', this.task_params)
             .then(alert("Task Added Successfully"))
         },
         onDeleteTask: function(id, name) {
           this.test = name
           this.tableData.splice(id,1)
           axios.post('/addTask/')
-            .then(alert(this.test + " Deleted Successfully!"))
+            .then(alert("Task Deleted Successfully!"))
         },
         onEditTask() {
           this.test = ''
@@ -315,6 +316,7 @@
   }
   .viewtasks .el-header {
     position: relative;
+    
     background-color: #9277ff;
     height: 10vh;
     color: var(--el-text-color-primary);
