@@ -51,7 +51,7 @@ def step_impl(context, name):
     assert_that(context.response.status_code, equal_to(201))
     assert_that(context.error, equal_to(none()))
     task = Task.objects.filter(name=name)
-    assert task == EmptyQuerySet
+    assert_that(task, not_none())
 
 @then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"')
 def step_impl(context,email,name,due_date,estimated_duration,weight):
@@ -77,14 +77,6 @@ def step_impl(context):
 def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(403))
-
-@then(u'The error message "{error}" shall be displayed')
-def step_impl(context, error):
-    e = context.error
-    if context.error is not None:
-        assert_that(e.message, equal_to(error))
-    else:
-        assert_that(error in context.response.data)
 
 @then(u'The message "{message}" shall be displayed')
 def step_impl(context,message):
