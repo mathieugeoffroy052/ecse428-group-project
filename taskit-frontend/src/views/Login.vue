@@ -84,19 +84,23 @@
       onLogIn() {
         if (this.logInForm.email != "" && this.logInForm.password != "") {
           axios_instance
-            .post("/accounts/login", {
-              username: this.logInForm.email,
-              password: this.logInForm.password,
+            .post("/accounts/login/", {
+              "username": this.logInForm.email,
+              "password": this.logInForm.password,
             })
-            .then(() => {
+            .then(response => {
+              localStorage.setItem("token", response.data.token)
+              localStorage.setItem("expiry", response.data.expiry)
               this.logInForm.email = "";
               this.logInForm.password = "";
+              if (response.data.expiry != "") {
+                window.location.href = "../tasks"
+              }
             })
-            .catch((e) => {
-              this.error = e.response.data.message;
+            .catch(() => {
+              this.error = "Invalid log in attempt";
               this.showError = true;
             })
-            .then((window.location.href = "../tasks"));
         } else {
           this.error = "Please fill in all input fields to login.";
           this.showError = true;
