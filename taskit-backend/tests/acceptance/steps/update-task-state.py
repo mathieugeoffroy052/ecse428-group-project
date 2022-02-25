@@ -11,6 +11,11 @@ def step_impl(context,email):
     client = context.test.client
     client.login(email=email, password=password)
 
+@given('All users are logged out')
+def step_impl(context):
+    client = context.test.client
+    client.logout()
+
 @when(u'The user attempts to update the status of the task "{name}" to "{new_state}"')
 def step_impl(context, name, new_state):
     context.name = name
@@ -68,3 +73,7 @@ def step_impl(context, error):
         assert_that(e.message, equal_to(error))
     else:
         assert_that(error in context.response.data)
+
+@then(u'user shall be at login page')
+def step_impl(context, error):
+    pass
