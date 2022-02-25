@@ -38,5 +38,5 @@ def step_impl(context):
 
 @then(u'the view function will return the tasks "{task_names}"')
 def step_impl(context, task_names):
-    user = User.objects.get(task_names=task_names)
-    assert_that(user.tasks, equal_to(task_names))
+    tasks = Task.objects.get(task_names=task_names)
+    assert_that(tasks, equal_to(task_names))
