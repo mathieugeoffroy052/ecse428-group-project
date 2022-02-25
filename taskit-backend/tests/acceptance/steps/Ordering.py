@@ -1,7 +1,10 @@
 from tasklists.models import Task
+from tasklists.views import task_list
 from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
+
+tasks = []
 
 @given(u'The following users exist')
 def step_impl(context):
@@ -23,46 +26,89 @@ def step_impl(context,email):
     request_data = {
         'email': email if email != None else '',
     }
-    # try:
-        # #this does not exist yet, might have to change method name later
-        # context.response = context.client.post(reverse('CreateTask_request'), request_data)
-        # print(context.response)
-    # except BaseException as e:
-    #     context.error = e
+
+    tasks = task_list(request_data)
+    
 
 @then(u'The ordering by "Priority" will be "{order}"')
 def step_impl(context,order):
 
     order = order.split(", ")
-    #call view_all tasks 
-    # try:
-    #     #this does not exist yet, might have to change method name later
-    #     context.response = context.client.post(reverse('CreateTask_request'), request_data)
-    #     print(context.response)
-    # except BaseException as e:
-    #     context.error = e
+
+    try:
+        #this does not exist yet, might have to change method name later
+        if len(order) != len(tasks):
+            raise ValueError('The number of tasks returned does not match the number of user tasks')
+        ordered_tasks = []
+        current_smallest = None
+        for t in tasks:
+            for x in range(len(tasks)):
+                if(current_smallest == None):
+                    ordered_tasks.append(t)
+                    current_smallest = t
+                elif (t.priority >= ordered_tasks[x].priority):
+                    ordered_tasks.insert(x,t)
+                elif (t.priority < current_smallest.priority):
+                    ordered_tasks.append(t)
+                    current_smallest = t
+
+        for x in range(len(tasks)):
+            if(ordered_tasks[x].description != order[x]):
+                raise ValueError('Incorrect order by priority')
+    except ValueError as e:
+        context.error = e
 
 
 @then(u'The ordering by "Importance" will be "{order}"')
 def step_impl(context,order):
 
     order = order.split(", ")
-    #call view_all tasks 
-    # try:
-    #     #this does not exist yet, might have to change method name later
-    #     context.response = context.client.post(reverse('CreateTask_request'), request_data)
-    #     print(context.response)
-    # except BaseException as e:
-    #     context.error = e
+
+    try:
+        #this does not exist yet, might have to change method name later
+        if len(order) != len(tasks):
+            raise ValueError('The number of tasks returned does not match the number of user tasks')
+        ordered_tasks = []
+        current_smallest = None
+        for t in tasks:
+            for x in range(len(tasks)):
+                if(current_smallest == None):
+                    ordered_tasks.append(t)
+                elif (t.importance >= ordered_tasks[x].importance):
+                    ordered_tasks.insert(x,t)
+                elif (t.priority < current_smallest.importance):
+                    ordered_tasks.append(t)
+                    current_smallest = t
+
+        for x in range(len(tasks)):
+            if(ordered_tasks[x].description != order[x]):
+                raise ValueError('Incorrect order by importance')
+    except ValueError as e:
+        context.error = e
 
 @then(u'The ordering by "Urgency" will be "{order}"')
 def step_impl(context,order):
 
     order = order.split(", ")
-    #call view_all tasks 
-    # try:
-    #     #this does not exist yet, might have to change method name later
-    #     context.response = context.client.post(reverse('CreateTask_request'), request_data)
-    #     print(context.response)
-    # except BaseException as e:
-    #     context.error = e
+
+    try:
+        #this does not exist yet, might have to change method name later
+        if len(order) != len(tasks):
+            raise ValueError('The number of tasks returned does not match the number of user tasks')
+        ordered_tasks = []
+        current_smallest = None
+        for t in tasks:
+            for x in range(len(tasks)):
+                if(current_smallest == None):
+                    ordered_tasks.append(t)
+                elif (t.priority >= ordered_tasks[x].urgency):
+                    ordered_tasks.insert(x,t)
+                elif (t.priority < current_smallest.urgency):
+                    ordered_tasks.append(t)
+                    current_smallest = t
+
+        for x in range(len(tasks)):
+            if(ordered_tasks[x].description != order[x]):
+                raise ValueError('Incorrect order by urgency')
+    except ValueError as e:
+        context.error = e
