@@ -1,7 +1,8 @@
 from tasklists.models import Task
 from behave import *
+from django.db.models.query import EmptyQuerySet
 from django.urls import reverse
-from hamcrest import assert_that, equal_to, not_none, is_none
+from hamcrest import assert_that, equal_to, not_none, none
 import optional
 
 optional.init_opt_()
@@ -48,11 +49,9 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
 @then(u'the task "{name}" shall exist in the system')
 def step_impl(context, name):
     assert_that(context.response.status_code, equal_to(201))
-    assert_that(context.error, equal_to(is_none))
-    
+    assert_that(context.error, equal_to(none()))
     task = Task.objects.filter(name=name)
-    assert_that(task, not_none())
-
+    assert task == EmptyQuerySet
 
 @then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"')
 def step_impl(context,email,name,due_date,estimated_duration,weight):
@@ -79,16 +78,19 @@ def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(403))
 
-@then(u'The error message "Log in to edit your tasks." shall be displayed')
-def step_impl(context):
+@then(u'The error message "{error}" shall be displayed')
+def step_impl(context, error):
     e = context.error
-    assert_that(e, not_none())
-    assert_that(e.message, equal_to("Login in to edit your tasks."))
+    if context.error is not None:
+        assert_that(e.message, equal_to(error))
+    else:
+        assert_that(error in context.response.data)
 
-@then(u'The message "Task created succesfully." shall be displayed')
-def step_impl(context):
-    assert_that(context.response.status_code, equal_to(201))
-    assert_that(context.error, equal_to(is_none()))
+@then(u'The message "{message}" shall be displayed')
+def step_impl(context,message):
+    msg = context.response.data
+    assert_that(msg, not_none())
+    assert_that(message in context.response.data)
 
 @then(u'an error message "{error}" shall be raised')
 def step_impl(context, error):
