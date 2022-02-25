@@ -159,10 +159,9 @@ class TaskListTestCase(TestCase):
                 "weight": 100,
             }
         )
-        try:
-            task.get_urgency()
-        except TypeError as e:
-            self.assertEqual(str(e), "missing due_datetime")
+        result = task.get_urgency()
+        self.assertEqual(result[0], False)
+        self.assertEqual(result[1], None)
 
     def test_get_urgency_no_estimated_duration(self):
         task = Task.objects.create(**{
@@ -173,10 +172,9 @@ class TaskListTestCase(TestCase):
                 "weight": 100,
             }
         )
-        try:
-            task.get_urgency()
-        except TypeError as e:
-            self.assertEqual(str(e), "missing estimated_duration")
+        result = task.get_urgency()
+        self.assertEqual(result[0], False)
+        self.assertEqual(result[1], None)
 
     def test_get_weight_normal(self):
         task = Task.objects.create(**{
@@ -188,7 +186,7 @@ class TaskListTestCase(TestCase):
             }
         )
         result = task.get_weight()
-        self.assertAlmostEqual(result, math.atan(100) *2/math.pi) # comparing floats
+        self.assertAlmostEqual(result, math.atan(100/100) *2/math.pi) # comparing floats
     
     def test_get_weight_missing_weight(self):
         task = Task.objects.create(**{
@@ -199,12 +197,9 @@ class TaskListTestCase(TestCase):
                 "weight": None,
             }
         )
-        try:
-            task.get_weight()
-        except TypeError as e:
-            self.assertEqual(str(e), "missing estimated_weight")
+        self.assertEqual(task.get_weight(), None)
 
-    def test_get_importance_normal(self):
+    def test_get_priority_normal(self):
         task = Task.objects.create(**{
                 "owner" : self.user,
                 "description": "eat chocolate",
@@ -213,12 +208,12 @@ class TaskListTestCase(TestCase):
                 "weight": 100,
             }
         )
-        result = task.get_importance()
-        expected_result = math.atan(100) *2/math.pi * 2/3 + math.atan(1/2) *2/math.pi
+        result = task.get_priority()
+        expected_result = math.atan(100/100) *2/math.pi * 2/3 + math.atan(1/2) *2/math.pi
         self.assertEqual(result[0], False)
         self.assertAlmostEqual(round(result[1],3), round(expected_result,3)) # slight time difference
     
-    def test_get_importance_late(self):
+    def test_get_priority_late(self):
         task = Task.objects.create(**{
                 "owner" : self.user,
                 "description": "eat chocolate",
@@ -227,7 +222,7 @@ class TaskListTestCase(TestCase):
                 "weight": 100,
             }
         )
-        result = task.get_importance()
-        expected_result = math.atan(100) *2/math.pi * 2/3 + math.atan(2*1) *2/math.pi
+        result = task.get_priority()
+        expected_result = math.atan(100/100) *2/math.pi * 2/3 + math.atan(2*1) *2/math.pi
         self.assertEqual(result[0], True)
         self.assertAlmostEqual(round(result[1],3), round(expected_result,3)) # slight time difference

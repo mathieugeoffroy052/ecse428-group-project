@@ -14,11 +14,9 @@ class Task(models.Model):
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
 
-    def get_urgency(self):
-        if not self.due_datetime:
-            raise TypeError("missing due_datetime")
-        if not self.estimated_duration:
-            raise TypeError("missing estimated_duration")
+    def get_urgency(self) -> (bool, float | None):
+        if not self.due_datetime or not self.estimated_duration:
+            return (False, None)
         remaining_timedelta = self.due_datetime - datetime.now(timezone.utc)
         remaining_hours = remaining_timedelta.days * 24 + remaining_timedelta.seconds / (60 * 60) # hours seems to be the most accurate depiction and most used case
         estimated_hours = self.estimated_duration.days * 24 + self.estimated_duration.seconds / (60 * 60)
@@ -26,11 +24,11 @@ class Task(models.Model):
         urgency = -1 * estimated_hours * remaining_hours if late else estimated_hours / remaining_hours # the later it is, the more urgent, and the sooner it is due, the more urgent
         return (late, math.atan(urgency) * 2/math.pi)
 
-    def get_weight(self):
+    def get_weight(self) -> float | None:
         if not self.weight:
-            raise TypeError("missing estimated_weight")
-        return math.atan(self.weight) * 2/math.pi
+            return None
+        return math.atan(self.weight/100) * 2/math.pi
 
-    def get_importance(self):
+    def get_priority(self) -> (bool, float | None):
         urgency = self.get_urgency()
         return (urgency[0], urgency[1] + self.get_weight() * 2/3) # urgency carries more weight than weight
