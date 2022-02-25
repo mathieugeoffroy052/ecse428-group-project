@@ -5,7 +5,6 @@ Feature: Calculate task Urgency
     Given The following users exist:
       | email                        | password      |
       | obi-wan.kenobi@gar.gov       | jedimaster123 |
-      | anakin.skywalker@gar.gov     | jediknight456 |
     Given The following tasks exist:
       | email                    | task_name                        | due_date   | estimated_duration | weight | state       |
       | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-25 | 1576800            | 8      | Not started |
@@ -18,14 +17,20 @@ Feature: Calculate task Urgency
 
   Scenario: Successfully order tasks (normal flow)
     Given "<email>" is logged in
-    When The user attempts to order their tasks by "<Urgency>"
+    When The user attempts to order their tasks by "Urgency"
     Then The tasks shall be ordered
     And Then the ordering will be <"Train Anakin, die, Train Luke">
-
+    
+    Examples:
+      | email                        | password      |
+      | obi-wan.kenobi@gar.gov       | jedimaster123 |
+  
   Scenario: Successfully order tasks (alternate flow)
     Given "<email>" is logged in
     When The user attempts to order their tasks by "<Importance>"
     Then The tasks shall be ordered
     And Then the ordering will be <"Train Anakin, Train Luke, die">
 
- 
+    Examples:
+    | email                        | password      |
+    | obi-wan.kenobi@gar.gov       | jedimaster123 |
