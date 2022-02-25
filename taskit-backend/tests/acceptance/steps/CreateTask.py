@@ -66,13 +66,6 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
 def step_impl(context):
     assert len(Task.objects) == 5
 
-@then(u'The message "Task created successfully." shall be displayed')
-def step_impl(context):
-#I genuinely do not know if this works
-    msg = context.response.data
-    assert_that(msg, not_none())
-    assert_that("Task created successfully." in context.response.data)
-
 @then(u'no new task shall be created')
 def step_impl(context):
     if context.response != None:
