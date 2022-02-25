@@ -23,8 +23,18 @@ from django.contrib import messages
 @permission_classes([AllowAny])
 def sign_up(request):
     request = request.data
+    if "email" not in request or request["email"].strip():
+        return Response(
+            {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
+        )
+    if "password" not in request or request["password"].strip():
+        return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
+    if User.objects.filter(email=request["email"]):
+        return Response(
+            {"This email address is already in use."}, status=status.HTTP_409_CONFLICT
+        )
     User.objects.create_user(request["email"], request["password"])
-    return Response({"success": "user created"}, status=status.HTTP_201_CREATED)
+    return Response({"user created"}, status=status.HTTP_201_CREATED)
 
 
 # Login upon request
