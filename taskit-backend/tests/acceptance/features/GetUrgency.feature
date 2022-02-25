@@ -10,10 +10,6 @@ Feature: Calculate task Urgency
       | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-25 | 1576800            | 8      | Not started |
       | obi-wan.kenobi@gar.gov   | die                              | 2022-05-07 | 5                  | 7      | Complete    |
       | obi-wan.kenobi@gar.gov   | Train Luke                       | 2022-04-25 | 45                 | 5      | Not started |
-    Given The following types of ordering exists:
-      | type                     |
-      | Urgency                  |
-      | Importance               |
 
   Scenario: Successfully order tasks (normal flow)
     Given "<email>" is logged in
