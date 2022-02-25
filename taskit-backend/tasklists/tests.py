@@ -3,6 +3,9 @@ from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 from tasklists.models import Task
 from django.urls import reverse
+from datetime import datetime, timedelta, date, timezone
+import math
+
 import json
 
 User = get_user_model()
@@ -120,3 +123,111 @@ class TaskListTestCase(TestCase):
                 }
             ],
         )
+    
+    def test_get_urgency_normal(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": 100,
+            }
+        )
+        result = task.get_urgency()
+        self.assertEqual(result[0], False)
+        self.assertAlmostEqual(round(result[1],3), round(math.atan(1/2) *2/math.pi, 3)) # comparing floats
+    
+    def test_get_urgency_late(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) - timedelta(hours=2),
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": 100,
+            }
+        )
+        result = task.get_urgency()
+        self.assertEqual(result[0], True)
+        self.assertAlmostEqual(round(result[1], 3), round(math.atan(1 * 2) *2/math.pi,3) ) # slight time difference
+    
+    def test_get_urgency_no_due_date(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": None,
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": 100,
+            }
+        )
+        try:
+            task.get_urgency()
+        except TypeError as e:
+            self.assertEqual(str(e), "missing due_datetime")
+
+    def test_get_urgency_no_estimated_duration(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) - timedelta(hours=2),
+                "estimated_duration": None,
+                "weight": 100,
+            }
+        )
+        try:
+            task.get_urgency()
+        except TypeError as e:
+            self.assertEqual(str(e), "missing estimated_duration")
+
+    def test_get_weight_normal(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": 100,
+            }
+        )
+        result = task.get_weight()
+        self.assertAlmostEqual(result, math.atan(100) *2/math.pi) # comparing floats
+    
+    def test_get_weight_missing_weight(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": None,
+            }
+        )
+        try:
+            task.get_weight()
+        except TypeError as e:
+            self.assertEqual(str(e), "missing estimated_weight")
+
+    def test_get_importance_normal(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": 100,
+            }
+        )
+        result = task.get_importance()
+        expected_result = math.atan(100) *2/math.pi * 2/3 + math.atan(1/2) *2/math.pi
+        self.assertEqual(result[0], False)
+        self.assertAlmostEqual(round(result[1],3), round(expected_result,3)) # slight time difference
+    
+    def test_get_importance_late(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) - timedelta(hours=2),
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": 100,
+            }
+        )
+        result = task.get_importance()
+        expected_result = math.atan(100) *2/math.pi * 2/3 + math.atan(2*1) *2/math.pi
+        self.assertEqual(result[0], True)
+        self.assertAlmostEqual(round(result[1],3), round(expected_result,3)) # slight time difference
