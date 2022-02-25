@@ -2,9 +2,6 @@ from tasklists.models import Task
 from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
-import optional
-
-optional.init_opt_()
 
 @given(u'The following users exist')
 def step_impl(context):
