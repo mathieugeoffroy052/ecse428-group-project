@@ -19,7 +19,7 @@ Feature: Calculate task Urgency
     Given "<email>" is logged in
     When The user attempts to order their tasks by "Urgency"
     Then The tasks shall be ordered
-    And Then the ordering will be <"Train Anakin, die, Train Luke">
+    And Then the ordering will be "Train Anakin, die, Train Luke"
     
     Examples:
       | email                        | password      |
@@ -27,9 +27,9 @@ Feature: Calculate task Urgency
   
   Scenario: Successfully order tasks (alternate flow)
     Given "<email>" is logged in
-    When The user attempts to order their tasks by "<Importance>"
+    When The user attempts to order their tasks by "Importance"
     Then The tasks shall be ordered
-    And Then the ordering will be <"Train Anakin, Train Luke, die">
+    And Then the ordering will be "Train Anakin, Train Luke, die"
 
     Examples:
     | email                        | password      |
