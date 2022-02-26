@@ -35,6 +35,17 @@ def sign_up(request):
 
 # Login
 class Login(KnoxLoginView):
+    """
+    Request: {
+        "username": "johnsmith@email.com",
+        "password": "password123"
+    }
+
+    Response: {
+        "expiry": "2022-02-27T04:14:53.984918-05:00",
+        "token": "262bc7d283f698efdddd8d33dcea918dcb6ce05d1a4db7e052010b444083fb98"
+    }
+    """
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
