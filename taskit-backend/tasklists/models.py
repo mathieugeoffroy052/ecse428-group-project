@@ -31,4 +31,6 @@ class Task(models.Model):
 
     def get_priority(self) -> (bool, float | None):
         urgency = self.get_urgency()
+        if not urgency[1] or not self.get_weight():
+            return (urgency[0], None)
         return (urgency[0], urgency[1] + self.get_weight() * 2/3) # urgency carries more weight than weight

@@ -188,7 +188,7 @@ class TaskListTestCase(TestCase):
         result = task.get_weight()
         self.assertAlmostEqual(result, math.atan(100/100) *2/math.pi) # comparing floats
     
-    def test_get_weight_missing_weight(self):
+    def test_get_weight_no_weight(self):
         task = Task.objects.create(**{
                 "owner" : self.user,
                 "description": "eat chocolate",
@@ -226,3 +226,31 @@ class TaskListTestCase(TestCase):
         expected_result = math.atan(100/100) *2/math.pi * 2/3 + math.atan(2*1) *2/math.pi
         self.assertEqual(result[0], True)
         self.assertAlmostEqual(round(result[1],3), round(expected_result,3)) # slight time difference
+    
+
+    def test_get_priority_no_urgency(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": None,
+                "estimated_duration": None,
+                "weight": 100,
+            }
+        )
+        result = task.get_priority()
+        self.assertEqual(result[0], False)
+        self.assertAlmostEqual(result[1], None) # slight time difference
+    
+    def test_get_priority_no_weight(self):
+        task = Task.objects.create(**{
+                "owner" : self.user,
+                "description": "eat chocolate",
+                "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
+                "estimated_duration": timedelta(days=0, hours=1),
+                "weight": None,
+            }
+        )
+        result = task.get_priority()
+        self.assertEqual(result[0], False)
+        self.assertAlmostEqual(result[1], None) # slight time difference
+    
