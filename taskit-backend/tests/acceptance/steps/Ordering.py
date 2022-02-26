@@ -33,7 +33,7 @@ def step_impl(context,order):
     order = order.split(", ")
     ordered_tasks = sorted(context.tasks, key=lambda t: t.priority) 
     for x in range(len(context.tasks)):
-        assert_that(ordered_tasks[x].description, order[x])
+        assert_that(ordered_tasks[x].description, equal_to(order[x]))
 
 
 @then(u'The ordering by "Importance" will be "{order}"')
@@ -43,7 +43,7 @@ def step_impl(context,order):
     ordered_tasks = sorted(context.tasks, key=lambda t: t.importance)
                 
     for x in range(len(context.tasks)):
-        assert_that(ordered_tasks[x].description, order[x])
+        assert_that(ordered_tasks[x].description, equal_to(order[x]))
 
 @then(u'The ordering by "Urgency" will be "{order}"')
 def step_impl(context,order):
@@ -52,4 +52,4 @@ def step_impl(context,order):
     ordered_tasks = sorted(context.tasks, key=lambda t: t.urgency)             
 
     for x in range(len(context.tasks)):
-        assert_that(ordered_tasks[x].description, order[x])
+        assert_that(ordered_tasks[x].description, equal_to(order[x]))
