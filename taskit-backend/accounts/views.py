@@ -54,4 +54,3 @@ class Login(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(Login, self).post(request, format=None)
-
