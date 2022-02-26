@@ -1,5 +1,6 @@
 from accounts.models import User
 from black import assert_equivalent
+from datetime import datetime, timedelta
 from tasklists.models import Task
 from tasklists.views import task_list
 from behave import *
@@ -15,7 +16,10 @@ def step_impl(context):
 @given(u'The following tasks exist')
 def step_impl(context):
     for row in context.table:
-        task = Task.objects.create_task(row['email'], row['task_name'],row['due_date'], row['estimated_duration'], row['weight'], row['state'])
+        owner = User.objects.filter(email=row['email']).first()
+        due_date = datetime.fromisoformat(row['due_date'])
+        duration = timedelta(minutes=int(row['estimated_duration']))
+        task = Task.objects.create_task(owner, row['task_name'], due_date, duration, row['weight'], row['state'])
         task.save()
 
 @given(u'"{email}" is logged in')
