@@ -18,8 +18,8 @@ def step_impl(context):
 @given(u'The following tasks exist')
 def step_impl(context):
     for row in context.table:
-        context.task = Task.objects.create_task(row['email'], row['task_name'],row['due_date'], row['estimated_duration'], row['weight'], row['state'])
-        context.task.save()
+        task = Task.objects.create_task(row['email'], row['task_name'],row['due_date'], row['estimated_duration'], row['weight'], row['state'])
+        task.save()
 
 #******************* need method name *************
 @when(u'The user "{email}" attempts to order their tasks')
