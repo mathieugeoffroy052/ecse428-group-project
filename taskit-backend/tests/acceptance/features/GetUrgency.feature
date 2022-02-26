@@ -12,12 +12,8 @@ Feature: Calculate task Priority
       | obi-wan.kenobi@gar.gov   | Train Luke                       | 2022-04-25 | 45                 | 2      | Not started |
 
   Scenario: Successfully order tasks (normal flow)
-    Given "<email>" is logged in
-    When The user "<email>" attempts to order their tasks
+    Given "obi-wan.kenobi@gar.gov" is logged in
+    When The user "obi-wan.kenobi@gar.gov" attempts to order their tasks
     Then the ordering by "Priority" will be "Train Anakin, die, Train Luke"
     Then the ordering by "Importance" will be "Train Anakin, die, Train Luke"
     Then the ordering by "Urgency" will be "Train Anakin, Train Luke, die"
-    
-    Examples:
-      | email                        | password      |
-      | obi-wan.kenobi@gar.gov       | jedimaster123 |
