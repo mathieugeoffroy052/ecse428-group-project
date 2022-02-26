@@ -1,10 +1,11 @@
-from accounts.models import User
+from django.contrib.auth import get_user_model
 from behave import given, then, when
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
 
 import optional
 
+User = get_user_model()
 optional.init_opt_()
 
 @given(u'The following users exist')
