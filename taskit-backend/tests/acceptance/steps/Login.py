@@ -1,4 +1,3 @@
-from accounts.models import User
 from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, none

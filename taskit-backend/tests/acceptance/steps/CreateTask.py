@@ -1,6 +1,5 @@
 from tasklists.models import Task
 from behave import *
-from django.db.models.query import EmptyQuerySet
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none, none
 import optional
@@ -25,7 +24,7 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
     }
     try:
         #this does not exist yet, might have to change method name later
-        context.response = context.client.post(reverse('CreateTask_request'), request_data)
+        context.response = context.client.post(reverse('task_list'), request_data)
         print(context.response)
     except BaseException as e:
         context.error = e
@@ -41,7 +40,7 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
     }
     try:
         #this does not exist yet, might have to change method name later
-        context.response = context.client.post(reverse('CreateTask_request'), request_data)
+        context.response = context.client.post(reverse('task_list'), request_data)
         print(context.response)
     except BaseException as e:
         context.error = e
