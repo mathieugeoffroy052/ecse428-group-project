@@ -5,10 +5,6 @@ from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
 
-@before_all
-def before_all(context):
-    context.tasks = []
-
 @given(u'The following users exist')
 def step_impl(context):
     for row in context.table:
@@ -35,9 +31,6 @@ def step_impl(context,email):
 def step_impl(context,order):
 
     order = order.split(", ")
-
-    ordered_tasks = []
-    current_smallest = None
     ordered_tasks = sorted(context.tasks, key=lambda t: t.priority) 
     for x in range(len(context.tasks)):
         assert_equivalent(ordered_tasks[x].description, order[x])
@@ -47,9 +40,6 @@ def step_impl(context,order):
 def step_impl(context,order):
 
     order = order.split(", ")
-
-    ordered_tasks = []
-    current_smallest = None
     ordered_tasks = sorted(context.tasks, key=lambda t: t.importance)
                 
     for x in range(len(context.tasks)):
@@ -59,7 +49,6 @@ def step_impl(context,order):
 def step_impl(context,order):
 
     order = order.split(", ")
-    ordered_tasks = []
     ordered_tasks = sorted(context.tasks, key=lambda t: t.urgency)             
 
     for x in range(len(context.tasks)):
