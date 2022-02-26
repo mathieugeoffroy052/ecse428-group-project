@@ -1,3 +1,4 @@
+
 from rest_framework.decorators import api_view
 from accounts.models import User
 from rest_framework.response import Response
@@ -19,8 +20,18 @@ from django.contrib.auth import login, logout
 @permission_classes([AllowAny])
 def sign_up(request):
     request = request.data
+    if "email" not in request or request["email"].strip():
+        return Response(
+            {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
+        )
+    if "password" not in request or request["password"].strip():
+        return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
+    if User.objects.filter(email=request["email"]):
+        return Response(
+            {"This email address is already in use."}, status=status.HTTP_409_CONFLICT
+        )
     User.objects.create_user(request["email"], request["password"])
-    return Response({"success": "user created"}, status=status.HTTP_201_CREATED)
+    return Response({"user created"}, status=status.HTTP_201_CREATED)
 
 # Login
 class Login(KnoxLoginView):
@@ -32,12 +43,4 @@ class Login(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(Login, self).post(request, format=None)
-
-# Logout 
-@api_view(["POST"])
-def logout_view(request):
-    logout(request)
-    return Response(
-        {"success": "User successfully logged out"}, status=status.HTTP_200_OK
-    )
 
