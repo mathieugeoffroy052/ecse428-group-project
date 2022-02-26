@@ -290,13 +290,16 @@
           this.task_params.estimated_duration = this.task_duration
           this.task_params.weight = this.task_weight
           axios_instance
-            .post('/api/tasks/', this.task_params)
+            .post('/api/tasks/', this.task_params, {
+              headers: {
+                'Authorization': Token 'localStorage.getItem("token")'
+                }})
             .then(alert("Task Added Successfully"))
         },
         onDeleteTask: function(id, name) {
           this.test = name
           this.tableData.splice(id,1)
-          axios.post('/addTask/')
+          axios.post('/api/delete_tasks/')
             .then(alert("Task Deleted Successfully!"))
         },
         onEditTask() {
