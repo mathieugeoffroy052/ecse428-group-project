@@ -12,8 +12,8 @@ from django.contrib.auth import login
 
 """
 {
-	"username": "johnsmith@email.com",
-	"password": "password123"
+    "email": "john@email.com",
+	"password": "johnpassword"
 }
 """
 @api_view(["POST"])
