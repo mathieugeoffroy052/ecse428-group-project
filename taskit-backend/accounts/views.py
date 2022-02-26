@@ -8,11 +8,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
-from django.contrib.auth import login, logout
+from django.contrib.auth import login
 
 """
 {
-	"email": "johnsmith@email.com",
+	"username": "johnsmith@email.com",
 	"password": "password123"
 }
 """
