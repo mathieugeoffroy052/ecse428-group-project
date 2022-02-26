@@ -72,10 +72,9 @@ const axios_instance = axios.create({
 export default{
     data() {
         return {
-        signUpForm: {
-          email: "",
-          password: "",
-        },
+        signUpForm: {},
+        email: "",
+        password: "",
         pswdRepeat: "",
         error: "",
         passwordError: false,
@@ -83,15 +82,15 @@ export default{
     },
     methods: {
         handleSubmit() {
-          this.signUpForm.email = this.email
-          this.signUpForm.password = this.password
           if(this.password === this.pswdRepeat){
+            this.signUpForm.email = this.email
+            this.signUpForm.password = this.password
             this.passwordError = '';
             console.log("Sending email: " + this.signUpForm.email + " and password: " + this.signUpForm.password);
 
             axios_instance.post("/accounts/signup", this.signUpForm)
               .then(resp => console.log(resp.data))
-              //.then(window.location.href = '../home')
+              .then(window.location.href = '../')
               .catch(errors => console.log(errors))
           } 
           else{
