@@ -90,7 +90,6 @@
             })
             .then(response => {
               localStorage.setItem("token", response.data.token)
-              localStorage.setItem("expiry", response.data.expiry)
               this.logInForm.email = "";
               this.logInForm.password = "";
               if (response.data.expiry != "") {
