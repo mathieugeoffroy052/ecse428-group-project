@@ -24,10 +24,10 @@ def private(request):
 }
 """
 @api_view(["PUT"])
-def update_state(request, key):
+def update_state(request, pk):
     request = request.data
     try:
-        t = Task.objects.get(pk=key)
+        t = Task.objects.get(pk=pk)
         s = TaskSerializer(t, data={'state': request["state"]}, partial=True)
         if s.is_valid():
             s.save()
