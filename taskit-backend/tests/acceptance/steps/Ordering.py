@@ -32,10 +32,6 @@ def step_impl(context,email):
 def step_impl(context,email):
     try:
         context.response = context.client.get(reverse('task_list'))
-        print(f"Response: {context.response}")
-        print(f"Response data: {json.loads(json.dumps(context.response.data))}")
-        for d in context.response.data:
-            print(f"Data: {d}")
     except BaseException as e:
         context.error = e
 
@@ -45,10 +41,10 @@ def step_impl(context,order):
     assert_that(context.response.data, not_none())
     order = order.split(", ")
     tasks = json.loads(json.dumps(context.response.data))  # wtf
-    ordered_tasks = sorted(tasks, key=lambda t: float(t['priority']))
+    ordered_tasks = sorted(tasks, key=lambda t: float(t['priority']), reverse=True)
     assert_that(len(ordered_tasks), equal_to(len(order)))
-    for x in range(len(ordered_tasks)):
-        assert_that(ordered_tasks[x].description, equal_to(order[x]))
+    actual_task_descriptions = [t['description'] for t in ordered_tasks]
+    assert_that(actual_task_descriptions, equal_to(order))
 
 @then(u'The ordering by "Importance" will be "{order}"')
 def step_impl(context,order):
@@ -56,10 +52,11 @@ def step_impl(context,order):
     assert_that(context.response.data, not_none())
     order = order.split(", ")
     tasks = json.loads(json.dumps(context.response.data))
-    ordered_tasks = sorted(tasks, key=lambda t: float(t['importance']))
+    ordered_tasks = sorted(tasks, key=lambda t: float(t['importance']), reverse=True)
     assert_that(len(ordered_tasks), equal_to(len(order)))
-    for x in range(len(ordered_tasks)):
-        assert_that(ordered_tasks[x].description, equal_to(order[x]))
+    assert_that(len(ordered_tasks), equal_to(len(order)))
+    actual_task_descriptions = [t['description'] for t in ordered_tasks]
+    assert_that(actual_task_descriptions, equal_to(order))
 
 @then(u'The ordering by "Urgency" will be "{order}"')
 def step_impl(context,order):
@@ -67,7 +64,8 @@ def step_impl(context,order):
     assert_that(context.response.data, not_none())
     order = order.split(", ")
     tasks = json.loads(json.dumps(context.response.data))
-    ordered_tasks = sorted(tasks, key=lambda t: float(t['urgency']))
+    ordered_tasks = sorted(tasks, key=lambda t: float(t['urgency']), reverse=True)
     assert_that(len(ordered_tasks), equal_to(len(order)))
-    for x in range(len(ordered_tasks)):
-        assert_that(ordered_tasks[x].description, equal_to(order[x]))
+    assert_that(len(ordered_tasks), equal_to(len(order)))
+    actual_task_descriptions = [t['description'] for t in ordered_tasks]
+    assert_that(actual_task_descriptions, equal_to(order))
