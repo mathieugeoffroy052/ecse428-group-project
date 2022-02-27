@@ -15,7 +15,7 @@ def step_impl(context):
         
 @given(u'"{email}" is logged in')
 def step_impl(context,email):
-    user = User.objects.filter(email=email)
+    user = User.objects.filter(email=email).first()
     client = context.client
     client.force_login(user)
 
