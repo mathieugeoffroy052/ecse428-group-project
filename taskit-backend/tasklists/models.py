@@ -15,7 +15,7 @@ class Task(models.Model):
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
 
-    def get_urgency(self) -> (bool, float | None):
+    def get_urgency(self) -> (tuple[bool, float] | None):
         if not self.due_datetime or not self.estimated_duration:
             return (False, None)
         remaining_timedelta = self.due_datetime - datetime.now(timezone.utc)
@@ -39,7 +39,7 @@ class Task(models.Model):
             return None
         return math.atan(self.weight / 100) * 2 / math.pi
 
-    def get_priority(self) -> (bool, float | None):
+    def get_priority(self) -> (tuple[bool, float] | None):
         urgency = self.get_urgency()
         if not urgency[1] or not self.get_weight():
             return (urgency[0], None)
