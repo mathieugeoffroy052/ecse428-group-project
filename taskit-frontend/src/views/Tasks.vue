@@ -14,7 +14,7 @@
         <div class="avatar">
           <el-avatar :size="40" :src="circleUrl"></el-avatar>
         </div>
-        <div class="username">{{ this.username }}</div>
+        <div class="username"> example </div>
       </el-header>
 
       <el-container>
@@ -46,11 +46,11 @@
               <el-table-column prop="state" sortable label="State" />
               <el-table-column fixed="right" label="">
               <template #default = "scope">
-                <el-button color = "#FF8989" size="small" circle @click="onEditState(scope.$index, 'Not Started')">
+                <el-button color = "#FF8989" size="small" circle @click="onEditState(scope.$index, 'NS')">
                 </el-button>
-                <el-button color = "#FCFF89" size="small" circle @click="onEditState(scope.$index, 'In Progress')">
+                <el-button color = "#FCFF89" size="small" circle @click="onEditState(scope.$index, 'IP')">
                 </el-button>
-                <el-button color = "#9CFF89" size="small" circle @click="onEditState(scope.$index, 'Complete')">
+                <el-button color = "#9CFF89" size="small" circle @click="onEditState(scope.$index, 'C')">
                 </el-button>
               </template>
               </el-table-column>
@@ -62,7 +62,7 @@
                 <el-popconfirm
                   confirm-button-text="OK"
                   cancel-button-text="No, Thanks"
-                  @confirm="onDeleteTask(scope.$index, scope.row.taskName)"
+                  @confirm="onDeleteTask(scope.$index)"
                   :icon="InfoFilled"
                   icon-color="red"
                   title="Are you sure to delete this task?"
@@ -114,7 +114,7 @@
                 <el-row>
                   <input
                     type="taskName"
-                    v-model="task_description"
+                    v-model="task_params.description"
                     placeholder="Enter Task Description"
                     required
                   />
@@ -124,7 +124,7 @@
                 </el-row>
                 <el-row style ="padding-top: 15px">
                   <el-date-picker
-                    v-model="task_due_date"
+                    v-model="task_params.due_datetime"
                     type="datetime"
                     placeholder="Select date and time"
                     style = "height: 45px; width: 600px; background-color: #EEEEEE; padding-top: 7px"
@@ -137,7 +137,7 @@
                   <label class="required" for="pswd"><b>Task Duration</b></label>
                 </el-row>
                 <el-row>
-                  <el-time-picker v-model="task_duration" placeholder="Enter Task Duration"
+                  <el-time-picker v-model="task_params.estimated_duration" placeholder="Enter Task Duration"
                   value-format = "hh:mm:ss"
                   style = "height: 45px; width: 600px; background-color: #EEEEEE; padding-top: 7px"
                   >
@@ -150,7 +150,7 @@
                   >
                 </el-row>
                 <el-row>
-                  <el-input-number v-model="task_weight" :min="1"/>
+                  <el-input-number v-model="task_params.weight" :min="1"/>
                 </el-row>
                 <hr />
                 <div>
@@ -179,30 +179,6 @@
               :with-header="false"
             >
             <el-row justify="center">
-              <span>Edit State</span>
-              <el-divider content-position="center">o</el-divider>
-                <el-select v-model="state" class="m-2" placeholder="Select" size="large">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    >
-                    </el-option>
-                  </el-select>
-                  </el-row>
-                  <el-row justify="center">
-                  <el-button
-                    type="submit"
-                    class="submit"
-                    style="border-radius: 10px; width: 30%; height: 30px"
-                    @click = "onEditState(state)"
-                    
-                  >
-                    Edit State
-                  </el-button>
-                  </el-row>
-            <el-row justify="center">
               <span>Edit Task</span>
               <el-divider content-position="center">o</el-divider>
               </el-row>
@@ -226,12 +202,7 @@
       name: 'Tasks',
       data () {
           return {
-              tasktest: {
-                description: "sleep",
-                due_datetime:"2022-02-26T01:34:41+00:00",
-                estimated_duration: "03:00:00",
-                weight: "10000"
-              },
+              
               task_params : {
                 description: "",
                 due_datetime: "",
@@ -239,16 +210,13 @@
                 weight: "",
                 state: "NS"
               },
-              logintest: {
-                email: "john2@smith.com",
-                password: "johnpassword"
+              task_state : {
+                state: ""
               },
-              task_description: '',
-              task_due_date: '',
-              task_duration: '',
-              task_weight: '',
+              delete_task : {
+                id: ""
+              },
               state: '',
-              value: '',
               username: '',
               add_task_drawer: false,
               edit_drawer: false,
@@ -281,8 +249,8 @@
             this.tableData = response.data
           })
           .catch(() => {
-              this.error = "You are not logged in!";
-              this.showError = true;
+              alert("You are not logged in!")
+              window.location.href = "../login"
             })
       },
       methods: {
@@ -296,11 +264,7 @@
           window.location.href = "../login"
         },
         onAddTask() {
-          if(this.task_description != "" && this.task_due_date != "" && this.task_duration != "" && this.task_weight != ""){
-            this.task_params.description = this.task_description
-            this.task_params.due_datetime = this.task_due_date
-            this.task_params.estimated_duration = this.task_duration
-            this.task_params.weight = this.task_weight
+          if(this.task_params.task_description != ""){
             axios_instance
               .post('/api/tasks/', this.task_params, {
                 headers: {
@@ -311,29 +275,40 @@
                 location.reload(true)
                 })
               .catch(() => {
-                this.error = "Description must not be empty";
+                this.error = "Error creating task";
                 this.showError = true;
               })
           } else {
-            this.error = "Please fill in all fields!";
+            this.error = "Tasks must have a description!";
             this.showError = true;
           }
         },
-        onDeleteTask: function(id, name) {
-          this.test = name
-          this.tableData.splice(id,1)
-          axios.delete('/api/tasks/')
-            .then(alert("Task Deleted Successfully!"))
+        onDeleteTask: function(id) {
+          var new_id = this.tableData[id]["id"]
+          this.delete_task.id = new_id;
+          axios_instance
+          .delete('/api/remove_task/', this.delete_task,
+          {
+          headers: {
+            'Authorization': 'Token ' + localStorage.getItem("token")
+            }})
+            .then(alert("Deleted Successfully!"))
+          location.reload(true)
         },
         onEditTask() {
           this.test = ''
         },
         onEditState: function (id, state) {
-          this.state = state
-          this.username = this.tableData[id]["state"]
-          this.tableData[id]["state"] = state
-          
-          alert("Edited Successfully!")
+          this.task_state.state = state
+          var new_id = this.tableData[id]["id"]
+          axios_instance
+          .put('/api/update-state/' + new_id, this.task_state, 
+          {
+          headers: {
+            'Authorization': 'Token ' + localStorage.getItem("token")
+            }})
+            .then(alert("Edited Successfully!"))
+          location.reload(true)
         }
       }
   }
