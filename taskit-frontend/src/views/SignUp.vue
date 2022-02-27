@@ -89,23 +89,23 @@ export default{
             console.log("Sending email: " + this.signUpForm.email + " and password: " + this.signUpForm.password);
 
             axios_instance.post("/accounts/signup", this.signUpForm)
-              .then(resp => console.log(resp.data))
+              .then(
+                axios_instance.post("/accounts/login/", {
+                "username": this.signUpForm.email,
+                "password": this.signUpForm.password,
+                })
+                  .then(response => {
+                    localStorage.setItem("token", response.data.token)
+                    if (response.data.expiry != "") {
+                      window.location.href = "../tasks"
+                    }
+                  })
+                  .catch(() => {
+                    this.error = "Invalid log in attempt";
+                    this.showError = true;
+                  })
+              )
               .catch(errors => console.log(errors))
-            
-            axios_instance.post("/accounts/login/", {
-              "username": this.signUpForm.email,
-              "password": this.signUpForm.password,
-            })
-              .then(response => {
-                localStorage.setItem("token", response.data.token)
-                if (response.data.expiry != "") {
-                  window.location.href = "../tasks"
-                }
-              })
-              .catch(() => {
-                this.error = "Invalid log in attempt";
-                this.showError = true;
-              })
           } 
           else{
             this.passwordError = 'Passwords don\'t match'
