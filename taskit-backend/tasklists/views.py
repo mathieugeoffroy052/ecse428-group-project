@@ -38,3 +38,25 @@ def task_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+"""
+"/api/update-state/<pk>"
+    where pk = primary key (or id) of task
+
+{
+	"state": "IP"
+}
+"""
+@api_view(["PUT"])
+def update_state(request, pk):
+    request = request.data
+    try:
+        t = Task.objects.get(pk=pk)
+        s = TaskSerializer(t, data={'state': request["state"]}, partial=True)
+        if s.is_valid():
+            s.save()
+            return Response(s.data, status=status.HTTP_200_OK)
+        else:
+            return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Task.DoesNotExist:
+        return Response('Exception: Data Not Found', status=status.HTTP_400_BAD_REQUEST)
