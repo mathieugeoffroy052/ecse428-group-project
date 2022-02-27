@@ -12,8 +12,6 @@ class Task(models.Model):
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
-
-    late = models.BooleanField(default=None, null=True)
     
     class TaskState(models.TextChoices):
         NotStarted = 'NS', 'Not Started'

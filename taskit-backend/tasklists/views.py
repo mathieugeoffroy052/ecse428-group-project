@@ -14,26 +14,6 @@ def public(request):
 def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
 
-"""
-{
-	"pk": "52",
-	"late": True
-}
-"""
-
-@api_view(["POST"])
-def update_late_flag(request):
-    request = request.data
-    try:
-        t = Task.objects.get(pk=request["pk"])
-        s = TaskSerializer(t, data={'late': request["late"]}, partial=True)
-        if s.is_valid():
-            s.save()
-            return Response(s.data, status=status.HTTP_200_OK)
-        else:
-            return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
-    except Task.DoesNotExist:
-        return Response('Exception: Data Not Found', status=status.HTTP_400_BAD_REQUEST)
 
 """
 {
