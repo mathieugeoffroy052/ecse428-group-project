@@ -292,8 +292,10 @@
               headers: {
                 'Authorization': 'Token ' + localStorage.getItem("token")
                 }})
-          localStorage.removeItem("token")
-          window.location.href = "../login"
+            .then(() => {
+              localStorage.removeItem("token");
+              window.location.href = "../login";
+            })
         },
         onAddTask() {
           if(this.task_description != "" && this.task_due_date != "" && this.task_duration != "" && this.task_weight != ""){
