@@ -14,7 +14,7 @@
         <div class="avatar">
           <el-avatar :size="40" :src="circleUrl"></el-avatar>
         </div>
-        <div class="username">{{ username }}</div>
+        <div class="username">{{ this.username }}</div>
       </el-header>
 
       <el-container>
@@ -40,11 +40,20 @@
               header-row-style="color:#9277ff"
             >
               <el-table-column prop="description" label="Description" />
-              <el-table-column prop="due_date" sortable label="Due Date" />
+              <el-table-column prop="due_datetime" sortable label="Due Date" />
               <el-table-column prop="estimated_duration" sortable label="Duration" />
               <el-table-column prop="weight" sortable label="Weight" />
-              <el-table-column prop="state" label="State" />
-              
+              <el-table-column prop="state" sortable label="State" />
+              <el-table-column fixed="right" label="">
+              <template #default = "scope">
+                <el-button color = "#FF8989" size="small" circle @click="onEditState(scope.$index, 'Not Started')">
+                </el-button>
+                <el-button color = "#FCFF89" size="small" circle @click="onEditState(scope.$index, 'In Progress')">
+                </el-button>
+                <el-button color = "#9CFF89" size="small" circle @click="onEditState(scope.$index, 'Complete')">
+                </el-button>
+              </template>
+              </el-table-column>
               <el-table-column fixed="right" label="Operations" >
               <template #default = "scope">
                 <el-button size="small" @click="edit_drawer = true; onEditTask()">
@@ -113,46 +122,37 @@
                 <el-row>
                   <label class="required" for="pswd"><b>Task Due Date</b></label>
                 </el-row>
-                <el-row>
+                <el-row style ="padding-top: 15px">
                   <el-date-picker
                     v-model="task_due_date"
                     type="datetime"
                     placeholder="Select date and time"
                     style = "height: 45px; width: 600px; background-color: #EEEEEE; padding-top: 7px"
+                    value-format="YYYY-MM-DDThh:mm"
                   >
                   </el-date-picker>
                 </el-row>
 
-
-                <el-row>
+                <el-row style ="padding-top: 15px">
                   <label class="required" for="pswd"><b>Task Duration</b></label>
                 </el-row>
                 <el-row>
-                  <input
-                    type="taskLength"
-                    v-model="task_duration"
-                    placeholder="Enter Task Duration"
-                    required
-                  />
+                  <el-time-picker v-model="task_duration" placeholder="Enter Task Duration"
+                  value-format = "hh:mm:ss"
+                  style = "height: 45px; width: 600px; background-color: #EEEEEE; padding-top: 7px"
+                  >
+                  </el-time-picker>
                 </el-row>
 
-                <el-row>
+                <el-row style ="padding-top: 15px">
                   <label class="required" for="pswd-repeat"
                     ><b>Task Weight</b></label
                   >
                 </el-row>
                 <el-row>
-                  <input
-                    type="taskCategory"
-                    v-model="task_weight"
-                    placeholder="Enter Task Weight"
-                    required
-                  />
+                  <el-input-number v-model="task_weight" :min="1"/>
                 </el-row>
-
-                
                 <hr />
-
                 <div>
                   <el-button
                     type="submit"
@@ -162,6 +162,14 @@
                   >
                     Add Task
                   </el-button>
+                </div>
+                <div style="width: 395px; margin: auto; padding: 20px">
+                  <el-alert
+                    v-if="showError"
+                    type="error"
+                    @close="this.showError = false"
+                    >{{ error }}</el-alert
+                  >
                 </div>
               </el-form>
             </el-drawer>
@@ -173,7 +181,6 @@
             <el-row justify="center">
               <span>Edit State</span>
               <el-divider content-position="center">o</el-divider>
-              
                 <el-select v-model="state" class="m-2" placeholder="Select" size="large">
                     <el-option
                       v-for="item in options"
@@ -195,17 +202,11 @@
                     Edit State
                   </el-button>
                   </el-row>
-              
-            
-            
             <el-row justify="center">
               <span>Edit Task</span>
               <el-divider content-position="center">o</el-divider>
               </el-row>
-                
-               
               <el-divider content-position="center">o</el-divider>
-           
             </el-drawer>
           </div>
         </el-main>
@@ -218,7 +219,7 @@
   import axios from 'axios'
 
   const axios_instance = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: process.env.VUE_APP_BACKEND_URL,
   });
 
   export default {
@@ -235,7 +236,8 @@
                 description: "",
                 due_datetime: "",
                 estimated_duration: "",
-                weight: ""
+                weight: "",
+                state: "NS"
               },
               logintest: {
                 email: "john2@smith.com",
@@ -250,67 +252,90 @@
               username: '',
               add_task_drawer: false,
               edit_drawer: false,
+              error: "",
+              showError: false,
               options: [{
-                value: 'toDo',
-                label: 'To Do',
+                value: 'NS',
+                label: 'Not Started',
               },
               {
-                value: 'inProgress',
+                value: 'IP',
                 label: 'In Progress',
               },
               {
-                value: 'finished',
-                label: 'Finished',
+                value: 'CP',
+                label: 'Complete',
               }
-              
               ],
-              tableData: [{description: "Reach Masters", due_date: "2/25/2022", estimated_duration:"2 months", weight: "5", state: "in progress"},
-                ],
+              tableData: [],
           }
       },
       created: function () {
+        this.username = localStorage.getItem("token")
         axios_instance
-          .post("/accounts/login/", this.logintest)
-          
-        axios_instance
-          .get("/api/tasks/")
+          .get("/api/tasks/", {
+              headers: {
+                'Authorization': 'Token ' + localStorage.getItem("token")
+                }})
           .then(response => {
             this.tableData = response.data
           })
+          .catch(() => {
+              this.error = "You are not logged in!";
+              this.showError = true;
+            })
       },
       methods: {
         onLogOut() {
           axios_instance
-          .get("/api/tasks/")
-          
+            .post('/accounts/logout/', {
+              headers: {
+                'Authorization': 'Token ' + localStorage.getItem("token")
+                }})
+          localStorage.removeItem("token")
+          window.location.href = "../login"
         },
         onAddTask() {
-          this.task_params.description = this.task_description
-          this.task_params.due_datetime = this.task_due_date
-          this.task_params.estimated_duration = this.task_duration
-          this.task_params.weight = this.task_weight
-          axios_instance
-            .post('/api/tasks/', this.task_params, {
-              headers: {
-                'Authorization': Token 'localStorage.getItem("token")'
-                }})
-            .then(alert("Task Added Successfully"))
+          if(this.task_description != "" && this.task_due_date != "" && this.task_duration != "" && this.task_weight != ""){
+            this.task_params.description = this.task_description
+            this.task_params.due_datetime = this.task_due_date
+            this.task_params.estimated_duration = this.task_duration
+            this.task_params.weight = this.task_weight
+            axios_instance
+              .post('/api/tasks/', this.task_params, {
+                headers: {
+                  'Authorization': 'Token ' + localStorage.getItem("token")
+                  }})
+              .then(response => {
+                this.error = response,
+                location.reload(true)
+                })
+              .catch(() => {
+                this.error = "Description must not be empty";
+                this.showError = true;
+              })
+          } else {
+            this.error = "Please fill in all fields!";
+            this.showError = true;
+          }
         },
         onDeleteTask: function(id, name) {
           this.test = name
           this.tableData.splice(id,1)
-          axios.post('/api/delete_tasks/')
+          axios.delete('/api/tasks/')
             .then(alert("Task Deleted Successfully!"))
         },
         onEditTask() {
           this.test = ''
         },
-        onEditState: function (state) {
+        onEditState: function (id, state) {
           this.state = state
+          this.username = this.tableData[id]["state"]
+          this.tableData[id]["state"] = state
+          
           alert("Edited Successfully!")
         }
       }
-
   }
 </script>
 <style scoped>
@@ -324,7 +349,6 @@
     height: 10vh;
     color: var(--el-text-color-primary);
   }
-
   .viewtasks .card {
     border-style: solid;
     border-radius: 5px;
@@ -341,7 +365,6 @@
     font-weight: bold;
     color: black;
   }
-
   .viewtasks .maincard {
     border-style: solid;
     border-radius: 5px;
@@ -357,7 +380,6 @@
     font-weight: bold;
     color: black;
   }
-
   .viewtasks .addtaskbutton {
     position: absolute;
     display: inline-flex;
@@ -373,13 +395,11 @@
     right: 8vh;
     bottom: 1vh;
   }
-
   .viewtasks .el-main {
     position: relative;
     background-color: #ffffff;
     height: 90vh;
   }
-
   .viewtasks .el-aside {
     position: relative;
     display: inline-flex;
@@ -388,7 +408,6 @@
     top: 10px;
     color: var(--el-text-color-primary);
   }
-
   .viewtasks .lists {
     position: relative;
     top: 20px;
