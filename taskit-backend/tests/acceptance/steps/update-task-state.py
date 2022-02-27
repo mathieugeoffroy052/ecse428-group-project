@@ -4,6 +4,7 @@ from hamcrest import assert_that, equal_to, is_none
 from accounts.models import User
 from tasklists.models import Task
 import json
+from datetime import datetime
 
 @given(u'The following users exist')
 def step_impl(context):
@@ -23,7 +24,7 @@ def step_impl(context):
     client = context.client
     client.logout()
 
-@when(u'The user attempts to update the status of the task "{name}" to "{new_state}"')
+@when(u'The user attempts to update the status of the task "{description}" to "{new_state}"')
 def step_impl(context):
     try:
         context.response = context.client.post(reverse('update_state'))
@@ -32,7 +33,7 @@ def step_impl(context):
         print(f"Exception: {e}")
         context.error = e
 
-@then(u'the task "{name}" shall be updated to "{new_state}"')
+@then(u'the task "{description}" shall be updated to "{new_state}"')
 def step_impl(context, description, new_state):
     task = Task.objects.get(description=description)
     new_state_obj = json.loads(new_state)
@@ -43,12 +44,15 @@ def step_impl(context, description, new_state):
 @then(u'"{owner}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{new_state}"')
 def step_impl(context,owner,description,due_date,estimated_duration,weight,new_state):
     task = Task.objects.filter(description=description)
-    assert_that(task.owner, equal_to(owner), 'Invalid owner')
-    assert_that(task.description, equal_to(description), 'Invalid description')
-    assert_that(task.due_date, equal_to(due_date), 'Invalid due date')
-    assert_that(task.estimated_duration, equal_to(estimated_duration), 'Invalid estimated duration')
-    assert_that(task.weight, equal_to(weight), 'Invalid weight')
-    assert_that(task.state, equal_to(new_state), 'Could not update to state {new_state}')
+    owner_obj = json.loads(owner)
+    due_date_obj = datetime.strptime(due_date, '%y-%m-%d')
+    new_state_obj = json.loads(new_state)
+    assert_that(task.owner, equal_to(owner_obj), 'Owner does not match')
+    assert_that(task.description, equal_to(description), 'Description does not match')
+    assert_that(task.due_date, equal_to(due_date_obj), 'Due date does not match')
+    assert_that(task.estimated_duration, equal_to(int(estimated_duration)), 'Duration does not match')
+    assert_that(task.weight, equal_to(int(weight)), 'Weight does not match')
+    assert_that(task.state, equal_to(new_state_obj), 'Could not update to state {new_state}')
 
 
 @then(u'The message "Task created succesfully." shall be displayed')
@@ -61,15 +65,19 @@ def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(403))
 
-@then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{old_state}"')
-def step_impl(context,email,name,due_date,estimated_duration,weight,old_state):
-    task = Task.objects.filter(name=name)
-    assert task.email == email
-    assert task.name == name
-    assert task.due_date == due_date
-    assert task.estimated_duration == estimated_duration
-    assert task.weight == weight
-    assert task.state == old_state
+@then(u'"{owner}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{old_state}"')
+def step_impl(context,owner,description,due_date,estimated_duration,weight,old_state):
+    task = Task.objects.filter(description=description)
+    owner_obj = json.loads(owner)
+    due_date_obj = datetime.strptime(due_date, '%y-%m-%d')
+    old_state_obj = json.loads(old_state)
+    assert_that(task.owner, equal_to(owner_obj), 'Owner does not match')
+    assert_that(task.description, equal_to(description), 'Description does not match')
+    assert_that(task.due_date, equal_to(due_date_obj), 'Due date does not match')
+    assert_that(task.estimated_duration, equal_to(int(estimated_duration)), 'Duration does not match')
+    assert_that(task.weight, equal_to(int(weight)), 'Weight does not match')
+    assert_that(task.state, equal_to(old_state_obj), 'Could not update to state {old_state}')
+    assert_that(context.response.status_code, equal_to(403))
 
 @then(u'an error message "{error}" shall be displayed')
 def step_impl(context, error):
