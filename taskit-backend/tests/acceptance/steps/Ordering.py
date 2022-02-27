@@ -26,7 +26,7 @@ def step_impl(context):
 @given(u'"{email}" is logged in')
 def step_impl(context,email):
     user = User.objects.filter(email=email).first()
-    context.client.force_login(user)
+    context.client.force_authenticate(user)
 
 @when(u'The user "{email}" attempts to order their tasks')
 def step_impl(context,email):
