@@ -18,11 +18,11 @@ def private(request):
 @api_view(["GET", "POST", "DELETE"])
 def task_list(request):
     if request.method == "GET":
-        list_tasks(request)
+        return list_tasks(request)
     elif request.method == "POST":
-        post_task(request)
+        return post_task(request)
     elif request.method == "DELETE":
-        remove_task(request)
+        return remove_task(request)
     else:
         return Response({"error": f"Invalid HTTP method {request.method}"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,6 +60,10 @@ def remove_task(request):
     }
     """
     id = request.data["id"]
-    task = Task.objects.get(id=id)
-    task.delete()
-    return Response({"success": "Task deleted"}, status=status.HTTP_200_OK)
+    tasks = Task.objects.filter(id=id)
+    if tasks:
+        task = tasks.first()
+        task.delete()
+        return Response({"success": "Task deleted"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)

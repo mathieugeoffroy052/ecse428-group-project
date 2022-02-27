@@ -127,10 +127,7 @@ class TaskListTestCase(TestCase):
         chips_task = Task.objects.create(owner=self.user, description="eat chips")
         response = self.client.delete(reverse("task_list"), {"id": choccy_task.id})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(),
-            {"success": "Task deleted"}
-        )
+        self.assertEqual(response.json(), {"success": "Task deleted"})
 
     def test_deleting_task_without_being_authenticated(self):
         response = self.client.delete(reverse("task_list"), {"id": 42})
@@ -139,6 +136,10 @@ class TaskListTestCase(TestCase):
     def test_deleting_nonexistent_task(self):
         self.client.force_authenticate(user=self.user)
         id = 42
-        Task.objects.delete(id=id)
+        # Make absolutely sure there's no task with the given ID
+        existing_tasks = Task.objects.filter(id=id)
+        if existing_tasks:
+            existing_tasks.first().delete()
         response = self.client.delete(reverse("task_list"), {"id": id})
         self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {"error": "Not found"})
