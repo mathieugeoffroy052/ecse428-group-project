@@ -33,15 +33,11 @@ class TaskListTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(),
-            {
-                "description": "eat chocolate",
-                "due_datetime": "2022-02-25T20:34:41-05:00",
-                "estimated_duration": "03:00:00",
-                "weight": 10000,
-            },
-        )
+        response = response.json()
+        self.assertEqual(response.get("description"), "eat chocolate")
+        self.assertEqual(response.get("due_datetime"), "2022-02-25T20:34:41-05:00")
+        self.assertEqual(response.get("estimated_duration"), "03:00:00")
+        self.assertEqual(response.get("weight"), 10000)
 
     def test_create_task_with_just_a_description(self):
         self.client.force_authenticate(user=self.user)
@@ -55,15 +51,12 @@ class TaskListTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            response.json(),
-            {
-                "description": "eat chocolate",
-                "due_datetime": None,
-                "estimated_duration": None,
-                "weight": None,
-            },
-        )
+        response = response.json()
+        self.assertEqual(response.get("description"), "eat chocolate")
+        self.assertEqual(response.get("due_datetime"), None)
+        self.assertEqual(response.get("estimated_duration"), None)
+        self.assertEqual(response.get("estimated_weight"), None)
+        
 
     def test_create_task_with_a_blank_description(self):
         self.client.force_authenticate(user=self.user)
@@ -112,17 +105,11 @@ class TaskListTestCase(TestCase):
         Task.objects.create(owner=other_user, description="eat toothpaste")
         response = self.client.get(reverse("task_list"))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(),
-            [
-                {
-                    "description": "eat chocolate",
-                    "due_datetime": None,
-                    "estimated_duration": None,
-                    "weight": None,
-                }
-            ],
-        )
+        response = response.json()[0]
+        self.assertEqual(response.get("description"), "eat chocolate")
+        self.assertEqual(response.get("due_datetime"), None)
+        self.assertEqual(response.get("estimated_duration"), None)
+        self.assertEqual(response.get("estimated_weight"), None)
     
     def test_get_urgency_normal(self):
         task = Task.objects.create(**{
@@ -209,7 +196,7 @@ class TaskListTestCase(TestCase):
             }
         )
         result = task.get_priority()
-        expected_result = math.atan(100/100) *2/math.pi * 2/3 + math.atan(1/2) *2/math.pi
+        expected_result = math.atan(100/100) *2/math.pi + math.atan(1/2) *2/math.pi * 2/3
         self.assertEqual(result[0], False)
         self.assertAlmostEqual(round(result[1],3), round(expected_result,3)) # slight time difference
     
@@ -223,7 +210,7 @@ class TaskListTestCase(TestCase):
             }
         )
         result = task.get_priority()
-        expected_result = math.atan(100/100) *2/math.pi * 2/3 + math.atan(2*1) *2/math.pi
+        expected_result = math.atan(100/100) *2/math.pi + math.atan(2*1) *2/math.pi * 2/3
         self.assertEqual(result[0], True)
         self.assertAlmostEqual(round(result[1],3), round(expected_result,3)) # slight time difference
     
