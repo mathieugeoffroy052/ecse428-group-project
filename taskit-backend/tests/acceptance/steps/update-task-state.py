@@ -41,13 +41,13 @@ def step_impl(context, description, new_state):
     assert_that(context.response.status_code, equal_to(201))
     assert_that(context.error, equal_to(None))
 
-@then(u'"{owner}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{new_state}"')
-def step_impl(context,owner,description,due_date,estimated_duration,weight,new_state):
+@then(u'"{user}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{new_state}"')
+def step_impl(context,user,description,due_date,estimated_duration,weight,new_state):
     task = Task.objects.filter(description=description)
-    owner_obj = json.loads(owner)
+    user_obj = json.loads(user)
     due_date_obj = datetime.strptime(due_date, '%y-%m-%d')
     new_state_obj = json.loads(new_state)
-    assert_that(task.owner, equal_to(owner_obj), 'Owner does not match')
+    assert_that(task.owner, equal_to(user_obj), 'Owner does not match')
     assert_that(task.description, equal_to(description), 'Description does not match')
     assert_that(task.due_date, equal_to(due_date_obj), 'Due date does not match')
     assert_that(task.estimated_duration, equal_to(int(estimated_duration)), 'Duration does not match')
@@ -65,13 +65,13 @@ def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(403))
 
-@then(u'"{owner}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{old_state}"')
-def step_impl(context,owner,description,due_date,estimated_duration,weight,old_state):
+@then(u'"{user}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{old_state}"')
+def step_impl(context,user,description,due_date,estimated_duration,weight,old_state):
     task = Task.objects.filter(description=description)
-    owner_obj = json.loads(owner)
+    user_obj = json.loads(user)
     due_date_obj = datetime.strptime(due_date, '%y-%m-%d')
     old_state_obj = json.loads(old_state)
-    assert_that(task.owner, equal_to(owner_obj), 'Owner does not match')
+    assert_that(task.owner, equal_to(user_obj), 'User does not match')
     assert_that(task.description, equal_to(description), 'Description does not match')
     assert_that(task.due_date, equal_to(due_date_obj), 'Due date does not match')
     assert_that(task.estimated_duration, equal_to(int(estimated_duration)), 'Duration does not match')
