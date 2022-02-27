@@ -27,4 +27,11 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+@font-face {
+  font-family: "Noteworthy Light";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Noteworthy Light"),
+    url("../public/fonts/Noteworthy/Noteworthy-Lt.woff") format("woff");
+}
 </style>
