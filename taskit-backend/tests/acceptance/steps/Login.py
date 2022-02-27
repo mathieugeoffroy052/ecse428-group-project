@@ -16,7 +16,7 @@ def step_impl(context):
 @when('The user attempts to log in with email address "{email:opt_?}" and password "{password:opt_?}"')
 def step_when_the_user_attempts_to(context,email,password):
     request_data = {
-        'email': email if email != None else '',
+        'username': email if email != None else '',
         'password': password if password != None else ''
     }
     try:
