@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import NotFound from "../components/NotFound.vue";
 import Tasks from "../views/Tasks.vue";
+import Login from "../views/Login.vue";
 
 
 
@@ -16,7 +17,17 @@ const routes = [
     name: "Task",
     component: Tasks,
   },
-  
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  {
+    path: "/signup",
+    name: "SignUp",
+    component: () =>
+      import("../views/SignUp.vue"),
+  },
   {
     path: "/about",
     name: "About",
