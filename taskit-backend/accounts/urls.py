@@ -5,7 +5,6 @@ from .views import Login
 
 urlpatterns = [
     path("sign_up/", sign_up),
-    path('login/', Login.as_view(), name='login'),
-    path('logout/', knox_views.LogoutView.as_view(), name='logout'),
+    path("login/", Login.as_view(), name="login"),
+    path("logout/", knox_views.LogoutView.as_view(), name="logout"),
 ]
-
