@@ -11,7 +11,8 @@ def step_impl(context):
 
 @given(u'"{email}" is logged in')
 def step_impl(context,email):
-    pass
+    user = User.objects.filter(email=email).first()
+    context.client.force_login(user)
 
 @when(u'"{email}" attempts to log out')
 def step_impl(context,email):
@@ -19,7 +20,7 @@ def step_impl(context,email):
         'email': email if email != None else '',
     }
     try:
-        context.response = context.client.post(reverse('logout_request'), request_data)
+        context.response = context.client.post(reverse('login'), request_data)
         print(context.response)
     except BaseException as e:
         context.error = e

@@ -10,7 +10,7 @@ optional.init_opt_()
 
 @given('All users are logged out')
 def step_impl(context):
-    client = context.test.client
+    client = context.client
     client.logout()
     
 @when('The user attempts to log in with email address "{email:opt_?}" and password "{password:opt_?}"')
@@ -20,7 +20,7 @@ def step_when_the_user_attempts_to(context,email,password):
         'password': password if password != None else ''
     }
     try:
-        context.response = context.client.post(reverse('login_request'), request_data)
+        context.response = context.client.post(reverse('login'), request_data)
         print(context.response)
     except BaseException as e:
         context.error = e
