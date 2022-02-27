@@ -23,9 +23,9 @@ def step_impl(context):
 @when(u'The user "{email}" attempts to create the task "{name:opt_?}", with due date "{due_date:opt_?}", duration "{estimated_duration:opt_?}", and weight "{weight:opt_?}"')
 def step_impl(context,email,name,due_date,estimated_duration,weight):
     request_data = {
-        'email': email if email != None else '',
-        'name': name if name != None else '',
-        'due_date': due_date if due_date != None else '',
+        'user': email if email != None else User.objects.filter(email=email),
+        'description': name if name != None else '',
+        'due_datetime': due_date if due_date != None else '',
         'estimated_duration': estimated_duration if estimated_duration != None else '',
         'weight': weight if weight != None else ''
     }
