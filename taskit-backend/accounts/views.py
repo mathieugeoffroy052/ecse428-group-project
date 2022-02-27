@@ -1,4 +1,3 @@
-from types import NoneType
 from rest_framework.decorators import api_view
 from accounts.models import User
 from rest_framework.response import Response
@@ -43,7 +42,7 @@ def login_request(request):
             email = form.cleaned_data.get("email")
             password = form.cleaned_data.get("password")
             user = authenticate(email=email, password=password)
-            if user is not NoneType:
+            if user is not None:
                 login(request, user)
                 messages.info(request, f"Successfully logged in as {email}")
                 return redirect("main:Home")
