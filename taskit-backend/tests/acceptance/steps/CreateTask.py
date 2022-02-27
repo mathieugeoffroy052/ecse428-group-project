@@ -1,16 +1,23 @@
 from tasklists.models import Task
+from accounts.models import User
 from behave import *
+from datetime import datetime, timedelta
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none, none
 import optional
+
 
 optional.init_opt_()
 
 @given(u'The following tasks exist')
 def step_impl(context):
     for row in context.table:
-        #no such thing as create_task, might have to change later
-        task = Task.objects.create_task(row['email'], row['task_name'],row['due_date'], row['estimated_duration'], row['weight'], row['state'])
+
+        owner = User.objects.filter(email=row['email']).first()
+        due_date = datetime.fromisoformat(row['due_date'])
+        duration = timedelta(minutes=int(row['estimated_duration']))
+
+        task = Task.objects.create_task(owner, row['task_name'], due_date, duration, row['weight'], row['state'])
         task.save()
 
 @when(u'The user "{email}" attempts to create the task "{name:opt_?}", with due date "{due_date:opt_?}", duration "{estimated_duration:opt_?}", and weight "{weight:opt_?}"')
@@ -32,9 +39,9 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
 @when(u'The user attempts to create the task of "{email:opt_?}" called "{name:opt_?}", due date "{due_date:opt_?}, duration "{estimated_duration:opt_?}", and weight "{weight:opt_?}"')
 def step_impl(context,email,name,due_date,estimated_duration,weight):
     request_data = {
-        'email': email if email != None else '',
-        'name': name if name != None else '',
-        'due_date': due_date if due_date != None else '',
+        'user': email if email != None else User.objects.filter(email=email),
+        'description': name if name != None else '',
+        'due_datetime': due_date if due_date != None else '',
         'estimated_duration': estimated_duration if estimated_duration != None else '',
         'weight': weight if weight != None else ''
     }
