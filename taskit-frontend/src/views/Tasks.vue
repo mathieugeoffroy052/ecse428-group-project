@@ -14,7 +14,7 @@
         <div class="avatar">
           <el-avatar :size="40" :src="circleUrl"></el-avatar>
         </div>
-        <div class="username"> example </div>
+        <div class="username">  </div>
       </el-header>
 
       <el-container>
@@ -289,7 +289,7 @@
           var new_id = this.tableData[id]["id"]
           this.delete_task.id = new_id;
           axios_instance
-          .delete('/api/remove_task/', this.delete_task,
+          .delete('/api/tasks/', {data: this.delete_task},
           {
           headers: {
             'Authorization': 'Token ' + localStorage.getItem("token")
