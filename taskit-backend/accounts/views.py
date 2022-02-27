@@ -1,4 +1,3 @@
-
 from rest_framework.decorators import api_view
 from accounts.models import User
 from rest_framework.response import Response
@@ -16,6 +15,8 @@ from django.contrib.auth import login
 	"password": "johnpassword"
 }
 """
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
@@ -33,6 +34,7 @@ def sign_up(request):
     User.objects.create_user(request["email"], request["password"])
     return Response({"user created"}, status=status.HTTP_201_CREATED)
 
+
 # Login
 class Login(KnoxLoginView):
     """
@@ -46,11 +48,12 @@ class Login(KnoxLoginView):
         "token": "262bc7d283f698efdddd8d33dcea918dcb6ce05d1a4db7e052010b444083fb98"
     }
     """
+
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data["user"]
         login(request, user)
         return super(Login, self).post(request, format=None)
