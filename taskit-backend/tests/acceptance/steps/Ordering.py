@@ -40,7 +40,7 @@ def step_impl(context,order):
     assert_that(context.response, not_none())
     assert_that(context.response.data, not_none())
     order = order.split(", ")
-    tasks = json.loads(json.dumps(context.response.data))  # wtf
+    tasks = context.response.data
     ordered_tasks = sorted(tasks, key=lambda t: float(t['priority']), reverse=True)
     assert_that(len(ordered_tasks), equal_to(len(order)))
     actual_task_descriptions = [t['description'] for t in ordered_tasks]
@@ -51,7 +51,7 @@ def step_impl(context,order):
     assert_that(context.response, not_none())
     assert_that(context.response.data, not_none())
     order = order.split(", ")
-    tasks = json.loads(json.dumps(context.response.data))
+    tasks = context.response.data
     ordered_tasks = sorted(tasks, key=lambda t: float(t['importance']), reverse=True)
     assert_that(len(ordered_tasks), equal_to(len(order)))
     assert_that(len(ordered_tasks), equal_to(len(order)))
@@ -63,7 +63,7 @@ def step_impl(context,order):
     assert_that(context.response, not_none())
     assert_that(context.response.data, not_none())
     order = order.split(", ")
-    tasks = json.loads(json.dumps(context.response.data))
+    tasks = context.response.data
     ordered_tasks = sorted(tasks, key=lambda t: float(t['urgency']), reverse=True)
     assert_that(len(ordered_tasks), equal_to(len(order)))
     assert_that(len(ordered_tasks), equal_to(len(order)))
