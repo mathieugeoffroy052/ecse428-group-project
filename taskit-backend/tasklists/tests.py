@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
@@ -99,7 +98,7 @@ class TaskListTestCase(TestCase):
             json.dumps({"description": "eat chocolate"}),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_getting_all_tasks(self):
         self.client.force_authenticate(user=self.user)
