@@ -3,7 +3,6 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import NotFound from "../components/NotFound.vue";
 import Tasks from "../views/Tasks.vue";
-import Login from "../views/Login.vue";
 
 
 
