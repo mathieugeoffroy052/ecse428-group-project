@@ -5,6 +5,7 @@ from accounts.models import User
 class TaskManager(models.Manager):
     def create_task(self, owner, description, due_datetime, estimated_duration, weight, state):
         task = self.create(owner=owner, description=description, due_datetime=due_datetime, estimated_duration=estimated_duration, weight=weight)
+        task.save()
         return task
 
 class Task(models.Model):
