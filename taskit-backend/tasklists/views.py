@@ -16,16 +16,18 @@ def private(request):
 
 
 """
+"/api/update-state/<pk>"
+    where pk = primary key (or id) of task
+
 {
-	"pk": "52",
 	"state": "IP"
 }
 """
-@api_view(["POST"])
-def update_state(request):
+@api_view(["PUT"])
+def update_state(request, key):
     request = request.data
     try:
-        t = Task.objects.get(pk=request["pk"])
+        t = Task.objects.get(pk=key)
         s = TaskSerializer(t, data={'state': request["state"]}, partial=True)
         if s.is_valid():
             s.save()
