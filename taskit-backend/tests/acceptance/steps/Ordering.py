@@ -1,11 +1,12 @@
-from accounts.models import User
-from black import assert_equivalent
 from datetime import datetime, timedelta
+from django.contrib.auth import get_user_model
 import json
 from tasklists.models import Task
 from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
+
+User = get_user_model()
 
 @given(u'The following users exist')
 def step_impl(context):
@@ -44,7 +45,7 @@ def step_impl(context,order):
     assert_that(context.response.data, not_none())
     order = order.split(", ")
     tasks = json.loads(json.dumps(context.response.data))  # wtf
-    ordered_tasks = sorted(tasks, key=lambda t: float(t.get_priority()))
+    ordered_tasks = sorted(tasks, key=lambda t: float(t['priority']))
     assert_that(len(ordered_tasks), equal_to(len(order)))
     for x in range(len(ordered_tasks)):
         assert_that(ordered_tasks[x].description, equal_to(order[x]))
@@ -55,7 +56,7 @@ def step_impl(context,order):
     assert_that(context.response.data, not_none())
     order = order.split(", ")
     tasks = json.loads(json.dumps(context.response.data))
-    ordered_tasks = sorted(tasks, key=lambda t: float(t.get_weight()))
+    ordered_tasks = sorted(tasks, key=lambda t: float(t['importance']))
     assert_that(len(ordered_tasks), equal_to(len(order)))
     for x in range(len(ordered_tasks)):
         assert_that(ordered_tasks[x].description, equal_to(order[x]))
@@ -66,7 +67,7 @@ def step_impl(context,order):
     assert_that(context.response.data, not_none())
     order = order.split(", ")
     tasks = json.loads(json.dumps(context.response.data))
-    ordered_tasks = sorted(tasks, key=lambda t: float(t.get_urgency()))
+    ordered_tasks = sorted(tasks, key=lambda t: float(t['urgency']))
     assert_that(len(ordered_tasks), equal_to(len(order)))
     for x in range(len(ordered_tasks)):
         assert_that(ordered_tasks[x].description, equal_to(order[x]))
