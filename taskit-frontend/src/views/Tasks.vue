@@ -241,7 +241,7 @@
       created: function () {
         this.username = localStorage.getItem("token")
         axios_instance
-          .get("/api/tasks/", {
+          .get("/api/tasks", {
               headers: {
                 'Authorization': 'Token ' + localStorage.getItem("token")
                 }})
@@ -256,7 +256,7 @@
       methods: {
         onLogOut() {
           axios_instance
-            .post('/accounts/logout/', {}, {
+            .post('/accounts/logout', {}, {
               headers: {
                 'Authorization': 'Token ' + localStorage.getItem("token")
                 }})
@@ -268,7 +268,7 @@
         onAddTask() {
           if(this.task_params.task_description != ""){
             axios_instance
-              .post('/api/tasks/', this.task_params, {
+              .post('/api/tasks', this.task_params, {
                 headers: {
                   'Authorization': 'Token ' + localStorage.getItem("token")
                   }})
@@ -289,7 +289,7 @@
           var new_id = this.tableData[id]["id"]
           this.delete_task.id = new_id;
           axios_instance
-          .delete('/api/tasks/', {
+          .delete('/api/tasks', {
             headers: {
             'Authorization': 'Token ' + localStorage.getItem("token")
             },
