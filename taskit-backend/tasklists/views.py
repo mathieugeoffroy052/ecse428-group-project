@@ -4,6 +4,9 @@ from rest_framework import status
 from django.http import HttpResponse
 from tasklists.serializers import TaskSerializer
 from tasklists.models import Task
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework import permissions
 
 
 def public(request):
@@ -15,7 +18,32 @@ def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
 
 
+@api_view(["PUT"])
+def update_state(request, pk):
+    """
+    PUT
+    "/api/update-state/<pk>"
+        where pk = primary key (or id) of task
+
+    {
+        "state": "IP"
+    }
+    """
+    request = request.data
+    try:
+        t = Task.objects.get(pk=pk)
+        s = TaskSerializer(t, data={"state": request["state"]}, partial=True)
+        if s.is_valid():
+            s.save()
+            return Response(s.data, status=status.HTTP_200_OK)
+        else:
+            return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Task.DoesNotExist:
+        return Response("Exception: Data Not Found", status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(["GET", "POST", "DELETE"])
+@permission_classes([AllowAny])
 def task_list(request):
     if request.method == "GET":
         return list_tasks(request)
@@ -24,7 +52,11 @@ def task_list(request):
     elif request.method == "DELETE":
         return remove_task(request)
     else:
-        return Response({"error": f"Invalid HTTP method {request.method}"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": f"Invalid HTTP method {request.method}"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
 
 def list_tasks(request):
     """
@@ -33,6 +65,7 @@ def list_tasks(request):
     tasks = Task.objects.filter(owner=request.user)
     serializer = TaskSerializer(tasks, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 def post_task(request):
     """
@@ -52,13 +85,7 @@ def post_task(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+@permission_classes([AllowAny])
 def remove_task(request):
     """
     DELETE:

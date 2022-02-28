@@ -14,8 +14,22 @@ class Task(models.Model):
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
+    class TaskState(models.TextChoices):
+        NotStarted = 'NS', 'Not Started'
+        InProgress = 'IP', 'In Progress'
+        Completed = 'C', 'Completed'
+    state = models.CharField(default='None', null=True, choices=TaskState.choices, max_length=2)
 
-    def get_urgency(self) -> (tuple[bool, float] | None):
+    class TaskState(models.TextChoices):
+        NotStarted = "NS", "Not Started"
+        InProgress = "IP", "In Progress"
+        Completed = "C", "Completed"
+
+    state = models.CharField(
+        default="None", null=True, choices=TaskState.choices, max_length=2
+    )
+
+    def get_urgency(self):
         if not self.due_datetime or not self.estimated_duration:
             return (False, None)
         remaining_timedelta = self.due_datetime - datetime.now(timezone.utc)
@@ -34,12 +48,12 @@ class Task(models.Model):
         )  # the later it is, the more urgent, and the sooner it is due, the more urgent
         return (late, math.atan(urgency) * 2 / math.pi)
 
-    def get_weight(self) -> float | None:
+    def get_weight(self):
         if not self.weight:
             return None
         return math.atan(self.weight / 100) * 2 / math.pi
 
-    def get_priority(self) -> (tuple[bool, float] | None):
+    def get_priority(self):
         urgency = self.get_urgency()
         if not urgency[1] or not self.get_weight():
             return (urgency[0], None)

@@ -1,10 +1,10 @@
 from django.urls import path
 
-from tasklists.views import public, private, task_list, view_all_tasks
+from tasklists.views import public, private, update_state, task_list
 
 urlpatterns = [
     path("public/", public),
     path("private/", private),
-    path("view_all_tasks/", view_all_tasks),
+    path("update-state/<int:pk>", update_state, name="update_state"),
     path("tasks/", task_list, name="task_list"),
 ]

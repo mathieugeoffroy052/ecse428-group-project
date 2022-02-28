@@ -1,6 +1,8 @@
 """
 behave environment module for acceptance testing taskit project
 """
+
+# from django.test.utils import setup_test_environment
 from django.test import Client
 
 def before_all(context):
