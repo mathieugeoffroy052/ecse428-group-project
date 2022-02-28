@@ -8,11 +8,13 @@ import optional
 User = get_user_model()
 optional.init_opt_()
 
+
 @given('there is no existing account with email address "{email}"')
 def step_impl(context, email):
     for user in User.objects.all():
         if user.email == email:
             user.delete()
+
 
 @when(
     'the user provides a new email address "{email:opt_?}" and a password "{password:opt_?}"'
