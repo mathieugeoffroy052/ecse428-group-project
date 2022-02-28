@@ -20,6 +20,15 @@ class Task(models.Model):
         Completed = 'C', 'Completed'
     state = models.CharField(default='None', null=True, choices=TaskState.choices, max_length=2)
 
+    class TaskState(models.TextChoices):
+        NotStarted = "NS", "Not Started"
+        InProgress = "IP", "In Progress"
+        Completed = "C", "Completed"
+
+    state = models.CharField(
+        default="None", null=True, choices=TaskState.choices, max_length=2
+    )
+
     def get_urgency(self):
         if not self.due_datetime or not self.estimated_duration:
             return (False, None)
