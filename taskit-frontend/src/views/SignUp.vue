@@ -89,22 +89,7 @@ export default{
             console.log("Sending email: " + this.signUpForm.email + " and password: " + this.signUpForm.password);
 
             axios_instance.post("/accounts/signup", this.signUpForm)
-              .then(
-                axios_instance.post("/accounts/login/", {
-                "username": this.signUpForm.email,
-                "password": this.signUpForm.password,
-                })
-                  .then(response => {
-                    localStorage.setItem("token", response.data.token)
-                    if (response.data.expiry != "") {
-                      window.location.href = "../tasks"
-                    }
-                  })
-                  .catch(() => {
-                    this.error = "Invalid log in attempt";
-                    this.showError = true;
-                  })
-              )
+              .then(window.location.href = "../login")
               .catch(errors => console.log(errors))
           } 
           else{
