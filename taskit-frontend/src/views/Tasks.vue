@@ -137,7 +137,7 @@
                   <label class="required" for="pswd"><b>Task Duration</b></label>
                 </el-row>
                 <el-row>
-                  <el-time-picker v-model="task_params.estimated_duration" placeholder="Enter Task Duration"
+                  <el-time-picker arrow-control v-model="task_params.estimated_duration" placeholder="Enter Task Duration"
                   value-format = "hh:mm:ss"
                   style = "height: 45px; width: 600px; background-color: #EEEEEE; padding-top: 7px"
                   >
@@ -246,7 +246,7 @@
                 'Authorization': 'Token ' + localStorage.getItem("token")
                 }})
           .then(response => {
-            this.tableData = response.data
+            this.tableData = response.data.sort((a,b) => (a.priority < b.priority) ? 1 : -1)
           })
           .catch(() => {
               alert("You are not logged in!")
