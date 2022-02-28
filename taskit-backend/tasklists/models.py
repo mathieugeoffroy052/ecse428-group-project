@@ -13,18 +13,14 @@ class Task(models.Model):
     Model for a user-defined task.
     """
     class TaskState(models.TextChoices):
-        NOT_STARTED = 'NS', gettext_lazy('Not Started')
-        IN_PROGRESS = 'IP', gettext_lazy('In Progress')
-        COMPLETE = 'CP', gettext_lazy('Complete')
+        NotStarted = 'NS', 'Not Started'
+        InProgress = 'IP', 'In Progress'
+        Completed = 'C', 'Completed'
+    state = models.CharField(default='None', null=True, choices=TaskState.choices, max_length=2)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
-    state = models.CharField(
-        max_length=2,
-        choices=TaskState.choices,
-        default=TaskState.NOT_STARTED
-    )
 
     objects = TaskManager()
