@@ -81,11 +81,3 @@ def step_impl(context,message):
     msg = context.response.data
     assert_that(msg, not_none())
     assert_that(message in context.response.data)
-
-@then(u'an error message "{error}" shall be raised')
-def step_impl(context, error):
-    e = context.error
-    if context.error is not None:
-        assert_that(e.message, equal_to(error))
-    else:
-        assert_that(error in context.response.data)

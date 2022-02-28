@@ -3,12 +3,6 @@ from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, none
 
-@given(u'The following users exist')
-def step_impl(context):
-    for row in context.table:
-        user = User.objects.create_user(row['email'], row['password'])
-        user.save()
-
 @given(u'"{email}" is logged in')
 def step_impl(context,email):
     user = User.objects.filter(email=email).first()
