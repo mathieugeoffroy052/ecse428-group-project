@@ -10,6 +10,7 @@ from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth import login
 import re
 
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
@@ -27,7 +28,7 @@ def sign_up(request):
             {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
         )
     # Invalid email
-    email_validator_regex = re.compile('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-z]{2,}$')
+    email_validator_regex = re.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-z]{2,}$")
     if not email_validator_regex.match(request["email"]):
         return Response({"Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
     # Missing password
@@ -40,6 +41,7 @@ def sign_up(request):
         )
     User.objects.create_user(request["email"], request["password"])
     return Response({"user created"}, status=status.HTTP_201_CREATED)
+
 
 # Login
 class Login(KnoxLoginView):
