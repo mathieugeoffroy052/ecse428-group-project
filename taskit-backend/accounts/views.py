@@ -11,6 +11,7 @@ from django.contrib.auth import login
 import re
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def sign_up(request):
     """
     {
