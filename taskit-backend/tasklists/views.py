@@ -1,12 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes
 from django.http import HttpResponse
 from tasklists.serializers import TaskSerializer
 from tasklists.models import Task
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework import permissions
 
 
 def public(request):
@@ -43,7 +42,6 @@ def update_state(request, pk):
 
 
 @api_view(["GET", "POST", "DELETE"])
-@permission_classes([AllowAny])
 def task_list(request):
     if request.method == "GET":
         return list_tasks(request)
@@ -84,6 +82,7 @@ def post_task(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @permission_classes([AllowAny])
 def remove_task(request):

@@ -289,11 +289,12 @@
           var new_id = this.tableData[id]["id"]
           this.delete_task.id = new_id;
           axios_instance
-          .delete('/api/tasks/', {data: this.delete_task},
-          {
-          headers: {
+          .delete('/api/tasks/', {
+            headers: {
             'Authorization': 'Token ' + localStorage.getItem("token")
-            }})
+            },
+            data:this.delete_task
+          })
             .then(alert("Deleted Successfully!"))
           location.reload(true)
         },
