@@ -41,7 +41,7 @@ class Task(models.Model):
 
     objects = TaskManager()
 
-    def get_urgency(self) -> (tuple[bool, float] | None):
+    def get_urgency(self):
         if not self.due_datetime or not self.estimated_duration:
             return (False, None)
         remaining_timedelta = self.due_datetime - datetime.now(timezone.utc)
