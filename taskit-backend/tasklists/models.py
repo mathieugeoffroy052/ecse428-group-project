@@ -14,11 +14,15 @@ class Task(models.Model):
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
+
     class TaskState(models.TextChoices):
-        NotStarted = 'NS', 'Not Started'
-        InProgress = 'IP', 'In Progress'
-        Completed = 'C', 'Completed'
-    state = models.CharField(default='None', null=True, choices=TaskState.choices, max_length=2)
+        NotStarted = "NS", "Not Started"
+        InProgress = "IP", "In Progress"
+        Completed = "C", "Completed"
+
+    state = models.CharField(
+        default="None", null=True, choices=TaskState.choices, max_length=2
+    )
 
     class TaskState(models.TextChoices):
         NotStarted = "NS", "Not Started"

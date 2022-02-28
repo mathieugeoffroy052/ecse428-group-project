@@ -10,9 +10,7 @@ from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth import login
 import re
 
-
 @api_view(["POST"])
-@permission_classes([AllowAny])
 def sign_up(request):
     """
     {
@@ -41,7 +39,6 @@ def sign_up(request):
         )
     User.objects.create_user(request["email"], request["password"])
     return Response({"user created"}, status=status.HTTP_201_CREATED)
-
 
 # Login
 class Login(KnoxLoginView):
