@@ -4,7 +4,7 @@ Feature: Sign up for user
 
   Background:
     Given The following users exist:
-      | email                  | password       |
+      | email                        | password      |
       | luke.skywalker@rebellion.com | jediknight457 |
 
   Scenario Outline: Successfully create an account (normal flow)

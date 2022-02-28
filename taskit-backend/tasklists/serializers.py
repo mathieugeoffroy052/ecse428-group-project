@@ -31,8 +31,11 @@ class TaskSerializer(serializers.ModelSerializer):
             "due_datetime",
             "estimated_duration",
             "weight",
+            "state",
             "urgency",
             "importance",
             "late",
             "priority",
+            "state",
+            "id",
         )

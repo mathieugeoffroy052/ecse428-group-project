@@ -1,27 +1,9 @@
-from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
-import json
-from tasklists.models import Task
 from behave import *
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
 
 User = get_user_model()
-
-@given(u'The following users exist')
-def step_impl(context):
-    for row in context.table:
-        user = User.objects.create_user(row['email'], row['password'])
-        user.save()
-
-@given(u'The following tasks exist')
-def step_impl(context):
-    for row in context.table:
-        owner = User.objects.filter(email=row['email']).first()
-        due_date = datetime.fromisoformat(row['due_date'])
-        duration = timedelta(minutes=int(row['estimated_duration']))
-        task = Task.objects.create_task(owner, row['task_name'], due_date, duration, row['weight'], row['state'])
-        task.save()
 
 @given(u'"{email}" is logged in')
 def step_impl(context,email):

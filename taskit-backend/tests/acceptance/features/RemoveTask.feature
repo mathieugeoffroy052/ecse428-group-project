@@ -15,7 +15,7 @@ Feature: Remove task
 
   Scenario Outline: A user successfully removes a task from their task list (normal flow)
     Given "<email>" is logged in to their account
-    When "<email>" attempts to remove their "<task_name>" due on "<due_date>"
+    When "<email>" attempts to remove their "<task_name>" task due on "<due_date>"
     Then The task of "<email>" called "<task_name>" shall be removed from the task list
     Then there shall be 1 less task in the task list
 
@@ -26,14 +26,13 @@ Feature: Remove task
 
   Scenario Outline: A user tries to remove a task using invalid parameters (error flow)
     Given "<email>" is logged in to their account
-    When "<email>" attempts to remove their "<task_name>" task due on "due_date"
+    When "<email>" attempts to remove their "<task_name>" task due on "<due_date>"
     Then the system shall report "<error>"
-    Then "<email>" shall have a "<task_name>" task due on "<due_date>"
     Then there shall be 0 fewer tasks in the task list
 
     Examples:
-      | email                    | task_name                        | due_date   | error                                                |
-      | obi-wan.kenobi@gar.gov   | Kill everyone                    | 2022-02-07 | You do not have a task by this name                  |
-      | anakin.skywalker@gar.gov | Train Anakin                     | 2022-02-07 | You do not have a task by this name                  |
-      | anakin.skywalker@gar.gov | See through the lies of the Jedi | 2022-02-22 | You do not have a task by this name due on this date |
-      | anakin.skywalker@gar.gov |                                  | 2022-02-07 | Invalid task name                                    |
+      | email                    | task_name                        | due_date   | error     |
+      | obi-wan.kenobi@gar.gov   | Kill everyone                    | 2022-02-07 | Not found |
+      | anakin.skywalker@gar.gov | Train Anakin                     | 2022-02-07 | Not found |
+      | anakin.skywalker@gar.gov | See through the lies of the Jedi | 2022-02-22 | Not found |
+      | anakin.skywalker@gar.gov |                                  | 2022-02-07 | Not found |
