@@ -18,7 +18,7 @@ def step_impl(context, email):
 @when(u'The user attempts to view all their tasks')
 def step_impl(context):
     try:
-        context.response = context.client.post(reverse('task_list'))
+        context.response = context.client.get(reverse('task_list'))
         print(f"Response: {context.response}")
     except BaseException as e:
         print(f"Exception: {e}")
@@ -30,5 +30,6 @@ def step_impl(context, task_names):
     assert_that(context.response, not_none())
     assert_that(context.response.data, not_none())
     tasks = context.response.data
+    print(tasks)
     actual_tasks = task_names.split(', ')
     assert_that(len(actual_tasks), equal_to(len(tasks)))
