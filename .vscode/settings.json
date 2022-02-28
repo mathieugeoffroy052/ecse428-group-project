@@ -1,9 +1,0 @@
-{
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        "./taskit-backend",
-        "-p",
-        "*tests.py"
-    ]
-}
