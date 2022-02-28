@@ -10,17 +10,16 @@ from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth import login
 import re
 
-"""
-{
-    "email": "john@email.com",
-	"password": "johnpassword"
-}
-"""
-
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
+    """
+    {
+        "email": "john@email.com",
+        "password": "johnpassword"
+    }
+    """
     request = request.data
     print(f"Request data (in view): {request}")
     # Missing email
