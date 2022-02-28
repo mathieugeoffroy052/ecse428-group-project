@@ -188,7 +188,7 @@
   </el-container>
 </template>
 
-<script lang="js" setup>
+<script>
   import axios from 'axios'
 
   const axios_instance = axios.create({
