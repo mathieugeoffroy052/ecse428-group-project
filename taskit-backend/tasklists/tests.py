@@ -137,11 +137,15 @@ class TaskListTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
-        response = response.json()
-        self.assertEqual(response.get("description"), "eat chocolate")
-        self.assertEqual(response.get("due_datetime"), "2022-02-25T20:34:41-05:00")
-        self.assertEqual(response.get("estimated_duration"), "03:00:00")
-        self.assertEqual(response.get("weight"), 10000)
+        self.assertEqual(
+            response.json(),
+            {
+                "description": "eat chocolate",
+                "due_datetime": "2022-02-25T20:34:41-05:00",
+                "estimated_duration": "03:00:00",
+                "weight": 10000,
+            },
+        )
 
     def test_create_task_with_just_a_description(self):
         self.client.force_authenticate(user=self.user)
@@ -155,6 +159,15 @@ class TaskListTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            response.json(),
+            {
+                "description": "eat chocolate",
+                "due_datetime": None,
+                "estimated_duration": None,
+                "weight": None,
+            },
+        )
         response = response.json()
         self.assertEqual(response.get("description"), "eat chocolate")
         self.assertEqual(response.get("due_datetime"), None)
@@ -208,6 +221,17 @@ class TaskListTestCase(TestCase):
         Task.objects.create(owner=other_user, description="eat toothpaste")
         response = self.client.get(reverse("task_list"))
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            [
+                {
+                    "description": "eat chocolate",
+                    "due_datetime": None,
+                    "estimated_duration": None,
+                    "weight": None,
+                }
+            ],
+        )
         response = response.json()[0]
         self.assertEqual(response.get("description"), "eat chocolate")
         self.assertEqual(response.get("due_datetime"), None)
