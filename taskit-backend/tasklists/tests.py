@@ -105,8 +105,6 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
 
 
-
-
 class TaskListTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -214,7 +212,7 @@ class TaskListTestCase(TestCase):
         response = self.client.get(reverse("task_list"))
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(len(response.json()),1)
+        self.assertEqual(len(response.json()), 1)
         response = response.json()[0]
         self.assertEqual(response.get("description"), "eat chocolate")
         self.assertEqual(response.get("due_datetime"), None)
