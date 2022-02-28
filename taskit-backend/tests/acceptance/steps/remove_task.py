@@ -10,11 +10,11 @@ import optional
 optional.init_opt_()
 
 # SCENARIO 1 (NORMAL FLOW)
-@given('"{email}" is logged in to their account')
-def step_impl(context, email):
-    user = User.objects.filter(email=email).first()
-    context.client.force_authenticate(user=user)
-    print(f"Logging in user {email}")
+# @given('"{email}" is logged in to their account')
+# def step_impl(context, email):
+#     user = User.objects.filter(email=email).first()
+#     context.client.force_authenticate(user=user)
+#     print(f"Logging in user {email}")
 
 
 @when('"{email}" attempts to remove their "{task_name:opt_?}" task due on "{due_date}"')

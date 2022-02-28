@@ -34,3 +34,10 @@ def step_impl(context):
             row["state"],
         )
         task.save()
+
+
+@given('"{email}" is logged in to their account')
+def step_impl(context, email):
+    user = User.objects.filter(email=email).first()
+    context.client.force_authenticate(user=user)
+    print(f"Logging in user {email}")
