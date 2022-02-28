@@ -1,11 +1,13 @@
 """
 behave environment module for acceptance testing taskit project
 """
-# from django.test.utils import setup_test_environment
+
 from rest_framework.test import APIClient as Client
+
 
 def before_all(context):
     context.client = Client()
+
 
 def before_scenario(context, _):
     context.response = None

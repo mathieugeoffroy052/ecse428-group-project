@@ -3,7 +3,6 @@ from tasklists.models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    
 
     urgency = serializers.SerializerMethodField("get_urgency")
 
@@ -38,5 +37,5 @@ class TaskSerializer(serializers.ModelSerializer):
             "late",
             "priority",
             "state",
-            "id"
+            "id",
         )

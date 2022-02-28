@@ -1,7 +1,23 @@
 from django.db import models
+from django.utils.translation import gettext_lazy
 from accounts.models import User
 from datetime import datetime, timedelta, date, timezone
 import math
+
+
+class TaskManager(models.Manager):
+    def create_task(
+        self, owner, description, due_datetime, estimated_duration, weight, state
+    ):
+        task = self.create(
+            owner=owner,
+            description=description,
+            due_datetime=due_datetime,
+            estimated_duration=estimated_duration,
+            weight=weight,
+        )
+        task.save()
+        return task
 
 
 class Task(models.Model):
@@ -9,25 +25,21 @@ class Task(models.Model):
     Model for a user-defined task.
     """
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    description = models.CharField(max_length=200)
-    due_datetime = models.DateTimeField(default=None, blank=True, null=True)
-    estimated_duration = models.DurationField(default=None, blank=True, null=True)
-    weight = models.IntegerField(default=None, blank=True, null=True)
-    class TaskState(models.TextChoices):
-        NotStarted = 'NS', 'Not Started'
-        InProgress = 'IP', 'In Progress'
-        Completed = 'C', 'Completed'
-    state = models.CharField(default='None', null=True, choices=TaskState.choices, max_length=2)
-
     class TaskState(models.TextChoices):
         NotStarted = "NS", "Not Started"
         InProgress = "IP", "In Progress"
         Completed = "C", "Completed"
 
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.CharField(max_length=200)
+    due_datetime = models.DateTimeField(default=None, blank=True, null=True)
+    estimated_duration = models.DurationField(default=None, blank=True, null=True)
+    weight = models.IntegerField(default=None, blank=True, null=True)
     state = models.CharField(
-        default="None", null=True, choices=TaskState.choices, max_length=2
+        default=None, null=True, blank=True, choices=TaskState.choices, max_length=2
     )
+
+    objects = TaskManager()
 
     def get_urgency(self):
         if not self.due_datetime or not self.estimated_duration:

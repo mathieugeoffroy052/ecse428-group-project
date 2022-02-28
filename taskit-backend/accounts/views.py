@@ -28,7 +28,7 @@ def sign_up(request):
             {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
         )
     # Invalid email
-    email_validator_regex = re.compile('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-z]{2,}$')
+    email_validator_regex = re.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-z]{2,}$")
     if not email_validator_regex.match(request["email"]):
         return Response({"Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
     # Missing password
