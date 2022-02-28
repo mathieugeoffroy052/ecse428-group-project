@@ -17,9 +17,9 @@ def step_impl(context,email):
 @then(u'The user shall be logged out')
 def step_impl(context):
     user = User.objects.all().first()
-    #assert_that(context.response.status_code, equal_to(302))
+    assert_that(context.response.status_code, equal_to(204))
     #assert_that(context.response, equal_to(None))
-    assert_that(context.error, equal_to(none()))
+    assert_that(context.error, none())
     
 @then('The user shall be at the login page')
 def step_impl(context):
