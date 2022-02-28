@@ -84,7 +84,6 @@ def post_task(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@permission_classes([AllowAny])
 def remove_task(request):
     """
     DELETE:
