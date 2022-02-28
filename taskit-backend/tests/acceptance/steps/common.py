@@ -35,6 +35,7 @@ def step_impl(context):
         )
         task.save()
 
+
 @given('"{email}" is logged in to their account')
 def step_impl(context, email):
     user = User.objects.filter(email=email).first()
