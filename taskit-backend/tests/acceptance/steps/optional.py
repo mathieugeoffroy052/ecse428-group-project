@@ -10,7 +10,6 @@ def parse_string(text):
     if output == 'NULL':
         output = None
     return output
-    
 def init_opt_():
     '''
     Registers the opt_ type and activates the cfparse step matcher. Once this is done, you should be able to make step parameters optional.

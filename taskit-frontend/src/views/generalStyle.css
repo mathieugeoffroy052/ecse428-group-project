@@ -1,0 +1,13 @@
+:root{
+    --lavender: rgba(146, 119, 255);
+    --lavenderLight: rgba(146, 119, 255, 0.28);
+    --lightGray: #f1f1f1;
+    --darkGray: #ddd;
+    --titleFont: "Noteworthy Light";
+}
+
+body{
+    background-color: var(--lavenderLight);
+    padding-right: 150px;
+    padding-left: 150px;
+  }
