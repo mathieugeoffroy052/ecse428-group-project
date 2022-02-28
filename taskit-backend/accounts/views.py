@@ -26,12 +26,12 @@ def sign_up(request):
     # Missing email
     if "email" not in request or not request["email"].strip():
         return Response(
-            {"No username entered."}, status=status.HTTP_400_BAD_REQUEST
+            {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
         )
     # Invalid email
     email_validator_regex = re.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-z]{2,}$")
     if not email_validator_regex.match(request["email"]):
-        return Response({"Incorrect email address or password."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
     # Missing password
     if "password" not in request or not request["password"].strip():
         return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
