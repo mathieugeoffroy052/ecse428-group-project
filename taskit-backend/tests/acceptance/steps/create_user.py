@@ -29,6 +29,7 @@ def step_impl(context, email, password):
         'password': password if password != None else ''
     }
     try:
+        print(f"Request data: {request_data}")
         context.response = context.client.post(reverse('sign_up'), request_data)
         print(f"Response: {context.response}")
     except BaseException as e:
@@ -60,3 +61,8 @@ def step_impl(context, error):
         assert_that(e.message, equal_to(error))
     else:
         assert_that(error in context.response.data, f"Expected response containing {error} but received {context.response.data}.")
+
+@then(u'there will exist no user with email address {email:opt_?} and a password {password:opt_?}')
+def step_impl(context, email, password):
+    users = User.objects.filter(email=email, password=password)
+    assert_that(len(users), equal_to(0))

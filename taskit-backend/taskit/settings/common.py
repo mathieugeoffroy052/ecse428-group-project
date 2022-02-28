@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "knox",
     "corsheaders",
     "behave_django",
     "accounts",
@@ -119,6 +120,6 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
+        "knox.auth.TokenAuthentication",
     ],
 }
