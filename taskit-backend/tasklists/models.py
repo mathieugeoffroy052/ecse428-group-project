@@ -16,6 +16,20 @@ class TaskManager(models.Manager):
             estimated_duration=estimated_duration,
             weight=weight,
         )
+        return task
+
+
+class TaskManager(models.Manager):
+    def create_task(
+        self, owner, description, due_datetime, estimated_duration, weight, state
+    ):
+        task = self.create(
+            owner=owner,
+            description=description,
+            due_datetime=due_datetime,
+            estimated_duration=estimated_duration,
+            weight=weight,
+        )
         task.save()
         return task
 
@@ -72,4 +86,4 @@ class Task(models.Model):
         return (
             urgency[0],
             urgency[1] * 2 / 3 + self.get_weight(),
-        )  # urgency carries more weight than weight
+        )  # Importance is weighted more heavily than urgency

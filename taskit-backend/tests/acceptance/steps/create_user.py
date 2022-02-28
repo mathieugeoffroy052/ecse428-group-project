@@ -1,20 +1,12 @@
 from django.contrib.auth import get_user_model
 from behave import given, then, when
 from django.urls import reverse
-from hamcrest import assert_that, equal_to, not_none
+from hamcrest import assert_that, equal_to
 
 import optional
 
 User = get_user_model()
 optional.init_opt_()
-
-
-@given("The following users exist")
-def step_impl(context):
-    for row in context.table:
-        user = User.objects.create_user(row["email"], row["password"])
-        user.save()
-        print(f"Created user {row['email']}")
 
 
 @given('there is no existing account with email address "{email}"')
