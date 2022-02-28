@@ -5,8 +5,25 @@ from django.urls import reverse
 from hamcrest import assert_that, equal_to
 import json
 import optional
+from datetime import datetime, timedelta
 
 optional.init_opt_()
+
+# @given(u'The following users exist')
+# def step_impl(context):
+#     for row in context.table:
+#         user = User.objects.create_user(row['username'], row['password'])
+#         user.save()
+
+@given(u'The following tasks exist')
+def step_impl(context):
+    for row in context.table:
+        owner = User.objects.filter(email=row['user']).first()
+        due_date = datetime.fromisoformat(row['due_date'])
+        duration = timedelta(minutes=int(row['estimated_duration']))
+        task = Task.objects.create_task(owner, row['task_description'], due_date, duration, int(row['weight']), row['state'])
+        task.save()
+
 
 @given(u'"{email}" is logged in')
 def step_impl(context,email):
