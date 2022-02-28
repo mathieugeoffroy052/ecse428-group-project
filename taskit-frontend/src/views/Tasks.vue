@@ -256,7 +256,7 @@
       methods: {
         onLogOut() {
           axios_instance
-            .post('/accounts/logout/', {
+            .post('/accounts/logout/', {}, {
               headers: {
                 'Authorization': 'Token ' + localStorage.getItem("token")
                 }})
