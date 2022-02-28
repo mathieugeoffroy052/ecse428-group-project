@@ -8,12 +8,6 @@ import optional
 
 optional.init_opt_()
 
-@given(u'The following users exist')
-def step_impl(context):
-    for row in context.table:
-        user = User.objects.create_user(row['username'], row['password'])
-        user.save()
-
 @given(u'"{email}" is logged in')
 def step_impl(context,email):
     user = User.objects.filter(email=email)
