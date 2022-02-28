@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from accounts.models import User
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth.hashers import check_password
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework import permissions
@@ -64,13 +65,12 @@ class Login(KnoxLoginView):
             return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
         if not request.data["username"] or not request.data["username"].strip():
             return Response({"No username entered."}, status=status.HTTP_400_BAD_REQUEST)
-               # Invalid email
+               
+               # check for invalid emaila and invalid password
         correspondingAccount = User.objects.filter(email=request.data["username"]).first()
-        print("showing querySet")
-        print(User.objects.all())
-        #print("correspondingAccount password" + str(correspondingAccount["password"]))
-        # if correspondingAccount is None or correspondingAccount["password"] != request.data["password"].strip():
-        #     return Response({"Incorrect email address or password."}, status=status.HTTP_400_BAD_REQUEST)
+        if correspondingAccount is None or not check_password(request.data["password"], correspondingAccount.password):
+            return Response({"Incorrect email address or password."}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]

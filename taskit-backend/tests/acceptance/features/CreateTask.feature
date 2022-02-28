@@ -42,7 +42,7 @@ Feature: Create task
   Scenario Outline: Attempt to create task without being logged in (error flow)
     Given All users are logged out
     When The user attempts to create the task of "<email>" called "<name>", due date "<due_date>", duration "<estimated_duration>", and weight "<weight>"
-    Then The error message "Log in to edit your tasks." shall be displayed
+    Then The error message "Authentication credentials were not provided." shall be displayed
     And The user shall be at the login page
 
     Examples:
