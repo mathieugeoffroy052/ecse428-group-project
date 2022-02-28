@@ -38,7 +38,6 @@ Feature: Create task
       | email                    | name         | due_date   | estimated_duration | weight | error                     |
       | obi-wan.kenobi@gar.gov   | NULL         | 2022-02-08 | 30                 | NULL   | The task must have a name |
       | anakin.skywalker@gar.gov |              | 2022-02-09 | 1576800            | 100    | The task must have a name |
-      | obi-wan.kenobi@gar.gov   | Train Anakin | 2022-02-06 | 1576800            | 90     | This task already exists  |
 
   Scenario Outline: Attempt to create task without being logged in (error flow)
     Given All users are logged out

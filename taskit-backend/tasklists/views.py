@@ -78,8 +78,12 @@ def post_task(request):
 
     if serializer.is_valid():
         serializer.save(owner=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, content_type = "Task created succesfully.")
     else:
+        if "description" not in request or not request["description"]:
+            return Response(
+                {"The task must have a name"}, status=status.HTTP_400_BAD_REQUEST
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -9,16 +9,6 @@ import optional
 
 optional.init_opt_()
 
-@given(u'The following tasks exist')
-def step_impl(context):
-    for row in context.table:
-        owner = User.objects.filter(email=row['email']).first()
-        due_date = datetime.fromisoformat(row['due_date'])
-        duration = timedelta(minutes=int(row['estimated_duration']))
-        task = Task.objects.create_task(owner, row['task_name'], due_date, duration, int(row['weight']), row['state'])
-   
-        task.save()
-
 @when(u'The user "{email}" attempts to create the task "{name:opt_?}", with due date "{due_date:opt_?}", duration "{estimated_duration:opt_?}", and weight "{weight:opt_?}"')
 def step_impl(context,email,name,due_date,estimated_duration,weight):
     request_data = {
@@ -54,18 +44,20 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
 @then(u'the task "{name}" shall exist in the system')
 def step_impl(context, name):
     assert_that(context.response.status_code, equal_to(201))
-    assert_that(context.error, equal_to(none()))
-    task = Task.objects.filter(name=name).first()
+    assert_that(context.error, none())
+    task = Task.objects.filter(description=name).first()
     assert_that(task, not_none())
 
 @then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"')
 def step_impl(context,email,name,due_date,estimated_duration,weight):
-    task = Task.objects.filter(name=name).first()
-    assert task.email == email
-    assert task.name == name
-    assert task.due_date == due_date
-    assert task.estimated_duration == estimated_duration
-    assert task.weight == weight
+    task = Task.objects.filter(description=name).first()
+    if(email != "NULL"):
+        assert_that(task.owner, equal_to(User.objects.filter(email=email).first())) 
+    assert_that(task.description, equal_to(name))
+    assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    assert_that(str(int(task.estimated_duration.total_seconds())), equal_to(estimated_duration))
+    if(weight != "NULL"):
+        assert_that(str(task.weight), equal_to(weight))
 
 @then(u'the number of tasks in the system shall be "5"')
 def step_impl(context):
@@ -74,10 +66,10 @@ def step_impl(context):
 @then(u'no new task shall be created')
 def step_impl(context):
     if context.response != None:
-        assert_that(context.response.status_code, equal_to(403))
+        assert_that(context.response.status_code, equal_to(400))
 
 @then(u'The message "{message}" shall be displayed')
 def step_impl(context,message):
     msg = context.response.data
     assert_that(msg, not_none())
-    assert_that(message in context.response.data)
+    assert_that(message in msg)

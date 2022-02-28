@@ -30,7 +30,7 @@ def step_impl(context):
     assert_that(context.response.status_code, equal_to(200))
     assert_that(context.error, none())
 
-@then('The user shall see the task list for "{email}"s')
+@then('The user shall see the task list for "{email}"')
 def step_impl(context, email):
     pass
 

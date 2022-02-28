@@ -25,12 +25,12 @@ def sign_up(request):
     # Missing email
     if "email" not in request or not request["email"].strip():
         return Response(
-            {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
+            {"No username entered."}, status=status.HTTP_400_BAD_REQUEST
         )
     # Invalid email
     email_validator_regex = re.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-z]{2,}$")
     if not email_validator_regex.match(request["email"]):
-        return Response({"Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"Incorrect email address or password."}, status=status.HTTP_400_BAD_REQUEST)
     # Missing password
     if "password" not in request or not request["password"].strip():
         return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
@@ -60,6 +60,17 @@ class Login(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
+        if not request.data["password"] or not request.data["password"].strip():
+            return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
+        if not request.data["username"] or not request.data["username"].strip():
+            return Response({"No username entered."}, status=status.HTTP_400_BAD_REQUEST)
+               # Invalid email
+        correspondingAccount = User.objects.filter(email=request.data["username"]).first()
+        print("showing querySet")
+        print(User.objects.all())
+        #print("correspondingAccount password" + str(correspondingAccount["password"]))
+        # if correspondingAccount is None or correspondingAccount["password"] != request.data["password"].strip():
+        #     return Response({"Incorrect email address or password."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
