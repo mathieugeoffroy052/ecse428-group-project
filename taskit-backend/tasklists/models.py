@@ -94,8 +94,4 @@ class Task(models.Model):
         return (
             urgency[0],
             urgency[1] * 2 / 3 + self.get_weight(),
-<<<<<<< HEAD
         )  # urgency carries more weight than weight
-=======
-        )  # Importance is weighted more heavily than urgency
->>>>>>> c1010146b449dad55448439ccea2a49788bbd550
