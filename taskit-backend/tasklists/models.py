@@ -18,6 +18,7 @@ class TaskManager(models.Manager):
         )
         return task
 
+
 class TaskManager(models.Manager):
     def create_task(
         self, owner, description, due_datetime, estimated_duration, weight, state
