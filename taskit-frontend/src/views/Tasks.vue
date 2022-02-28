@@ -293,7 +293,7 @@
             headers: {
             'Authorization': 'Token ' + localStorage.getItem("token")
             },
-            data:this.delete_task
+            data: this.delete_task
           })
             .then(alert("Deleted Successfully!"))
           location.reload(true)
