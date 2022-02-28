@@ -12,12 +12,11 @@ optional.init_opt_()
 @given(u'The following tasks exist')
 def step_impl(context):
     for row in context.table:
-
         owner = User.objects.filter(email=row['email']).first()
         due_date = datetime.fromisoformat(row['due_date'])
         duration = timedelta(minutes=int(row['estimated_duration']))
-
         task = Task.objects.create_task(owner, row['task_name'], due_date, duration, int(row['weight']), row['state'])
+   
         task.save()
 
 @when(u'The user "{email}" attempts to create the task "{name:opt_?}", with due date "{due_date:opt_?}", duration "{estimated_duration:opt_?}", and weight "{weight:opt_?}"')

@@ -28,7 +28,7 @@ def step_when_the_user_attempts_to(context,email,password):
 @then('The user shall be logged in')
 def step_impl(context):
     assert_that(context.response.status_code, equal_to(200))
-    assert_that(context.error, equal_to(none()))
+    assert_that(context.error, none())
 
 @then('The user shall see the task list for "{email}"s')
 def step_impl(context, email):
@@ -37,7 +37,7 @@ def step_impl(context, email):
 @then('The user shall not be logged in')
 def step_impl(context):
     if context.response != None:
-        assert_that(context.response.status_code, equal_to(401))
+        assert_that(context.response.status_code, equal_to(400))
 
 @then(u'The error message "{error}" shall be displayed')
 def step_impl(context, error):
