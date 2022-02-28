@@ -283,3 +283,26 @@ class TaskListTestCase(TestCase):
         result = task.get_priority()
         self.assertEqual(result[0], False)
         self.assertAlmostEqual(result[1], None)  # slight time difference
+
+    def test_deleting_task(self):
+        self.client.force_authenticate(user=self.user)
+        choccy_task = Task.objects.create(owner=self.user, description="eat chocolate")
+        chips_task = Task.objects.create(owner=self.user, description="eat chips")
+        response = self.client.delete(reverse("task_list"), {"id": choccy_task.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"success": "Task deleted"})
+
+    def test_deleting_task_without_being_authenticated(self):
+        response = self.client.delete(reverse("task_list"), {"id": 42})
+        self.assertEqual(response.status_code, 401)
+    
+    def test_deleting_nonexistent_task(self):
+        self.client.force_authenticate(user=self.user)
+        id = 42
+        # Make absolutely sure there's no task with the given ID
+        existing_tasks = Task.objects.filter(id=id)
+        if existing_tasks:
+            existing_tasks.first().delete()
+        response = self.client.delete(reverse("task_list"), {"id": id})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {"error": "Not found"})
