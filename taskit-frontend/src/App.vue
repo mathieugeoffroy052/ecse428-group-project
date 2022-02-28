@@ -1,7 +1,8 @@
 <template>
   <div id="nav">
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/about">About</router-link> |
+    <router-link to="/signup">Sign Up</router-link>
   </div>
   <router-view />
 </template>
@@ -26,5 +27,12 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+@font-face {
+  font-family: "Noteworthy Light";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Noteworthy Light"),
+    url("../public/fonts/Noteworthy/Noteworthy-Lt.woff") format("woff");
 }
 </style>

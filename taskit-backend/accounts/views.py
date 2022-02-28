@@ -1,33 +1,30 @@
-from types import NoneType
 from rest_framework.decorators import api_view
 from accounts.models import User
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, logout, authenticate
-from django.contrib import messages
-
-"""
-{
-	"email": "john@email.com",
-	"password": "johnpassword"
-}
-"""
+from rest_framework import permissions
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from knox.views import LoginView as KnoxLoginView
+from django.contrib.auth import login
 
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
+    """
+    {
+        "email": "john@email.com",
+        "password": "johnpassword"
+    }
+    """
     request = request.data
-    if "email" not in request or request["email"].strip():
+    if "email" not in request or len(request["email"].strip()) == 0:
         return Response(
             {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
         )
-    if "password" not in request or request["password"].strip():
+    if "password" not in request or len(request["password"].strip()) == 0:
         return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
     if User.objects.filter(email=request["email"]):
         return Response(
@@ -37,37 +34,25 @@ def sign_up(request):
     return Response({"user created"}, status=status.HTTP_201_CREATED)
 
 
-# Login upon request
-"""
-{
-    "email": "john@smith.com",
-    "password": "johnpassword"
-}
-"""
+# Login
+class Login(KnoxLoginView):
+    """
+    Request: {
+        "username": "johnsmith@email.com",
+        "password": "password123"
+    }
 
+    Response: {
+        "expiry": "2022-02-27T04:14:53.984918-05:00",
+        "token": "262bc7d283f698efdddd8d33dcea918dcb6ce05d1a4db7e052010b444083fb98"
+    }
+    """
 
-def login_request(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get("email")
-            password = form.cleaned_data.get("password")
-            user = authenticate(email=email, password=password)
-            if user is not NoneType:
-                login(request, user)
-                messages.info(request, f"Successfully logged in as {email}")
-                return redirect("main:Home")
-            else:
-                messages.error(request, "Invalid email or password")
-        else:
-            messages.error(request, "Invalid email or password")
+    permission_classes = (permissions.AllowAny,)
 
-    form = AuthenticationForm()
-    return render(request, "main/login.html", {"form": form})
-
-
-# Logout upon request
-def logout_request(request):
-    logout(request)
-    messages.inf(request, "Successfully logged out")
-    return redirect("main:Home")
+    def post(self, request, format=None):
+        serializer = AuthTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        login(request, user)
+        return super(Login, self).post(request, format=None)
