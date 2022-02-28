@@ -9,23 +9,22 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth import login
 
-"""
-{
-    "email": "john@email.com",
-	"password": "johnpassword"
-}
-"""
-
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
+    """
+    {
+        "email": "john@email.com",
+        "password": "johnpassword"
+    }
+    """
     request = request.data
-    if "email" not in request or request["email"].strip():
+    if "email" not in request or len(request["email"].strip()) == 0:
         return Response(
             {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
         )
-    if "password" not in request or request["password"].strip():
+    if "password" not in request or len(request["password"].strip()) == 0:
         return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
     if User.objects.filter(email=request["email"]):
         return Response(
