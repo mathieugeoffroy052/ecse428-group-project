@@ -1,10 +1,10 @@
 from behave import *
 from django.urls import reverse
-from hamcrest import assert_that, equal_to, is_none
+from hamcrest import assert_that, equal_to
 from accounts.models import User
 from tasklists.models import Task
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 @given(u'The following users exist')
 def step_impl(context):
@@ -12,6 +12,15 @@ def step_impl(context):
         user = User.objects.create_user(row['email'], row['password'])
         user.save()
         print(f"Created user {row['email']}")
+        
+@given(u'The following tasks exist')
+def step_impl(context):
+    for row in context.table:
+        owner = User.objects.filter(email=row['user']).first()
+        due_date = datetime.fromisoformat(row['due_date'])
+        duration = timedelta(minutes=int(row['estimated_duration']))
+        task = Task.objects.create_task(owner, row['task_description'], due_date, duration, int(row['weight']), row['state'])
+        task.save()
         
 @given(u'"{email}" is logged in')
 def step_impl(context,email):
@@ -69,19 +78,19 @@ def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(403))
 
-@then(u'"{user}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{old_state}"')
-def step_impl(context,user,description,due_date,estimated_duration,weight,old_state):
-    task = Task.objects.filter(description=description)
-    user_obj = User.objects.get(email=user)
-    due_date_obj = datetime.strptime(due_date, '%y-%m-%d')
-    old_state_obj = Task.objects.get(state=old_state)
-    assert_that(task.owner, equal_to(user_obj), 'User does not match')
-    assert_that(task.description, equal_to(description), 'Description does not match')
-    assert_that(task.due_date, equal_to(due_date_obj), 'Due date does not match')
-    assert_that(task.estimated_duration, equal_to(int(estimated_duration)), 'Duration does not match')
-    assert_that(task.weight, equal_to(int(weight)), 'Weight does not match')
-    assert_that(task.state, equal_to(old_state_obj), 'Could not update to state {old_state}')
-    assert_that(context.response.status_code, equal_to(403))
+# @then(u'"{user}" shall have a task called "{description}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{old_state}"')
+# def step_impl(context,user,description,due_date,estimated_duration,weight,old_state):
+#     task = Task.objects.filter(description=description)
+#     user_obj = User.objects.get(email=user)
+#     due_date_obj = datetime.strptime(due_date, '%y-%m-%d')
+#     old_state_obj = Task.objects.get(state=old_state)
+#     assert_that(task.owner, equal_to(user_obj), 'User does not match')
+#     assert_that(task.description, equal_to(description), 'Description does not match')
+#     assert_that(task.due_date, equal_to(due_date_obj), 'Due date does not match')
+#     assert_that(task.estimated_duration, equal_to(int(estimated_duration)), 'Duration does not match')
+#     assert_that(task.weight, equal_to(int(weight)), 'Weight does not match')
+#     assert_that(task.state, equal_to(old_state_obj), 'Could not update to state {old_state}')
+#     assert_that(context.response.status_code, equal_to(403))
 
 @then(u'an error message "{error}" shall be displayed')
 def step_impl(context, error):
