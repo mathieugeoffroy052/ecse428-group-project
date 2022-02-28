@@ -8,6 +8,7 @@ from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 from django.contrib.auth import login
+import re
 
 
 @api_view(["POST"])
@@ -20,12 +21,20 @@ def sign_up(request):
     }
     """
     request = request.data
-    if "email" not in request or len(request["email"].strip()) == 0:
+    print(f"Request data (in view): {request}")
+    # Missing email
+    if "email" not in request or not request["email"].strip():
         return Response(
             {"No email address entered."}, status=status.HTTP_400_BAD_REQUEST
         )
-    if "password" not in request or len(request["password"].strip()) == 0:
+    # Invalid email
+    email_validator_regex = re.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-z]{2,}$")
+    if not email_validator_regex.match(request["email"]):
+        return Response({"Invalid email"}, status=status.HTTP_400_BAD_REQUEST)
+    # Missing password
+    if "password" not in request or not request["password"].strip():
         return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
+    # Email already in use
     if User.objects.filter(email=request["email"]):
         return Response(
             {"This email address is already in use."}, status=status.HTTP_409_CONFLICT

@@ -36,4 +36,6 @@ class TaskSerializer(serializers.ModelSerializer):
             "importance",
             "late",
             "priority",
+            "state",
+            "id",
         )

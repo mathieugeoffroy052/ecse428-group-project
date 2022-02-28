@@ -60,12 +60,12 @@ class Task(models.Model):
         )  # the later it is, the more urgent, and the sooner it is due, the more urgent
         return (late, math.atan(urgency) * 2 / math.pi)
 
-    def get_weight(self) -> float | None:
+    def get_weight(self):
         if not self.weight:
             return None
         return math.atan(self.weight / 100) * 2 / math.pi
 
-    def get_priority(self) -> (tuple[bool, float] | None):
+    def get_priority(self):
         urgency = self.get_urgency()
         if not urgency[1] or not self.get_weight():
             return (urgency[0], None)
