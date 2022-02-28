@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from tasklists.models import Task
 
+
 class TaskSerializer(serializers.ModelSerializer):
 
     urgency = serializers.SerializerMethodField("get_urgency")

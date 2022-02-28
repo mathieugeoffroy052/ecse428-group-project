@@ -6,18 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tasklists', '0001_initial'),
+        ("tasklists", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='late',
+            model_name="task",
+            name="late",
             field=models.BooleanField(default=None, null=True),
         ),
         migrations.AddField(
-            model_name='task',
-            name='state',
-            field=models.CharField(choices=[('NS', 'Not Started'), ('IP', 'In ProgresS'), ('C', 'Completed')], default=None, max_length=32, null=True),
+            model_name="task",
+            name="state",
+            field=models.CharField(
+                choices=[
+                    ("NS", "Not Started"),
+                    ("IP", "In ProgresS"),
+                    ("C", "Completed"),
+                ],
+                default=None,
+                max_length=32,
+                null=True,
+            ),
         ),
     ]
