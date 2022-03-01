@@ -4,6 +4,7 @@ from hamcrest import assert_that, equal_to
 from accounts.models import User
 from tasklists.models import Task
 from datetime import datetime, timedelta
+import json
 
 def get_task_status_from_string(status_string):
     if status_string.lower() == "in progress":
@@ -60,8 +61,5 @@ def step_impl(context):
 
 @then(u'The error message "{error}" shall be displayed')
 def step_impl(context, error):
-    e = context.error
-    if context.error is not None:
-        assert_that(e.message, equal_to(error))
-    else:
-        assert_that(error in context.response.data)
+    assert_that(context.response.status_code, equal_to(401))
+    assert_that(error in json.dumps(context.response.data), f'Expected response containing {error} but received {context.response.data}')

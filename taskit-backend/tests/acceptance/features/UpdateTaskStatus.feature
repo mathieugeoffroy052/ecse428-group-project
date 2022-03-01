@@ -41,7 +41,7 @@ Feature: Update task status
   Scenario Outline: Attempt to update a task without being logged in (error flow)
     Given All users are logged out
     When The user attempts to update the status of the task "<task_name>" to "<new_state>"
-    Then The error message "Log in to update your task status." shall be displayed
+    Then The error message "Authentication credentials were not provided." shall be displayed
     And "<email>" shall have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", and state "<old_state>"
     And The user shall be at the login page
 
