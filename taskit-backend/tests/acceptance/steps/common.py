@@ -1,7 +1,8 @@
-from behave import given
+from behave import given, then
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from tasklists.models import Task
+from hamcrest import assert_that, not_none
 
 User = get_user_model()
 
@@ -46,9 +47,17 @@ def step_impl(context, email):
     context.client.force_authenticate(user=user)
     print(f"Logging in user {email}")
 
+@given('All users are logged out')
+def step_impl(context):
+    client = context.client
+    client.logout()
 
-@given('"{email}" is logged in')
-def step_impl(context, email):
-    user = User.objects.filter(email=email).first()
-    context.client.force_authenticate(user=user)
-    print(f"Logging in user {email}")
+@then(u'The message "{message}" shall be displayed')
+def step_impl(context,message):
+    msg = context.response.data
+    assert_that(msg, not_none())
+    assert_that(message in msg)
+
+@then('The user shall be at the login page')
+def step_impl(context):
+    pass

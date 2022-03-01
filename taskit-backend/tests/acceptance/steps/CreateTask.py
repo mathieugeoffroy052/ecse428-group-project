@@ -68,8 +68,3 @@ def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(400))
 
-@then(u'The message "{message}" shall be displayed')
-def step_impl(context,message):
-    msg = context.response.data
-    assert_that(msg, not_none())
-    assert_that(message in msg)

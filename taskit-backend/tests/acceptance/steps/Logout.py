@@ -21,6 +21,3 @@ def step_impl(context):
     #assert_that(context.response, equal_to(None))
     assert_that(context.error, none())
     
-@then('The user shall be at the login page')
-def step_impl(context):
-    pass
