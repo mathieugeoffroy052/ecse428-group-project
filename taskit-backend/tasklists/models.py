@@ -4,20 +4,10 @@ from accounts.models import User
 from datetime import datetime, timedelta, date, timezone
 import math
 
-
 class TaskManager(models.Manager):
-    def create_task(
-        self, owner, description, due_datetime, estimated_duration, weight, state
-    ):
-        task = self.create(
-            owner=owner,
-            description=description,
-            due_datetime=due_datetime,
-            estimated_duration=estimated_duration,
-            weight=weight,
-        )
+    def create_task(self, owner, description, due_datetime, estimated_duration, weight, state):
+        task = self.create(owner=owner, description=description, due_datetime=due_datetime, estimated_duration=estimated_duration, weight=weight)
         return task
-
 
 class TaskManager(models.Manager):
     def create_task(
@@ -49,18 +39,10 @@ class Task(models.Model):
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
-
-    
-    class TaskState(models.TextChoices):
-        NotStarted = 'NS', 'Not Started'
-        InProgress = 'IP', 'In Progress'
-        Completed = 'C', 'Completed'
-    state = models.CharField(default='None', null=True, choices=TaskState.choices, max_length=2)
-
     state = models.CharField(
         default=None, null=True, blank=True, choices=TaskState.choices, max_length=2
     )
-
+    
     objects = TaskManager()
 
     def get_urgency(self):
@@ -94,4 +76,4 @@ class Task(models.Model):
         return (
             urgency[0],
             urgency[1] * 2 / 3 + self.get_weight(),
-        )  # urgency carries more weight than weight
+        )  # Importance is weighted more heavily than urgency

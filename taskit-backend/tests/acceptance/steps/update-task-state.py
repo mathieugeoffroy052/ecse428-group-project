@@ -12,12 +12,15 @@ def step_impl(context):
 
 @when(u'The user attempts to update the status of the task "{task_name}" to "{new_state}"')
 def step_impl(context,task_name,new_state):
-    request_data = {
-        'task_name': task_name,
-        'new_state' : new_state,
-    }
+    
+    find_task = Task.objects.filter(description=task_name).first()
+
+    if find_task != None:
+        task_id = find_task.id
+    else:
+        task_id = -1
     try:
-        context.response = context.client.post(reverse('update_state(context)'))
+        context.response = context.client.put(reverse("update_state",kwargs={"pk": task_id}), {"state":new_state})
         print(f"Response: {context.response}")
     except BaseException as e:
         print(f"Exception: {e}")

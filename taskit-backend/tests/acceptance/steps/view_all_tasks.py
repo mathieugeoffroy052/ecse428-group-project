@@ -10,13 +10,6 @@ from datetime import datetime, timedelta, date
 optional.init_opt_()
 
 
-@given('"{email}" is logged in')
-def step_impl(context, email):
-    user = User.objects.filter(email=email).first()
-    context.client.force_authenticate(user=user)
-    print(f"Logging in user {email}")
-
-
 @when("The user attempts to view all their tasks")
 def step_impl(context):
     try:

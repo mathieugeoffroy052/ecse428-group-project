@@ -16,16 +16,17 @@ def public(request):
 def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
 
-"""
-"/api/update-state/<pk>"
-    where pk = primary key (or id) of task
 
-{
-	"state": "IP"
-}
-"""
 @api_view(["PUT"])
 def update_state(request, pk):
+    """
+    "/api/update-state/<pk>"
+        where pk = primary key (or id) of task
+
+    {
+        "state": "IP"
+    }
+    """
     request = request.data
     try:
         t = Task.objects.get(pk=pk)
