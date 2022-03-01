@@ -25,7 +25,7 @@ def step_impl(context,task_name,new_state):
 @then(u'the task "{description}" shall be updated to "{new_state}"')
 def step_impl(context, description, new_state):
     task = Task.objects.filter(description=description).first()
-    assert_that(task.state, equal_to(new_state), 'Could not update to state {new_state}')
+    assert_that(task.state, equal_to(new_state), f'Could not update to state {new_state}')
     assert_that(context.response.status_code, equal_to(201))
     assert_that(context.error, equal_to(None))
 
@@ -37,7 +37,7 @@ def step_impl(context,email,task_name,due_date,estimated_duration,weight,new_sta
     assert_that(task.description, equal_to(email))
     assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
     assert_that(str(int(task.estimated_duration.total_seconds())), equal_to(estimated_duration))
-    assert_that(task.state, equal_to(new_state), 'Could not update to state {new_state}')
+    assert_that(task.state, equal_to(new_state), f'Could not update to state {new_state}')
     if(weight != "NULL"):
         assert_that(str(task.weight), equal_to(weight))
 
