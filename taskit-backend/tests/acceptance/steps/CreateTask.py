@@ -48,16 +48,6 @@ def step_impl(context, name):
     task = Task.objects.filter(description=name).first()
     assert_that(task, not_none())
 
-@then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"')
-def step_impl(context,email,name,due_date,estimated_duration,weight):
-    task = Task.objects.filter(description=name).first()
-    if(email != "NULL"):
-        assert_that(task.owner, equal_to(User.objects.filter(email=email).first())) 
-    assert_that(task.description, equal_to(name))
-    assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
-    assert_that(str(int(task.estimated_duration.total_seconds())), equal_to(estimated_duration))
-    if(weight != "NULL"):
-        assert_that(str(task.weight), equal_to(weight))
 
 @then(u'the number of tasks in the system shall be "5"')
 def step_impl(context):

@@ -1,6 +1,6 @@
 from behave import *
 from django.urls import reverse
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, none
 from accounts.models import User
 from tasklists.models import Task
 from datetime import datetime, timedelta
@@ -47,8 +47,14 @@ def step_impl(context,email,task_name,due_date,estimated_duration,weight,new_sta
     new_state_obj = get_task_status_from_string(new_state)
     assert_that(task.owner, equal_to(User.objects.filter(email=email).first())) 
     assert_that(task.description, equal_to(task_name))
-    assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
-    assert_that(str(int(task.estimated_duration.total_seconds())//60), equal_to(estimated_duration))
+    if due_date != "NULL":
+        assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    else:
+        assert_that(task.due_datetime, none()) 
+    if estimated_duration != "NULL":
+        assert_that(str(int(task.estimated_duration.total_seconds())//60), equal_to(estimated_duration))
+    else:
+        assert_that(task.estimated_duration, none())
     assert_that(task.state, equal_to(new_state_obj), f'Could not update to state {new_state}')
 
     if(weight != "NULL"):
@@ -61,5 +67,6 @@ def step_impl(context):
 
 @then(u'The error message "{error}" shall be displayed')
 def step_impl(context, error):
-    assert_that(context.response.status_code, equal_to(401))
+    first_digit = context.response.status_code//100
+    assert_that(first_digit, equal_to(4))
     assert_that(error in json.dumps(context.response.data), f'Expected response containing {error} but received {context.response.data}')
