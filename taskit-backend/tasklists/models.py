@@ -30,9 +30,9 @@ class Task(models.Model):
     """
 
     class TaskState(models.TextChoices):
-        NotStarted = "NS", "Not Started"
-        InProgress = "IP", "In Progress"
-        Completed = "C", "Completed"
+        NotStarted = "NS", gettext_lazy("Not Started")
+        InProgress = "IP", gettext_lazy("In Progress")
+        Completed = "C", gettext_lazy("Completed")
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
