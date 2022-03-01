@@ -24,9 +24,8 @@ def step_impl(context,task_name,new_state):
 
 @then(u'the task "{description}" shall be updated to "{new_state}"')
 def step_impl(context, description, new_state):
-    task = Task.objects.get(description=description)
-    new_state_obj = Task.objects.get(state=new_state)
-    assert_that(task.state, equal_to(new_state_obj), 'Unable to update to {new_state} state')
+    task = Task.objects.filter(description=description).first()
+    assert_that(task.state, equal_to(new_state), 'Could not update to state {new_state}')
     assert_that(context.response.status_code, equal_to(201))
     assert_that(context.error, equal_to(None))
 
@@ -54,7 +53,3 @@ def step_impl(context, error):
         assert_that(e.message, equal_to(error))
     else:
         assert_that(error in context.response.data)
-
-@then(u'The user shall be at the login page')
-def step_impl(context, error):
-    pass
