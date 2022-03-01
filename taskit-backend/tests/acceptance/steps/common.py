@@ -56,7 +56,7 @@ def step_impl(context):
 def step_impl(context,message):
     msg = context.response.data
     assert_that(msg, not_none())
-    assert_that(message in msg)
+    assert_that(message in msg, f'Expected response containing {message} but received {msg}')
 
 @then('The user shall be at the login page')
 def step_impl(context):

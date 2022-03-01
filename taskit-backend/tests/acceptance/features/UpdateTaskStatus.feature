@@ -18,7 +18,6 @@ Feature: Update task status
     When The user attempts to update the status of the task "<task_name>" to "<new_state>"
     Then the task "<task_name>" shall be updated to "<new_state>"
     And "<email>" shall have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", and state "<new_state>"
-    And The message "Task updated succesfully." shall be displayed
 
     Examples:
       | email                    | task_name                      | due_date   | estimated_duration | weight | new_state   |
