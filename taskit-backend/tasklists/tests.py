@@ -134,7 +134,7 @@ class TaskListTestCase(TestCase):
                 "estimated_duration": "03:00:00",
                 "weight": 10000,
             },
-            response.json(),
+            response.json()["data"],
         )
 
     def test_create_task_with_just_a_description(self):
@@ -156,13 +156,8 @@ class TaskListTestCase(TestCase):
                 "estimated_duration": None,
                 "weight": None,
             },
-            response.json(),
+            response.json()["data"],
         )
-        response = response.json()
-        self.assertEqual(response.get("description"), "eat chocolate")
-        self.assertEqual(response.get("due_datetime"), None)
-        self.assertEqual(response.get("estimated_duration"), None)
-        self.assertEqual(response.get("estimated_weight"), None)
 
     def test_create_task_with_a_blank_description(self):
         self.client.force_authenticate(user=self.user)

@@ -62,7 +62,7 @@ def step_impl(context, error):
         assert_that(e.message, equal_to(error))
     else:
         assert_that(
-            error in context.response.data,
+            error in str(context.response.data),
             f"Expected response containing {error} but received {context.response.data}.",
         )
 
