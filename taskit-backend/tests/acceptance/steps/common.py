@@ -11,16 +11,18 @@ User = get_user_model()
 def step_impl(context):
     for row in context.table:
         user = User.objects.create_user(row["email"], row["password"])
-        context.user_pwd[row['email']] = row["password"]
+        context.user_pwd[row["email"]] = row["password"]
         user.save()
 
 
 @given('"{email}" is logged in')
 def step_impl(context, email):
     user = User.objects.filter(email=email).first()
-    resp = context.client.post(reverse("login"), {"username": str(user),
-                                           "password": context.user_pwd[str(user)]})
-    context.client.credentials(HTTP_AUTHORIZATION='Token ' + resp.data["token"])
+    resp = context.client.post(
+        reverse("login"),
+        {"username": str(user), "password": context.user_pwd[str(user)]},
+    )
+    context.client.credentials(HTTP_AUTHORIZATION="Token " + resp.data["token"])
 
 
 @given("The following tasks exist")

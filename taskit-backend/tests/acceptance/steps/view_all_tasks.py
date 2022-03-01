@@ -32,7 +32,7 @@ def step_impl(context):
     'the view function will return the tasks "{task_names}" (which may or may not be sorted)'
 )
 def step_impl(context, task_names):
-    
+
     assert_that(context.response, not_none())
     assert_that(context.response.data, not_none())
     tasks = context.response.data
