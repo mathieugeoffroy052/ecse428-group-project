@@ -10,7 +10,7 @@ def get_task_status_from_string(status_string):
         return Task.TaskState.InProgress
     if status_string.lower() == "not started":
         return Task.TaskState.NotStarted
-    if status_string.lower() == "completed":
+    if status_string.lower() == "complete":
         return Task.TaskState.Completed
 
 @when(u'The user attempts to update the status of the task "{task_name}" to "{new_state}"')
@@ -33,11 +33,11 @@ def step_impl(context,task_name,new_state):
 
 @then(u'the task "{description}" shall be updated to "{new_state}"')
 def step_impl(context, description, new_state):
-
     task = Task.objects.get(description=description)
     new_state_obj = get_task_status_from_string(new_state)
     assert_that(task.state, equal_to(new_state_obj), f'Unable to update to {new_state} state')
     assert_that(context.response.status_code, equal_to(200))
+    print(f"Asserting that context.error ({context.error}) is not None.")
     assert_that(context.error, equal_to(None))
 
 @then(u'"{email}" shall have a task called "{task_name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{new_state}"')
