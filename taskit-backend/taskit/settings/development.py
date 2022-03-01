@@ -26,6 +26,4 @@ DATABASES = {
 }
 
 # django-cors-headers settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-]
+CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "https://taskitfrontend.herokuapp.com"]

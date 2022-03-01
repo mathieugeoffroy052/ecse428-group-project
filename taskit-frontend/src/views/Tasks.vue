@@ -12,7 +12,7 @@
           </el-button>
         </div>
         <div class="avatar">
-          <el-avatar :size="40" :src="circleUrl"></el-avatar>
+          
         </div>
         <div class="username">  </div>
       </el-header>
@@ -36,8 +36,8 @@
               height= "55vh"
               stripe
               border
-              row-style="color:black"
-              header-row-style="color:#9277ff"
+              
+              style="color:black"
             >
               <el-table-column prop="description" label="Description" />
               <el-table-column prop="due_datetime" sortable label="Due Date" />
@@ -63,7 +63,6 @@
                   confirm-button-text="OK"
                   cancel-button-text="No, Thanks"
                   @confirm="onDeleteTask(scope.$index)"
-                  :icon="InfoFilled"
                   icon-color="red"
                   title="Are you sure to delete this task?"
                   font-family = "Noteworthy Light"
@@ -72,7 +71,7 @@
                   <el-button
                     size="small"
                     type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">
+                    >
                     Delete
                   </el-button>
                 </template>
@@ -107,9 +106,7 @@
                 </el-row>
 
                 <el-row>
-                  <el-label class="required" for="taskName"
-                    ><b>Task Description</b></el-label
-                  >
+                  <b>Task Description</b>
                 </el-row>
                 <el-row>
                   <input
@@ -191,18 +188,16 @@
   </el-container>
 </template>
 
-<script lang="js" setup>
+<script>
   import axios from 'axios'
 
   const axios_instance = axios.create({
-  baseURL: process.env.VUE_APP_BACKEND_URL,
+    baseURL: process.env.VUE_APP_BACKEND_URL,
   });
-
   export default {
       name: 'Tasks',
       data () {
           return {
-              
               task_params : {
                 description: "",
                 due_datetime: "",
@@ -293,7 +288,7 @@
             headers: {
             'Authorization': 'Token ' + localStorage.getItem("token")
             },
-            data:this.delete_task
+            data: this.delete_task
           })
             .then(alert("Deleted Successfully!"))
           location.reload(true)
