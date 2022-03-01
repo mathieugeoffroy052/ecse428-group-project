@@ -12,6 +12,10 @@ def step_impl(context):
         user = User.objects.create_user(row["email"], row["password"])
         user.save()
 
+@given(u'"{email}" is logged in')
+def step_impl(context,email):
+    user = User.objects.filter(email=email).first()
+    context.client.force_authenticate(user)
 
 @given("The following tasks exist")
 def step_impl(context):
