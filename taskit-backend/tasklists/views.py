@@ -8,7 +8,6 @@ from tasklists.serializers import TaskSerializer
 from tasklists.models import Task
 
 
-
 def public(request):
     return HttpResponse("You don't need to be authenticated to see this")
 
@@ -80,14 +79,13 @@ def post_task(request):
 
     if serializer.is_valid():
         serializer.save(owner=request.user)
-        #return Response( serializer.data, status=status.HTTP_201_CREATED)
-        return Response( {"Task created succesfully."}, status=status.HTTP_201_CREATED)
+        # return Response( serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            {"data": serializer.data, "success": "Task created succesfully."},
+            status=status.HTTP_201_CREATED,
+        )
     else:
-        if "description" not in request.data["description"] or not request.data["description"].strip():
-            return Response(
-                {"The task must have a name"}, status=status.HTTP_400_BAD_REQUEST
-            )
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

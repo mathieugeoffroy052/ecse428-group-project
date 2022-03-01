@@ -36,8 +36,8 @@ Feature: Create task
 
     Examples:
       | email                    | name         | due_date   | estimated_duration | weight | error                     |
-      | obi-wan.kenobi@gar.gov   | NULL         | 2022-02-08 | 30                 | NULL   | The task must have a name |
-      | anakin.skywalker@gar.gov |              | 2022-02-09 | 1576800            | 100    | The task must have a name |
+      | obi-wan.kenobi@gar.gov   | NULL         | 2022-02-08 | 30                 | NULL   | This field may not be blank. |
+      | anakin.skywalker@gar.gov |              | 2022-02-09 | 1576800            | 100    | This field may not be blank. |
 
   Scenario Outline: Attempt to create task without being logged in (error flow)
     Given All users are logged out
