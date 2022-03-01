@@ -6,10 +6,6 @@ from tasklists.models import Task
 from datetime import datetime, timedelta
         
 
-@given('All users are logged out')
-def step_impl(context):
-    context.client.logout()
-
 @when(u'The user attempts to update the status of the task "{task_name}" to "{new_state}"')
 def step_impl(context,task_name,new_state):
     
@@ -45,12 +41,6 @@ def step_impl(context,email,task_name,due_date,estimated_duration,weight,new_sta
     assert_that(task.state, equal_to(new_state), 'Could not update to state {new_state}')
     if(weight != "NULL"):
         assert_that(str(task.weight), equal_to(weight))
-
-
-@then(u'The message "Task updated succesfully." shall be displayed')
-def step_impl(context):
-    assert_that(context.response.status_code, equal_to(201))
-    assert_that(context.error, equal_to(is_none()))
 
 @then(u'no task shall be updated')
 def step_impl(context):

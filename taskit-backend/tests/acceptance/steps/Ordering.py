@@ -6,12 +6,6 @@ from hamcrest import assert_that, equal_to, not_none
 User = get_user_model()
 
 
-# @given('"{email}" is logged in')
-# def step_impl(context, email):
-#     user = User.objects.filter(email=email).first()
-#     context.client.force_authenticate(user)
-
-
 @when('The user "{email}" attempts to order their tasks')
 def step_impl(context, email):
     try:
