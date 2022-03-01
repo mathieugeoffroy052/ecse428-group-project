@@ -1,5 +1,5 @@
 # Your virtual environment
-.venv/
+#.venv/
 
 __pycache__
 db.sqlite3
