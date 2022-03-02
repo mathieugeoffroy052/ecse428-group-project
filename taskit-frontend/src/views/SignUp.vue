@@ -89,8 +89,12 @@ export default{
 
             axios_instance.post("/accounts/signup", this.signUpForm)
               .then(() => window.location.href = "../login")
-              .catch(errors => console.log(errors),
-                               this.error = 'Email already in use,\nplease try logging in or using a different email')
+              .catch(error => {
+                if (error.response.status === 409) {
+                  this.error = 'Email already in use, please try logging in or using a different email'
+                }
+                console.log(error.message)
+              })
           } 
           else{
             this.error = 'Passwords don\'t match'
