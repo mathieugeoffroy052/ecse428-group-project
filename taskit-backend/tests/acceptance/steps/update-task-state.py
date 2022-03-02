@@ -9,25 +9,30 @@ import json
 def get_task_status_from_string(status_string):
     if status_string.lower() == "in progress":
         return Task.TaskState.InProgress
-    if status_string.lower() == "not started":
+    elif status_string.lower() == "not started":
         return Task.TaskState.NotStarted
-    if status_string.lower() == "complete":
+    elif status_string.lower() == "complete":
         return Task.TaskState.Completed
+    # else:
+    #     return status_string
 
 @when(u'The user attempts to update the status of the task "{task_name}" to "{new_state}"')
 def step_impl(context,task_name,new_state):
-    
     find_task = Task.objects.filter(description=task_name).first()
-
     if find_task != None:
         task_id = find_task.id
     else:
         task_id = -1
     try:
         task_status = get_task_status_from_string(new_state)
-        task_status_str = task_status if task_status is not None else ""
+        task_status_str = str(task_status) if task_status is not None else ""
+        status = {"state":task_status_str}
+        print(status)
+        print(task_status)
         context.response = context.client.put(reverse("update_state",kwargs={"pk": task_id}), {"state":task_status_str})
+
         print(f"Response: {context.response}")
+        print(context.response.data)
     except BaseException as e:
         print(f"Exception: {e}")
         context.error = e

@@ -31,6 +31,11 @@ def update_state(request, pk):
     request = request.data
     if not request["state"]:
         return Response("Invalid task state", status=status.HTTP_400_BAD_REQUEST)
+    new_state = request["state"]
+    try:
+        Task.TaskState[new_state]
+    except KeyError:
+        return Response("Invalid task state", status=status.HTTP_400_BAD_REQUEST)
     try:
         t = Task.objects.get(pk=pk)
         s = TaskSerializer(t, data={"state": request["state"]}, partial=True)
