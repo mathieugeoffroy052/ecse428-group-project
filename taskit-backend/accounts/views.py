@@ -62,14 +62,25 @@ class Login(KnoxLoginView):
 
     def post(self, request, format=None):
         if not request.data["password"] or not request.data["password"].strip():
-            return Response({"No password entered."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"No password entered."}, status=status.HTTP_400_BAD_REQUEST
+            )
         if not request.data["username"] or not request.data["username"].strip():
-            return Response({"No username entered."}, status=status.HTTP_400_BAD_REQUEST)
-               
-               # check for invalid emaila and invalid password
-        correspondingAccount = User.objects.filter(email=request.data["username"]).first()
-        if correspondingAccount is None or not check_password(request.data["password"], correspondingAccount.password):
-            return Response({"Incorrect email address or password."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"No username entered."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+            # check for invalid emaila and invalid password
+        correspondingAccount = User.objects.filter(
+            email=request.data["username"]
+        ).first()
+        if correspondingAccount is None or not check_password(
+            request.data["password"], correspondingAccount.password
+        ):
+            return Response(
+                {"Incorrect email address or password."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
