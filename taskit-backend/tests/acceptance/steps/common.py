@@ -2,7 +2,7 @@ from behave import given, then
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from tasklists.models import Task
-from hamcrest import assert_that, not_none, equal_to
+from hamcrest import assert_that, not_none, equal_to, none
 
 User = get_user_model()
 
@@ -65,12 +65,29 @@ def step_impl(context):
     pass
 
 @then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"')
+# def step_impl(context,email,name,due_date,estimated_duration,weight):
+#     task = Task.objects.filter(description=name).first()
+#     if(email != "NULL"):
+#         assert_that(task.owner, equal_to(User.objects.filter(email=email).first())) 
+#     assert_that(task.description, equal_to(name))
+#     assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+#     assert_that(str(int(task.estimated_duration.total_seconds())//60), equal_to(estimated_duration))
+#     if(weight != "NULL"):
+#         assert_that(str(task.weight), equal_to(weight))
 def step_impl(context,email,name,due_date,estimated_duration,weight):
     task = Task.objects.filter(description=name).first()
     if(email != "NULL"):
         assert_that(task.owner, equal_to(User.objects.filter(email=email).first())) 
     assert_that(task.description, equal_to(name))
-    assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
-    assert_that(str(int(task.estimated_duration.total_seconds())//60), equal_to(estimated_duration))
+    if due_date != "NULL":
+        assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    else:
+        assert_that(task.due_datetime, none()) 
+    if estimated_duration != "NULL":
+        assert_that(str(int(task.estimated_duration.total_seconds())//60), equal_to(estimated_duration))
+    else:
+        assert_that(task.estimated_duration, none())
+
     if(weight != "NULL"):
         assert_that(str(task.weight), equal_to(weight))
+    
