@@ -4,10 +4,20 @@ from accounts.models import User
 from datetime import datetime, timedelta, date, timezone
 import math
 
+
 class TaskManager(models.Manager):
-    def create_task(self, owner, description, due_datetime, estimated_duration, weight, state):
-        task = self.create(owner=owner, description=description, due_datetime=due_datetime, estimated_duration=estimated_duration, weight=weight)
+    def create_task(
+        self, owner, description, due_datetime, estimated_duration, weight, state
+    ):
+        task = self.create(
+            owner=owner,
+            description=description,
+            due_datetime=due_datetime,
+            estimated_duration=estimated_duration,
+            weight=weight,
+        )
         return task
+
 
 class TaskManager(models.Manager):
     def create_task(
@@ -40,9 +50,13 @@ class Task(models.Model):
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
     state = models.CharField(
-        default=TaskState.NotStarted, null=False, blank=False, choices=TaskState.choices, max_length=2
+        default=TaskState.NotStarted,
+        null=False,
+        blank=False,
+        choices=TaskState.choices,
+        max_length=2,
     )
-    
+
     objects = TaskManager()
 
     def get_urgency(self):

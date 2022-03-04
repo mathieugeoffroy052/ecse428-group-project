@@ -30,11 +30,6 @@ def update_state(request, pk):
     request = request.data
     if not request["state"]:
         return Response("Invalid task state", status=status.HTTP_400_BAD_REQUEST)
-    new_state = request["state"]
-    try:
-        Task.TaskState[new_state]
-    except KeyError:
-        return Response("Invalid task state", status=status.HTTP_400_BAD_REQUEST)
     try:
         t = Task.objects.get(pk=pk)
         s = TaskSerializer(t, data={"state": request["state"]}, partial=True)
@@ -45,8 +40,8 @@ def update_state(request, pk):
             return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
     except Task.DoesNotExist:
 
-        return Response('Exception: Data Not Found', status=status.HTTP_400_BAD_REQUEST)
-  
+        return Response("Exception: Data Not Found", status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["GET", "POST", "DELETE"])
 def task_list(request):
@@ -111,4 +106,3 @@ def remove_task(request):
         return Response({"success": "Task deleted"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
-

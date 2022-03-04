@@ -49,45 +49,22 @@ def step_impl(context, email):
     context.client.force_authenticate(user=user)
     print(f"Logging in user {email}")
 
-@given('All users are logged out')
+
+@given("All users are logged out")
 def step_impl(context):
     client = context.client
     client.logout()
 
-@then(u'The message "{message}" shall be displayed')
-def step_impl(context,message):
+
+@then('The message "{message}" shall be displayed')
+def step_impl(context, message):
     msg = context.response.data
     assert_that(msg, not_none())
-    assert_that(message in msg, f'Expected response containing {message} but received {msg}')
+    assert_that(
+        message in msg, f"Expected response containing {message} but received {msg}"
+    )
 
-@then('The user shall be at the login page')
+
+@then("The user shall be at the login page")
 def step_impl(context):
     pass
-
-@then(u'"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"')
-# def step_impl(context,email,name,due_date,estimated_duration,weight):
-#     task = Task.objects.filter(description=name).first()
-#     if(email != "NULL"):
-#         assert_that(task.owner, equal_to(User.objects.filter(email=email).first())) 
-#     assert_that(task.description, equal_to(name))
-#     assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
-#     assert_that(str(int(task.estimated_duration.total_seconds())//60), equal_to(estimated_duration))
-#     if(weight != "NULL"):
-#         assert_that(str(task.weight), equal_to(weight))
-def step_impl(context,email,name,due_date,estimated_duration,weight):
-    task = Task.objects.filter(description=name).first()
-    if(email != "NULL"):
-        assert_that(task.owner, equal_to(User.objects.filter(email=email).first())) 
-    assert_that(task.description, equal_to(name))
-    if due_date != "NULL":
-        assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
-    else:
-        assert_that(task.due_datetime, none()) 
-    if estimated_duration != "NULL":
-        assert_that(str(int(task.estimated_duration.total_seconds())//60), equal_to(estimated_duration))
-    else:
-        assert_that(task.estimated_duration, none())
-
-    if(weight != "NULL"):
-        assert_that(str(task.weight), equal_to(weight))
-    assert_that(task.state, (equal_to("NS")))
