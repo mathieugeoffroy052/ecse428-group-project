@@ -40,7 +40,7 @@ class Task(models.Model):
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
     state = models.CharField(
-        default=None, null=True, blank=True, choices=TaskState.choices, max_length=2
+        default=TaskState.NotStarted, null=False, blank=False, choices=TaskState.choices, max_length=2
     )
     
     objects = TaskManager()

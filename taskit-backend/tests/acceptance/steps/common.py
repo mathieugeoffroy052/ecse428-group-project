@@ -90,4 +90,4 @@ def step_impl(context,email,name,due_date,estimated_duration,weight):
 
     if(weight != "NULL"):
         assert_that(str(task.weight), equal_to(weight))
-    
+    assert_that(task.state, (equal_to("NS")))
