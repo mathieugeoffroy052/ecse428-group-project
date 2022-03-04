@@ -1,5 +1,4 @@
 from django.urls import path
-
 from tasklists.views import public, private, update_state, task_list
 
 urlpatterns = [

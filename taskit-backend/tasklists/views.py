@@ -20,6 +20,7 @@ def private(request):
 @api_view(["PUT"])
 def update_state(request, pk):
     """
+    PUT
     "/api/update-state/<pk>"
         where pk = primary key (or id) of task
 
@@ -39,7 +40,6 @@ def update_state(request, pk):
         else:
             return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
     except Task.DoesNotExist:
-
         return Response("Exception: Data Not Found", status=status.HTTP_400_BAD_REQUEST)
 
 
