@@ -12,8 +12,6 @@ stages:
           - task: UsePythonVersion@0
             inputs:
               versionSpec: "3.10"
-          - script: git checkout $(Build.SourceBranchName)
-            displayName: "Checkout the current branch"
           - script: python -m pip install --upgrade pip setuptools wheel
             displayName: "Install or upgrade pip, setuptools and wheel"
           - script: |
@@ -48,8 +46,6 @@ stages:
           - task: NodeTool@0
             inputs:
               versionSpec: "16.x"
-          - script: git checkout $(Build.SourceBranchName)
-            displayName: "Checkout the current branch"
           - script: npm install
             workingDirectory: taskit-frontend
             displayName: "Install dependencies"
