@@ -12,8 +12,6 @@ stages:
           - task: UsePythonVersion@0
             inputs:
               versionSpec: "3.10"
-          - script: git checkout $(Build.SourceBranchName)
-            displayName: "Checkout the current branch"
           - script: python -m pip install --upgrade pip setuptools wheel
             displayName: "Install or upgrade pip, setuptools and wheel"
           - script: |
