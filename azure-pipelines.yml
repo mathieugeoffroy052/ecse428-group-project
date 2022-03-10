@@ -46,8 +46,6 @@ stages:
           - task: NodeTool@0
             inputs:
               versionSpec: "16.x"
-          - script: git checkout $(Build.SourceBranchName)
-            displayName: "Checkout the current branch"
           - script: npm install
             workingDirectory: taskit-frontend
             displayName: "Install dependencies"
