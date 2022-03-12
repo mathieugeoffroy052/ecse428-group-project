@@ -5,6 +5,7 @@ import optional
 
 optional.init_opt_()
 
+
 @when("The user attempts to view all their tasks")
 def step_impl(context):
     try:
