@@ -37,7 +37,7 @@ Feature: Update task status
       | email                    | name                             | due_date   | estimated_duration | weight | old_state   | new_state                 | error |
       | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-06 | 1576800            | NULL   | Not started | Working on it             | "Invalid task state" |
       | anakin.skywalker@gar.gov | See through the lies of the Jedi | 2022-02-07 | 30                 | 75     | In progress | Master of organization    |  "Invalid task state"  |
-      | obi-wan.kenobi@gar.gov  | Train Luke                       | NULL       | NULL               | 100    | Not started | BOB                       |  "Invalid task state"  |
+      | obi-wan.kenobi@gar.gov   | Train Luke                       | NULL       | NULL               | 100    | Not started | BOB                       |  "Invalid task state"  |
 
   Scenario Outline: Attempt to update a task without being logged in (error flow)
     Given All users are logged out
