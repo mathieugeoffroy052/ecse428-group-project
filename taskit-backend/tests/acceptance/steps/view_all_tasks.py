@@ -1,20 +1,9 @@
-from tasklists.models import Task
-from behave import given, then, when
+from behave import then, when
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
-import json
 import optional
-from datetime import datetime, timedelta, date
-from django.contrib.auth import get_user_model
 
 optional.init_opt_()
-
-# @given('"{email}" is logged in')
-# def step_impl(context, email):
-#     user = User.objects.filter(email=email).first()
-#     context.client.force_authenticate(user=user)
-#     print(f"Logging in user {email}")
-
 
 @when("The user attempts to view all their tasks")
 def step_impl(context):
