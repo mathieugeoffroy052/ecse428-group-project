@@ -115,4 +115,4 @@ def step_impl(context, error):
     assert_that(
         error in json.dumps(context.response.data),
         f"Expected response containing {error} but received {context.response.data}",
-   )
+    )

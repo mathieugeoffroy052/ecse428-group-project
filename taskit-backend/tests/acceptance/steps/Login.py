@@ -38,6 +38,7 @@ def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(400))
 
+
 @then('The error message "{error}" shall be displayed')
 def step_impl(context, error):
     e = context.error
