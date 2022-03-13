@@ -64,13 +64,6 @@ def step_impl(context, message):
         message in msg, f"Expected response containing {message} but received {msg}"
     )
 
-# @then('The message "{message}" shall be displayed')
-# def step_impl(context, message):
-#     msg = context.response.data
-#     assert_that(msg, not_none())
-#     assert_that(
-#         message in msg, f"Expected response containing {message} but received {msg}"
-#     )
 
 @then('The message "{message}" shall be displayed')
 def step_impl(context, message):

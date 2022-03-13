@@ -56,6 +56,22 @@ def step_impl(context, name):
     assert_that(task, not_none())
 
 
+@then(
+    '"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"'
+)
+def step_impl(context, email, name, due_date, estimated_duration, weight):
+    task = Task.objects.filter(description=name).first()
+    if email != "NULL":
+        assert_that(task.owner, equal_to(User.objects.filter(email=email).first()))
+    assert_that(task.description, equal_to(name))
+    assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    assert_that(
+        str(int(task.estimated_duration.total_seconds())), equal_to(estimated_duration)
+    )
+    if weight != "NULL":
+        assert_that(str(task.weight), equal_to(weight))
+
+
 @then('the number of tasks in the system shall be "5"')
 def step_impl(context):
     assert len(Task.objects.all()) == 5
@@ -67,25 +83,8 @@ def step_impl(context):
         assert_that(context.response.status_code, equal_to(400))
 
 
-@then(
-    '"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "Not started"'
-)
-def step_impl(context, email, name, due_date, estimated_duration, weight):
-    task = Task.objects.filter(description=name).first()
-    if email != "NULL":
-        assert_that(task.owner, equal_to(User.objects.filter(email=email).first()))
-    assert_that(task.description, equal_to(name))
-    if due_date != "NULL":
-        assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
-    else:
-        assert_that(task.due_datetime, none())
-    if estimated_duration != "NULL":
-        assert_that(
-            str(int(task.estimated_duration.total_seconds()) // 60),
-            equal_to(estimated_duration),
-        )
-    else:
-        assert_that(task.estimated_duration, none())
-
-    if weight != "NULL":
-        assert_that(str(task.weight), equal_to(weight))
+@then('The message "{message}" shall be shown')
+def step_impl(context, message):
+    msg = context.response.data["success"]
+    assert_that(msg, not_none())
+    assert_that(message in msg)
