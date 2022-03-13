@@ -5,9 +5,12 @@ import optional
 
 
 optional.init_opt_()
-    
-@when('The user attempts to log in with email address "{email:opt_?}" and password "{password:opt_?}"')
-def step_when_the_user_attempts_to(context,email,password):
+
+
+@when(
+    'The user attempts to log in with email address "{email:opt_?}" and password "{password:opt_?}"'
+)
+def step_when_the_user_attempts_to(context, email, password):
     request_data = {
         "username": email if email != None else "",
         "password": password if password != None else "",

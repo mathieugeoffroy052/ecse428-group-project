@@ -11,6 +11,7 @@ optional.init_opt_()
 
 # SCENARIO 1 (NORMAL FLOW)
 
+
 @when('"{email}" attempts to remove their "{task_name:opt_?}" task due on "{due_date}"')
 def step_impl(context, email, task_name, due_date):
     # check the number of tasks that the user has before removing

@@ -20,4 +20,3 @@ def step_impl(context):
     assert_that(context.response.status_code, equal_to(204))
     # assert_that(context.response, equal_to(None))
     assert_that(context.error, none())
-
