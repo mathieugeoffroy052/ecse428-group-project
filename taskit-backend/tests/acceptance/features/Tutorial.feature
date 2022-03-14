@@ -5,27 +5,24 @@ Feature: Tutorial
         Given The following users exist:
             | email                        | password      |
             | luke.skywalker@rebellion.com | jediknight457 |
-        Given The following status:
-            | email                        | has_seen_tutorial |
-            | luke.skywalker@rebellion.com | false             |
-        Given The following users are logged out:
-            | email                        | password      |
-            | luke.skywalker@rebellion.com | jediknight457 |
 
     Scenario Outline: Sucessfully view tutorial before first login (normal flow)
+        Given The user "<email>" is logged out
+        And The user status "<has_seen_tutorial>" for user "<email>" is "false"
         When The user "<email>" attempts to play the tutorial
-        Then The user shall view the tutorial
+        Then The user "<email>" shall view the tutorial
         And The message "Tutorial viewed succesfully." shall be displayed
-        And the user status "<has_seen_tutorial" shall be "true" upon logging in
+        And The user status "<has_seen_tutorial" for user "<email>" shall be "true" upon logging in
 
         Examples:
             | email                        | has_seen_tutorial |
             | luke.skywalker@rebellion.com | true              |
 
-    Scenario Outline: Sucessfully skip tutorial (alternative flow)
-        When The user "<email>" attempts to skip the tutorial
-        Then The message "Tutorial skipped succesfully." shall be displayed
-        And the user status "<has_seen_tutorial" shall be "true" upon logging in
+    Scenario Outline: Attempt to watch tutorial after being logged in (error flow)
+        Given The user "<email>" is logged in
+        And The user status "<has_seen_tutorial>" for user "<email>" is "true"
+        When The user "<email>" attempts to view the tutorial
+        Then The error message "You have already viewed the tutorial." shall be displayed
 
         Examples:
             | email                        | has_seen_tutorial |
