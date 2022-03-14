@@ -1,6 +1,7 @@
 from behave import given
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from tasklists.models import Task
 
 User = get_user_model()
@@ -10,13 +11,18 @@ User = get_user_model()
 def step_impl(context):
     for row in context.table:
         user = User.objects.create_user(row["email"], row["password"])
+        context.user_pwd[row["email"]] = row["password"]
         user.save()
 
 
 @given('"{email}" is logged in')
 def step_impl(context, email):
     user = User.objects.filter(email=email).first()
-    context.client.force_authenticate(user)
+    resp = context.client.post(
+        reverse("login"),
+        {"username": str(user), "password": context.user_pwd[str(user)]},
+    )
+    context.client.credentials(HTTP_AUTHORIZATION="Token " + resp.data["token"])
 
 
 @given("The following tasks exist")
