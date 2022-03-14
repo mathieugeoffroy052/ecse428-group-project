@@ -7,12 +7,6 @@ Feature: Organize Tasks
       | obi-wan.kenobi@gar.gov       | jedimaster123 |
       | anakin.skywalker@gar.gov     | jediknight456 |
       | luke.skywalker@rebellion.com | jediknight457 |
-    Given The following tasks exist:
-      | email                    | task_name                        | due_date   | estimated_duration | weight | state       | list_name |
-      | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-06 | 1576800            | 90     | Not started | null      |
-      | anakin.skywalker@gar.gov | See through the lies of the Jedi | 2022-02-07 | 30                 | 75     | In progress | null      |
-      | anakin.skywalker@gar.gov | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    | null      |
-      | obi-wan.kenobi@gar.gov   | Train Luke                       | NULL       | NULL               | 100    | Not started | null      |
 
     Given The following lists exist:
       | list_name                        |
