@@ -26,7 +26,6 @@ Feature: Update task status
       | anakin.skywalker@gar.gov | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    |
       | obi-wan.kenobi@gar.gov   | Train Luke                       | NULL       | NULL               | 100    | In progress |
 
-
   Scenario Outline: Attempt to update a task without being logged in (error flow)
     Given All users are logged out
     When The user attempts to update the status of the task "<task_name>" to "<new_state>"
