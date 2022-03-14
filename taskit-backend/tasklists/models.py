@@ -6,9 +6,7 @@ import math
 
 
 class TaskManager(models.Manager):
-    def create_task(
-        self, owner, description, due_datetime, estimated_duration, weight
-    ):
+    def create_task(self, owner, description, due_datetime, estimated_duration, weight):
         task = self.create(
             owner=owner,
             description=description,
