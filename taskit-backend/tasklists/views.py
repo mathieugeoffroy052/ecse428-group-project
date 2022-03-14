@@ -29,6 +29,8 @@ def update_state(request, pk):
     }
     """
     request = request.data
+    if not request["state"]:
+        return Response("Invalid task state", status=status.HTTP_400_BAD_REQUEST)
     try:
         t = Task.objects.get(pk=pk)
         s = TaskSerializer(t, data={"state": request["state"]}, partial=True)

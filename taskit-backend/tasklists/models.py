@@ -24,9 +24,9 @@ class Task(models.Model):
     """
 
     class TaskState(models.TextChoices):
-        NotStarted = "NS", "Not Started"
-        InProgress = "IP", "In Progress"
-        Completed = "C", "Completed"
+        NotStarted = "NS", gettext_lazy("Not started")
+        InProgress = "IP", gettext_lazy("In progress")
+        Complete = "C", gettext_lazy("Complete")
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
@@ -34,7 +34,11 @@ class Task(models.Model):
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
     weight = models.IntegerField(default=None, blank=True, null=True)
     state = models.CharField(
-        default=None, null=True, blank=True, choices=TaskState.choices, max_length=2
+        default=TaskState.NotStarted,
+        null=False,
+        blank=False,
+        choices=TaskState.choices,
+        max_length=2,
     )
 
     objects = TaskManager()

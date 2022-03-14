@@ -7,12 +7,6 @@ import optional
 optional.init_opt_()
 
 
-@given("All users are logged out")
-def step_impl(context):
-    client = context.client
-    client.logout()
-
-
 @when(
     'The user attempts to log in with email address "{email:opt_?}" and password "{password:opt_?}"'
 )
