@@ -1,20 +1,9 @@
-from accounts.models import User
-from tasklists.models import Task
-from behave import given, then, when
+from behave import then, when
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none
-import json
 import optional
-from datetime import datetime, timedelta, date
 
 optional.init_opt_()
-
-
-# @given('"{email}" is logged in')
-# def step_impl(context, email):
-#     user = User.objects.filter(email=email).first()
-#     context.client.force_authenticate(user=user)
-#     print(f"Logging in user {email}")
 
 
 @when("The user attempts to view all their tasks")
@@ -22,6 +11,8 @@ def step_impl(context):
     try:
         context.response = context.client.get(reverse("task_list"))
         print(f"Response: {context.response}")
+        print(f"Response: {context.response.data}")
+
     except BaseException as e:
         print(f"Exception: {e}")
         context.error = e
