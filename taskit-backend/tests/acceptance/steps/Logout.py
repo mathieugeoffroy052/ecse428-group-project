@@ -7,8 +7,7 @@ from hamcrest import assert_that, equal_to, none
 @when('"{email}" attempts to log out')
 def step_impl(context, email):
     try:
-        request_data = {"user": User.objects.filter(email=email).first()}
-        context.response = context.client.post(reverse("logout"), request_data)
+        context.response = context.client.post(reverse("logout"))
         print(context.response)
     except BaseException as e:
         context.error = e
