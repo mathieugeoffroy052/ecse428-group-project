@@ -1,4 +1,4 @@
-Feature: Edit task
+Feature: Add task to list
   To keep my task list in order
   As a user
   I wish to edit the properties of my tasks.
@@ -32,7 +32,7 @@ Feature: Edit task
     Then "__obi-wan-kenobi__" shall not have a task called "Train Anakin" in the list with id "ob_list1" and name "Students to train"
     And The message "Task added to list succesfully." shall be displayed
 
-  Scenario Outline: Attempt to add a task to a list that does not exist (error flow)
+  Scenario: Attempt to add a task to a list that does not exist (error flow)
     Given "__anakin-skywalker__" is logged in
     When The user attempts to edit add the task of "__obi-wan-kenobi__" called "Train Luke" to the list with id "ob_list3" and name "Things for Luke"
     Then "__obi-wan-kenobi__" shall have a task called "Train Luke" in the list with id "null"
