@@ -37,7 +37,6 @@ def step_impl(context):
             due_date,
             duration,
             int(row["weight"]),
-            row["state"],
         )
         task.save()
 

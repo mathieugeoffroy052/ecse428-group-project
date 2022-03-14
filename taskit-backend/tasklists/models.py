@@ -4,24 +4,9 @@ from accounts.models import User
 from datetime import datetime, timedelta, date, timezone
 import math
 
-
 class TaskManager(models.Manager):
     def create_task(
-        self, owner, description, due_datetime, estimated_duration, weight, state
-    ):
-        task = self.create(
-            owner=owner,
-            description=description,
-            due_datetime=due_datetime,
-            estimated_duration=estimated_duration,
-            weight=weight,
-        )
-        return task
-
-
-class TaskManager(models.Manager):
-    def create_task(
-        self, owner, description, due_datetime, estimated_duration, weight, state
+        self, owner, description, due_datetime, estimated_duration, weight
     ):
         task = self.create(
             owner=owner,
