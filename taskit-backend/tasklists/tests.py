@@ -60,21 +60,6 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.json()["weight"], 20)
         self.assertEqual(response.json()["state"], "NS")
 
-    def test_remove_state(self):
-        self.client.force_authenticate(user=self.user)
-        pk = self.t1.pk
-        response = self.client.put(
-            reverse("update_state", args=[pk]),
-            json.dumps({"state": None}),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["description"], "Make dinner")
-        self.assertEqual(response.json()["due_datetime"], "2022-03-01T17:30:30-05:00")
-        self.assertEqual(response.json()["weight"], 10)
-        self.assertEqual(response.json()["state"], None)
-
     def test_update_nonexisting_task(self):
         self.client.force_authenticate(user=self.user)
         pk = self.t2.pk + 100
