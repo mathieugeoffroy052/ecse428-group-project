@@ -1,5 +1,5 @@
 Feature: Remove task
-  As a user, I wish to be able to delete my task list
+  As a user, I wish to delete my task list
 
   Background:
     Given The following users exist:
@@ -25,12 +25,11 @@ Feature: Remove task
       | anakin.skywalker@gar.gov | fight darth maul                 | fight people       | 2022-02-07 | 30                 | 75     | In progress |
       | anakin.skywalker@gar.gov | Luke Skywalker                   | fight people       | 2022-02-07 | 5                  | 25     | Complete    |
   
-  
   Scenario Outline: Successfully remove a task list (normal flow)
     Given "<email>" is logged in to their account
-    When the user "<email>" attempts to delete the task list "<task_list_name>"
-    Then the task list "<task_list_name>" shall be deleted
-    And the user "<email>" shall have no task list "<task_list_name>"
+    When The user "<email>" attempts to delete the task list "<task_list_name>"
+    Then The task list "<task_list_name>" shall be deleted
+    Then The user "<email>" shall have no task list "<task_list_name>"
     And The message "Task list deleted successfully." shall be displayed
 
     Examples:
@@ -42,9 +41,10 @@ Feature: Remove task
 
   Scenario Outline: Attempt to delete a task list with invalid parameters (error flow)
     Given "<email>" is logged in to their account
-    When the user "<email>" attempts to delete the task list "<task_list_name>"
-    Then the no task list shall be deleted
-    And an error message "<error>" shall be raised
+    When The user "<email>" attempts to delete the task list "<task_list_name>"
+    Then No task list shall be deleted
+    And An error message "<error>" shall be raised
+    
     Examples:
       | email                        | task_list_name      | error                                 |
       | obi-wan.kenobi@gar.gov       | say memorable quotes| This task list does not exist.        |
@@ -54,9 +54,10 @@ Feature: Remove task
 
   Scenario Outline: Attempt to delete a task list with invalid parameters (error flow)
     Given All users are logged out
-    When the user "<email>" attempts to delete the task list "<task_list_name>"
-    Then the no task list shall be deleted
-    And the error message "Authentication credentials were not provided." shall be displayed
+    When The user "<email>" attempts to delete the task list "<task_list_name>"
+    Then No task list shall be deleted
+    And The error message "Authentication credentials were not provided." shall be displayed
+    
     Examples:
       | email                        | task_list_name   |
       | obi-wan.kenobi@gar.gov       | train people     |
