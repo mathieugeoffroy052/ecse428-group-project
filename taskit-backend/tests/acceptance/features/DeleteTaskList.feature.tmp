@@ -1,4 +1,4 @@
-Feature: Remove task
+Feature: Delete task list
   As a user, I wish to delete my task list
 
   Background:
