@@ -1,0 +1,55 @@
+Feature: Organize Tasks
+  As a user, I wish to create a task list.
+
+  Background:
+    Given The following users exist:
+      | email                        | password      |
+      | obi-wan.kenobi@gar.gov       | jedimaster123 |
+      | anakin.skywalker@gar.gov     | jediknight456 |
+      | luke.skywalker@rebellion.com | jediknight457 |
+    Given The following tasks exist:
+      | email                    | task_name                        | due_date   | estimated_duration | weight | state       | list_name |
+      | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-06 | 1576800            | 90     | Not started | null      |
+      | anakin.skywalker@gar.gov | See through the lies of the Jedi | 2022-02-07 | 30                 | 75     | In progress | null      |
+      | anakin.skywalker@gar.gov | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    | null      |
+      | obi-wan.kenobi@gar.gov   | Train Luke                       | NULL       | NULL               | 100    | Not started | null      |
+
+    Given The following lists exist:
+      | list_name                        |
+      | Achieve victory in the monarchy  |
+      | Obliterate the tomato metropolis |
+
+  Scenario Outline: Successfully add task list (normal flow)
+    Given "<email>" is logged in
+    When The user "<email>" attempts to create the task list "<name>"
+    Then the task list "<name>" shall exist in the system
+    Then "<email>" shall have a task list called "<name>"
+    Then the number of task lists in the system shall be "3"
+    And The message "Task list created succesfully." shall be displayed
+
+    Examples:
+      | email                        | name                               |
+      | obi-wan.kenobi@gar.gov       | Accompany ally to the wet swamp    |
+      | anakin.skywalker@gar.gov     | Heal injured ally                  |
+      | luke.skywalker@rebellion.com | Drink carafe rapidly               |
+
+  Scenario Outline: Create a task list with invalid parameters (error flow)
+    Given "<email>" is logged in
+    When the user "<email>" attempts to create the task list "<name>"
+    Then no new task list shall be created
+    Then an error message "<error>" shall be raised
+
+    Examples:
+      | email                    | name         | error                        |
+      | obi-wan.kenobi@gar.gov   | NULL         | This field may not be blank. |
+      | anakin.skywalker@gar.gov |              | This field may not be blank. |
+
+  Scenario Outline: Attempt to create task list without being logged in (error flow)
+    Given All users are logged out
+    When The user attempts to create the task list of "<email>" called "<name>"
+    Then no new task list shall be created
+    Then The error message "Authentication credentials were not provided." shall be displayed
+
+    Examples:
+      | email                  | name                      |
+      | obi-wan.kenobi@gar.gov | Spend virtual currency    |
