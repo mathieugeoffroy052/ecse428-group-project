@@ -25,7 +25,7 @@ Feature: Delete task list
       | anakin.skywalker@gar.gov | fight darth maul                 | fight people       | 2022-02-07 | 30                 | 75     | In progress |
       | anakin.skywalker@gar.gov | Luke Skywalker                   | fight people       | 2022-02-07 | 5                  | 25     | Complete    |
   
-  Scenario Outline: Successfully remove a task list (normal flow)
+  Scenario Outline: Successfully delete a task list (normal flow)
     Given "<email>" is logged in to their account
     When The user "<email>" attempts to delete the task list "<task_list_name>"
     Then The task list "<task_list_name>" shall be deleted
