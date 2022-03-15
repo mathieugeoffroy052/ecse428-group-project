@@ -2,23 +2,14 @@ Feature: View Tutorial
     As a first time user of TaskIt, I want to see a tutorial on how to use the system, so that I can learn how to use the system.
 
     Background:
-        Given The user "<email>" luke.skywalker@rebellion.com exists
+        Given There exists a user with email "luke.skywalker@rebellion.com" and password "jediknight457"
 
     Scenario Outline: Sucessfully view tutorial after first login (normal flow)
-        Given The user status "<has_seen_tutorial>" for user "<email>" is "false"
-        When The user "<email>" logs in with password "<password>"
-        Then The user status "<has_seen_tutorial>" for user "<email>" shall be "true"
+        Given The user status "<has_seen_tutorial>" for user with email "luke.skywalker@rebellion.com" is "false"
+        When The user attempts to log in with email address "luke.skywalker@rebellion.com" and password "jediknight457"
+        Then The user status "<has_seen_tutorial>" for user "luke.skywalker@rebellion.com" shall be "true"
 
-        Examples:
-            | email                        | password      | has_seen_tutorial |
-            | luke.skywalker@rebellion.com | jediknight457 | true              |
-
-    Scenario Outline: Attempt to watch tutorial after next login (error flow)
-        Given The user status "<has_seen_tutorial>" for user "<email>" is "true"
-        When The user "<email>" logs in with password "<password>"
-        Then The user status "<has_seen_tutorial>" for user "<email>" shall be "true"
-
-        Examples:
-            | email                        | password      | has_seen_tutorial |
-            | luke.skywalker@rebellion.com | jediknight457 | true              |
-
+    Scenario Outline: Attempt to watch tutorial after next login (alternate flow)
+        Given The user status "<has_seen_tutorial>" for user with email "luke.skywalker@rebellion.com" is "true"
+        When The user attempts to log in with email address "luke.skywalker@rebellion.com" and password "jediknight457"
+        Then The user status "<has_seen_tutorial>" for user "luke.skywalker@rebellion.com" shall be "true"
