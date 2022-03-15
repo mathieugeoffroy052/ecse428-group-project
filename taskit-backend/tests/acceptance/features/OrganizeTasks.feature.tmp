@@ -32,7 +32,7 @@ Feature: Organize Tasks
     Given "<email>" is logged in
     When the user "<email>" attempts to create the task list "<name>"
     Then the number of task lists in the system shall be "2"
-    There shall not be a list called "<name>"
+    Then shall not be a list called "<name>"
     Then no new task list shall be created
     Then an error message "<error>" shall be raised
 
@@ -45,6 +45,8 @@ Feature: Organize Tasks
   Scenario Outline: Attempt to create task list without being logged in (error flow)
     Given All users are logged out
     When The user attempts to create the task list of "<email>" called "<name>"
+    Then the number of task lists in the system shall be "2"
+    Then shall not be a list called "<name>"
     Then no new task list shall be created
     Then The error message "Authentication credentials were not provided." shall be displayed
 
