@@ -5,11 +5,13 @@ Feature: View Tutorial
         Given There exists a user with email "luke.skywalker@rebellion.com" and password "jediknight457"
 
     Scenario Outline: Sucessfully view tutorial after first login (normal flow)
-        Given The user status "<has_seen_tutorial>" for user with email "luke.skywalker@rebellion.com" is "false"
+        Given The user status "<has_seen_tutorial>" for the user with email "luke.skywalker@rebellion.com" is "false"
         When The user attempts to log in with email address "luke.skywalker@rebellion.com" and password "jediknight457"
-        Then The user status "<has_seen_tutorial>" for user "luke.skywalker@rebellion.com" shall be "true"
+        Then The user "luke.skywalker@rebellion.com" shall view the tutorial
+        And The user status "<has_seen_tutorial>" for the user "luke.skywalker@rebellion.com" shall be "true"
 
-    Scenario Outline: Attempt to watch tutorial after next login (alternate flow)
-        Given The user status "<has_seen_tutorial>" for user with email "luke.skywalker@rebellion.com" is "true"
+    Scenario Outline: Attempt to watch tutorial after next login (error flow)
+        Given The user status "<has_seen_tutorial>" for the user with email "luke.skywalker@rebellion.com" is "true"
         When The user attempts to log in with email address "luke.skywalker@rebellion.com" and password "jediknight457"
-        Then The user status "<has_seen_tutorial>" for user "luke.skywalker@rebellion.com" shall be "true"
+        Then The user status "<has_seen_tutorial>" for the user "luke.skywalker@rebellion.com" shall be "true"
+        And The error message "You have already viewed the tutorial." shall be displayed
