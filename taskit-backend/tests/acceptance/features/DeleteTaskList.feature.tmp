@@ -30,6 +30,7 @@ Feature: Delete task list
     When The user "<email>" attempts to delete the task list "<task_list_name>"
     Then The task list "<task_list_name>" shall be deleted
     Then The user "<email>" shall have no task list "<task_list_name>"
+    Then The number of lists in the system shall be "3"
     Then The tasks that were in "<task_list_name>" will be assigned to no lists
     And The message "Task list deleted successfully." shall be displayed
 
@@ -44,6 +45,8 @@ Feature: Delete task list
     Given "<email>" is logged in to their account
     When The user "<email>" attempts to delete the task list "<task_list_name>"
     Then No task list shall be deleted
+    Then The number of lists in the system shall be "4"
+    Then The user "<email>" shall have a list called "<task_list_name>"
     And An error message "<error>" shall be raised
     
     Examples:
@@ -57,6 +60,8 @@ Feature: Delete task list
     Given All users are logged out
     When The user "<email>" attempts to delete the task list "<task_list_name>"
     Then No task list shall be deleted
+    Then The number of lists in the system shall be "4"
+    Then The user "<email>" shall have a list called "<task_list_name>"
     And The error message "Authentication credentials were not provided." shall be displayed
     
     Examples:
