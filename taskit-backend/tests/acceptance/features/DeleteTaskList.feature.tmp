@@ -30,6 +30,7 @@ Feature: Delete task list
     When The user "<email>" attempts to delete the task list "<task_list_name>"
     Then The task list "<task_list_name>" shall be deleted
     Then The user "<email>" shall have no task list "<task_list_name>"
+    Then The tasks that were in "<task_list_name>" will be assigned to no lists
     And The message "Task list deleted successfully." shall be displayed
 
     Examples:
