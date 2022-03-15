@@ -16,7 +16,7 @@ Feature: Delete task list
 
     Given The following tasks exist:
       | email                    | task_name                        | task_list_name     | due_date   | estimated_duration | weight | state       |
-      | obi-wan.kenobi@gar.gov   | Train Anakin                     | train people       | 1576800    | 90                 | 40     |Not started  |
+      | obi-wan.kenobi@gar.gov   | Train Anakin                     | train people       | 1576800    | 90                 | 40     | Not started |
       | obi-wan.kenobi@gar.gov   | Train Luke                       | train people       | NULL       | NULL               | 100    | Not started |
       | obi-wan.kenobi@gar.gov   | fight darth vader                | fight people       | NULL       | NULL               | 50     | Not started |
       | obi-wan.kenobi@gar.gov   | fight palpatine                  | fight people       | NULL       | 400                | 100    | Not started |
@@ -27,19 +27,19 @@ Feature: Delete task list
   
   Scenario Outline: Successfully delete a task list (normal flow)
     Given "<email>" is logged in to their account
-    When The user "<email>" attempts to delete the task list "<task_list_name>"
+    When The user "<email>" attempts to delete the task list "<task_list_name>" with tasks "<task_names>"
     Then The task list "<task_list_name>" shall be deleted
     Then The user "<email>" shall have no task list "<task_list_name>"
     Then The number of lists in the system shall be "3"
-    Then The tasks that were in "<task_list_name>" will be assigned to no lists
+    Then The tasks "<task_names>" will be assigned to no lists
     And The message "Task list deleted successfully." shall be displayed
 
     Examples:
-      | email                   | task_list_name    |
-      | obi-wan.kenobi@gar.gov  | train people      | 
-      | obi-wan.kenobi@gar.gov  | fight people      |
-      | anakinskywalker@gar.gov | doubting the order|
-      | anakinskywalker@gar.gov | fight people      |   
+      | email                   | task_list_name    | task_names                                             |
+      | obi-wan.kenobi@gar.gov  | train people      | Train Anakin, Train Luke                               |
+      | obi-wan.kenobi@gar.gov  | fight people      | fight darth vader, fight palpatine                     |
+      | anakinskywalker@gar.gov | doubting the order| See through the lies of the Jedi, Kill the younglings  |
+      | anakinskywalker@gar.gov | fight people      | fight darth maul, Luke Skywalker                       |  
 
   Scenario Outline: Attempt to delete a task list with invalid parameters (error flow)
     Given "<email>" is logged in to their account
@@ -58,14 +58,15 @@ Feature: Delete task list
 
   Scenario Outline: Attempt to delete a task list with invalid parameters (error flow)
     Given All users are logged out
-    When The user "<email>" attempts to delete the task list "<task_list_name>"
+    When The user "<email>" attempts to delete the task list "<task_list_name>" with task_names
     Then No task list shall be deleted
     Then The number of lists in the system shall be "4"
     Then The user "<email>" shall have a list called "<task_list_name>"
+    Then The tasks "<task_names>" will be assigned to task list "<task_list_name>"
     And The error message "Authentication credentials were not provided." shall be displayed
     
     Examples:
-      | email                        | task_list_name   |
-      | obi-wan.kenobi@gar.gov       | train people     |
-      | anakin.skywalker@gar.gov     | fight people     |
+      | email                        | task_list_name   | task_names                        |
+      | obi-wan.kenobi@gar.gov       | train people     | Train Anakin, Train Luke          |
+      | anakin.skywalker@gar.gov     | fight people     | fight darth maul, Luke Skywalker  |
       
