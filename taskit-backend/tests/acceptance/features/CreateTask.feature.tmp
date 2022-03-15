@@ -49,7 +49,6 @@ Feature: Create task
       | email                  | name            | due_date   | estimated_duration | weight |
       | obi-wan.kenobi@gar.gov | Die a sad death | 2022-02-08 | 30                 | NULL   |
 
-  # It would have been nice to just edit the existing flow, but apparently the Scrum Alliance hasn't heard of the DRY principle
   Scenario Outline: Successfully create task (normal flow)
     Given "<email>" is logged in
     When The user "<email>" attempts to create the task "<name>", with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", and notes "<notes>"
