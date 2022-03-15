@@ -45,7 +45,7 @@
                     required>
            </el-form-item>
               
-            <div v-if="passwordError" class="error">{{ passwordError }} </div>
+            <div v-if="error" class="error">{{ error }} </div>
 
             <button  type="submit" 
                         class="submit" 
@@ -76,8 +76,7 @@ export default{
         email: "",
         password: "",
         pswdRepeat: "",
-        error: "",
-        passwordError: false,
+        error: false,
       };
     },
     methods: {
@@ -85,15 +84,20 @@ export default{
           if(this.password === this.pswdRepeat){
             this.signUpForm.email = this.email
             this.signUpForm.password = this.password
-            this.passwordError = '';
+            this.error = '';
             console.log("Sending email: " + this.signUpForm.email + " and password: " + this.signUpForm.password);
 
             axios_instance.post("/accounts/signup", this.signUpForm)
-              .then(window.location.href = "../login")
-              .catch(errors => console.log(errors))
+              .then(() => window.location.href = "../login")
+              .catch(error => {
+                if (error.response.status === 409) {
+                  this.error = 'Email already in use, please try logging in or using a different email'
+                }
+                console.log(error.message)
+              })
           } 
           else{
-            this.passwordError = 'Passwords don\'t match'
+            this.error = 'Passwords don\'t match'
             console.log("Form not submitted due to password mismatch");
           }
         }
