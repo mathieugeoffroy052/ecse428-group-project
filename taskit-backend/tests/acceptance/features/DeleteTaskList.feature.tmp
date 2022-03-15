@@ -56,7 +56,7 @@ Feature: Delete task list
       | obi-wan.kenobi@gar.gov       | NULL                | This field is blank.                  |
       | anakin.skywalker@gar.gov     |                     | This field is blank.                  |
 
-  Scenario Outline: Attempt to delete a task list with invalid parameters (error flow)
+  Scenario Outline: Attempt to delete a task list when not logged in (error flow)
     Given All users are logged out
     When The user "<email>" attempts to delete the task list "<task_list_name>" with task_names
     Then No task list shall be deleted
