@@ -9,9 +9,9 @@ Feature: Organize Tasks
       | luke.skywalker@rebellion.com | jediknight457 |
 
     Given The following lists exist:
-      | email                         | list_name                        |
-      | obi-wan.kenobi@gar.gov        | Achieve victory in the monarchy  |
-      | luke.skywalker@rebellion.com  | Obliterate the tomato metropolis |
+      | list_name                        | owner                        |                   
+      | Achieve victory in the monarchy  | obi-wan.kenobi@gar.gov       |  
+      | Obliterate the tomato metropolis | luke.skywalker@rebellion.com |
 
   Scenario Outline: Successfully add task list (normal flow)
     Given "<email>" is logged in
