@@ -3,13 +3,13 @@ Feature: Calculate task Priority
 
   Background:
     Given The following users exist:
-      | email                        | password      |
-      | obi-wan.kenobi@gar.gov       | jedimaster123 |
+      | email                  | password      |
+      | obi-wan.kenobi@gar.gov | jedimaster123 |
     Given The following tasks exist:
-      | email                    | task_name                        | due_date   | estimated_duration | weight | state       |
-      | obi-wan.kenobi@gar.gov   | Train Anakin                     | 2022-02-25 | 1576800            | 8      | Not started |
-      | obi-wan.kenobi@gar.gov   | die                              | 2022-05-07 | 5                  | 7      | Not started |
-      | obi-wan.kenobi@gar.gov   | Train Luke                       | 2022-04-25 | 45                 | 2      | Not started |
+      | email                  | task_name    | due_date   | estimated_duration | weight | state       |
+      | obi-wan.kenobi@gar.gov | Train Anakin | 2022-02-25 | 1576800            | 8      | Not started |
+      | obi-wan.kenobi@gar.gov | die          | 2022-05-07 | 5                  | 7      | Not started |
+      | obi-wan.kenobi@gar.gov | Train Luke   | 2022-04-25 | 45                 | 2      | Not started |
 
   Scenario: Successfully order tasks (normal flow)
     Given "obi-wan.kenobi@gar.gov" is logged in
