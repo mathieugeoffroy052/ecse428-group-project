@@ -22,12 +22,14 @@ class UpdateTaskStateTestCase(TestCase):
             due_datetime="2022-03-01T22:30:30+00:00",
             weight=10,
             state="NS",
+            notes="aNote",
         )
         self.t2 = Task.objects.create(
             owner=self.user,
             description="Order takeout",
             due_datetime="2022-03-01T22:30:30+00:00",
             weight=20,
+            notes="Second note",
         )
         self.client: APIClient = APIClient()
 
@@ -44,6 +46,7 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.json()["due_datetime"], "2022-03-01T17:30:30-05:00")
         self.assertEqual(response.json()["weight"], 10)
         self.assertEqual(response.json()["state"], "C")
+        self.assertEqual(response.json()["notes"], "aNote")
 
     def test_add_state(self):
         self.client.force_authenticate(user=self.user)
@@ -59,6 +62,7 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.json()["due_datetime"], "2022-03-01T17:30:30-05:00")
         self.assertEqual(response.json()["weight"], 20)
         self.assertEqual(response.json()["state"], "NS")
+        self.assertEqual(response.json()["notes"], "Second note")
 
     def test_update_nonexisting_task(self):
         self.client.force_authenticate(user=self.user)
@@ -107,6 +111,7 @@ class TaskListTestCase(TestCase):
                     "due_datetime": "2022-02-26T01:34:41+00:00",
                     "estimated_duration": "03:00:00",
                     "weight": 10000,
+                    "notes": "aNote",
                 }
             ),
             content_type="application/json",
@@ -118,6 +123,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": "2022-02-25T20:34:41-05:00",
                 "estimated_duration": "03:00:00",
                 "weight": 10000,
+                "notes": "aNote",
             },
             response.json()["data"],
         )
@@ -140,6 +146,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": None,
                 "estimated_duration": None,
                 "weight": None,
+                "notes": "",
             },
             response.json()["data"],
         )
@@ -174,6 +181,32 @@ class TaskListTestCase(TestCase):
             },
         )
 
+    def test_create_task_without_a_note(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps(
+                {
+                    "description": "Test",
+                    "due_datetime": "2022-02-26T01:34:41+00:00",
+                    "estimated_duration": "04:00:00",
+                    "weight": 10000,
+                }
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertDictContainsSubset(
+            {
+                "description": "Test",
+                "due_datetime": "2022-02-25T20:34:41-05:00",
+                "estimated_duration": "04:00:00",
+                "weight": 10000,
+                "notes": "",
+            },
+            response.json()["data"],
+        )
+
     def test_create_task_without_being_authenticated(self):
         response = self.client.post(
             reverse("task_list"),
@@ -198,6 +231,7 @@ class TaskListTestCase(TestCase):
         self.assertEqual(response.get("due_datetime"), None)
         self.assertEqual(response.get("estimated_duration"), None)
         self.assertEqual(response.get("estimated_weight"), None)
+        self.assertEqual(response.get("notes"), "")
 
     def test_get_urgency_normal(self):
         task = Task.objects.create(
@@ -207,6 +241,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": 100,
+                "notes": "New note",
             }
         )
         result = task.get_urgency()
@@ -223,6 +258,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) - timedelta(hours=2),
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": 100,
+                "notes": "New notes!",
             }
         )
         result = task.get_urgency()
@@ -239,6 +275,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": None,
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": 100,
+                "notes": "New notes!",
             }
         )
         result = task.get_urgency()
@@ -253,6 +290,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) - timedelta(hours=2),
                 "estimated_duration": None,
                 "weight": 100,
+                "notes": "New notes!",
             }
         )
         result = task.get_urgency()
@@ -267,6 +305,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": 100,
+                "notes": "New notes!",
             }
         )
         result = task.get_weight()
@@ -282,6 +321,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": None,
+                "notes": "New notes!",
             }
         )
         self.assertEqual(task.get_weight(), None)
@@ -294,6 +334,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": 100,
+                "notes": "New notes!",
             }
         )
         result = task.get_priority()
@@ -313,6 +354,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) - timedelta(hours=2),
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": 100,
+                "notes": "New notes!",
             }
         )
         result = task.get_priority()
@@ -332,6 +374,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": None,
                 "estimated_duration": None,
                 "weight": 100,
+                "notes": "New notes!",
             }
         )
         result = task.get_priority()
@@ -346,6 +389,7 @@ class TaskListTestCase(TestCase):
                 "due_datetime": datetime.now(timezone.utc) + timedelta(hours=2),
                 "estimated_duration": timedelta(days=0, hours=1),
                 "weight": None,
+                "notes": "New notes!",
             }
         )
         result = task.get_priority()

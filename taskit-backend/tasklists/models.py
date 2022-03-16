@@ -6,13 +6,16 @@ import math
 
 
 class TaskManager(models.Manager):
-    def create_task(self, owner, description, due_datetime, estimated_duration, weight):
+    def create_task(
+        self, owner, description, due_datetime, estimated_duration, weight, notes=""
+    ):
         task = self.create(
             owner=owner,
             description=description,
             due_datetime=due_datetime,
             estimated_duration=estimated_duration,
             weight=weight,
+            notes=notes,
         )
         task.save()
         return task
@@ -40,7 +43,7 @@ class Task(models.Model):
         choices=TaskState.choices,
         max_length=2,
     )
-
+    notes = models.CharField(default="", blank=True, max_length=200)
     objects = TaskManager()
 
     def get_urgency(self):
