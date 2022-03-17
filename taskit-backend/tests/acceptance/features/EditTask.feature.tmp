@@ -22,9 +22,9 @@ Feature: Edit task
     And The message "Task updated succesfully." shall be displayed
     
     Examples:
-      | owner                   | task_name           | new_task_name       | due_date  | estimated_duration  | weight  | state       | task_list_name |
-      | obi-wan.kenobi@gar.gov  | Train Anakin        | Train someone else  | 2022-02-06| 1576800             | 90      | Not started | NULL           |
-      | anakin.skywalker@gar.gov| Kill the younglings | Kill the women      | 2022-02-06| 1576800             | 90      | Not started | NULL           |
+      | owner                   | task_name           | new_task_name       | due_date   | estimated_duration  | weight  | state       | task_list_name |
+      | obi-wan.kenobi@gar.gov  | Train Anakin        | Train someone else  | 2022-02-06 | 1576800             | 90      | Not started | NULL           |
+      | anakin.skywalker@gar.gov| Kill the younglings | Kill the women      | 2022-02-07 | 5                   | 25      | Complete    | NULL           |
 
   Scenario Outline: Successfully edit due date filter (alternative flow)
     Given "<owner>" is logged in
@@ -64,6 +64,18 @@ Feature: Edit task
       | owner                   | task_name           | new_weight  | due_date  | estimated_duration  | weight  | state       | task_list_name |
       | obi-wan.kenobi@gar.gov  | Train Anakin        | 100         | 2022-02-06| 1576800             | 90      | Not started | NULL           |
 
+  Scenario Outline: Successfully edit notes field (alternative flow)
+    Given "<owner>" is logged in
+    When The user "<owner>" attempts to edit the task name "<task_name>" with note "<note>" to have new note "<new_note>"
+    Then The user "<owner>" shall have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", note "<new_note>", and task list name "<task_list_name>"
+    Then The user "<owner>" shall not have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", note "<note>", and task list name "<task_list_name>"
+    Then The number of lists in the system shall be "4"
+    And The message "Task updated succesfully." shall be displayed
+
+    Examples:
+      | owner                   | task_name           | new_weight  | due_date  | estimated_duration  | weight  | state       | task_list_name | note | new_note          |
+      | obi-wan.kenobi@gar.gov  | Train Anakin        | 100         | 2022-02-06| 1576800             | 90      | Not started | NULL           |      | something else idk| 
+
   Scenario Outline: Attempt to edit task with invalid parameters for task name (error flow)
     Given "<owner>" is logged in
     When The user "<owner>" attempts to edit the task name "<task_name>" with new task name "<new_task_name>"
@@ -74,8 +86,8 @@ Feature: Edit task
 
     Examples:
       | owner                   | task_name           | new_task_name  | due_date  | estimated_duration  | weight  | state       | task_list_name | error                          |
-      | obi-wan.kenobi@gar.gov  | Train Anakin        |                | 2022-02-06| 1576800             | 90      | Not started | NULL           | This field cannot be blank     |
-      | obi-wan.kenobi@gar.gov  | Train Anakin        | NULL           | 2022-02-06| 1576800             | 90      | Not started | NULL           | This field cannot be blank     |
+      | obi-wan.kenobi@gar.gov  | Train Anakin        |                | 2022-02-06| 1576800             | 90      | Not started | NULL           | This ${field} cannot be blank  |
+      | obi-wan.kenobi@gar.gov  | Train Anakin        | NULL           | 2022-02-06| 1576800             | 90      | Not started | NULL           | This ${field} cannot be blank  |
 
   Scenario Outline: Attempt to edit task name and filters without being logged in (error flow)
     Given All users are logged out
@@ -88,4 +100,4 @@ Feature: Edit task
   Examples:
       | owner                   | task_name           | new_task_name       | due_date  | estimated_duration  | weight  | state       | task_list_name |
       | obi-wan.kenobi@gar.gov  | Train Anakin        | Train someone else  | 2022-02-06| 1576800             | 90      | Not started | NULL           |
-      | anakin.skywalker@gar.gov| Kill the younglings | Kill the women      | 2022-02-06| 1576800             | 90      | Not started | NULL           |
+      | anakin.skywalker@gar.gov| Kill the younglings | Kill the women      | 2022-02-07 | 5                  | 25      | Complete    | NULL           |
