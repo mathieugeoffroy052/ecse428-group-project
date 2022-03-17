@@ -18,7 +18,7 @@ Feature: Edit task
     When The user "<owner>" attempts to edit the task name "<task_name>" to have name "<new_task_name>"
     Then The user "<owner>" shall have a task called "<new_task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
     Then The user "<owner>" shall not have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
-    Then The number of lists in the system shall be "4"
+    Then The number of tasks in the system shall be "4"
     And The message "Task updated succesfully." shall be displayed
     
     Examples:
@@ -31,7 +31,7 @@ Feature: Edit task
     When The user "<owner>" attempts to edit the task name "<task_name>" with due date "<due_date>" to have due date "<new_due_date>"
     Then The user "<owner>" shall have a task called "<task_name>" with due date "<new_due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
     Then The user "<owner>" shall not have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
-    Then The number of lists in the system shall be "4"
+    Then The number of tasks in the system shall be "4"
     And The message "Task updated succesfully." shall be displayed
 
     Examples:
@@ -45,7 +45,7 @@ Feature: Edit task
     When The user "<owner>" attempts to edit the task name "<task_name>" with estimated duration "<estimated_duration>" to have estimated duration "<new_estimated_duration>"
     Then The user "<owner>" shall have a task called "<task_name>" with due date "<due_date>", duration "<new_estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
     Then The user "<owner>" shall not have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
-    Then The number of lists in the system shall be "4"
+    Then The number of tasks in the system shall be "4"
     And The message "Task updated succesfully." shall be displayed
 
     Examples:
@@ -57,7 +57,7 @@ Feature: Edit task
     When The user "<owner>" attempts to edit the task name "<task_name>" with weight "<weight>" to have new weight "<new_weight>"
     Then The user "<owner>" shall have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<new_weight>", state  "<state>", and task list name "<task_list_name>"
     Then The user "<owner>" shall not have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
-    Then The number of lists in the system shall be "4"
+    Then The number of tasks in the system shall be "4"
     And The message "Task updated succesfully." shall be displayed
 
     Examples:
@@ -69,7 +69,7 @@ Feature: Edit task
     When The user "<owner>" attempts to edit the task name "<task_name>" with note "<note>" to have new note "<new_note>"
     Then The user "<owner>" shall have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", note "<new_note>", and task list name "<task_list_name>"
     Then The user "<owner>" shall not have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", note "<note>", and task list name "<task_list_name>"
-    Then The number of lists in the system shall be "4"
+    Then The number of tasks in the system shall be "4"
     And The message "Task updated succesfully." shall be displayed
 
     Examples:
@@ -81,7 +81,7 @@ Feature: Edit task
     When The user "<owner>" attempts to edit the task name "<task_name>" with new task name "<new_task_name>"
     Then The user "<owner>" shall have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
     Then The user "<owner>" shall not have a task called "<new_task_name>"
-    Then The number of lists in the system shall be "4"
+    Then The number of tasks in the system shall be "4"
     And The error message "<error>" shall be displayed
 
     Examples:
@@ -94,7 +94,7 @@ Feature: Edit task
     When The user attempts to edit the task name "<task_name>" of the user "<owner>" with new task name "<new_task_name>"
     Then The user "<owner>" shall have a task called "<task_name>" with due date "<due_date>", duration "<estimated_duration>", weight "<weight>", state  "<state>", and task list name "<task_list_name>"
     Then The user "<owner>" shall not have a task called "<new_task_name>"
-    Then The number of lists in the system shall be "4"
+    Then The number of tasks in the system shall be "4"
     And The error message "Authentication credentials were not provided." shall be displayed
 
   Examples:
