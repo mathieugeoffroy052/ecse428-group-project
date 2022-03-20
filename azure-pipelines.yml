@@ -32,8 +32,8 @@ stages:
             displayName: "Run acceptance tests"
           - task: PublishTestResults@2
             inputs:
-              testResultsFiles: "taskit-backend/tests/acceptance/reports/TEST-*.xml"
-              testRunTitle: "Unit Tests"
+              testResultsFiles: "taskit-backend/tests/acceptance/reports/TESTS-*.xml"
+              testRunTitle: "Acceptance Tests"
             condition: succeededOrFailed()
           - script: python -m black --check --diff .
             workingDirectory: taskit-backend
