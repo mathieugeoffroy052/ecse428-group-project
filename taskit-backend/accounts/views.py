@@ -54,7 +54,8 @@ class Login(KnoxLoginView):
 
     Response: {
         "expiry": "2022-02-27T04:14:53.984918-05:00",
-        "token": "262bc7d283f698efdddd8d33dcea918dcb6ce05d1a4db7e052010b444083fb98"
+        "token": "262bc7d283f698efdddd8d33dcea918dcb6ce05d1a4db7e052010b444083fb98",
+        "has_seen_tutorial": false
     }
     """
 
