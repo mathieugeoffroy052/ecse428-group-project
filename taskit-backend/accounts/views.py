@@ -79,3 +79,12 @@ class Login(KnoxLoginView):
         user = serializer.validated_data["user"]
         login(request, user)
         return super(Login, self).post(request, format=None)
+
+
+    def get_post_response_data(self, request, token, instance):
+        # Relevant documentation: https://james1345.github.io/django-rest-knox/views/#loginview
+        return {
+            "expiry": self.format_expiry_datetime(instance.expiry),
+            "token": token,
+            "has_seen_tutorial": request.user.has_seen_tutorial
+        }
