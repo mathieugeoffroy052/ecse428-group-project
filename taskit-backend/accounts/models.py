@@ -55,9 +55,7 @@ class User(AbstractUser):
         max_length=255,
         unique=True,
     )
-    has_seen_tutorial = models.BooleanField(
-        verbose_name="has seen tutorial", blank=False, null=False, default=False
-    )
+    has_seen_tutorial = models.BooleanField(default=False, null=False)
 
     objects = UserManager()
 

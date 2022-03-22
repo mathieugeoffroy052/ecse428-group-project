@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="user",
             name="has_seen_tutorial",
-            field=models.BooleanField(default=False, verbose_name="has seen tutorial"),
+            field=models.BooleanField(default=False),
         ),
     ]
