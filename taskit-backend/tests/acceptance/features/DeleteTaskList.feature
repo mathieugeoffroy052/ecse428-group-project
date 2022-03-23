@@ -16,7 +16,7 @@ Feature: Delete task list
 
     Given The following tasks exist:
       | email                    | task_name                        | task_list_name     | due_date   | estimated_duration | weight | state       |
-      | obi-wan.kenobi@gar.gov   | Train Anakin                     | train people       | 1576800    | 90                 | 40     | Not started |
+      | obi-wan.kenobi@gar.gov   | Train Anakin                     | train people       | 2022-02-07 | 90                 | 40     | Not started |
       | obi-wan.kenobi@gar.gov   | Train Luke                       | train people       | NULL       | NULL               | 100    | Not started |
       | obi-wan.kenobi@gar.gov   | fight darth vader                | fight people       | NULL       | NULL               | 50     | Not started |
       | obi-wan.kenobi@gar.gov   | fight palpatine                  | fight people       | NULL       | 400                | 100    | Not started |
@@ -46,7 +46,6 @@ Feature: Delete task list
     When The user "<email>" attempts to delete the task list "<task_list_name>"
     Then No task list shall be deleted
     Then The number of lists in the system shall be "4"
-    Then The user "<email>" shall have a list called "<task_list_name>"
     And An error message "<error>" shall be raised
     
     Examples:
@@ -58,7 +57,7 @@ Feature: Delete task list
 
   Scenario Outline: Attempt to delete a task list when not logged in (error flow)
     Given All users are logged out
-    When The user "<email>" attempts to delete the task list "<task_list_name>" with task_names
+    When The user "<email>" attempts to delete the task list "<task_list_name>" with tasks "<task_names>"
     Then No task list shall be deleted
     Then The number of lists in the system shall be "4"
     Then The user "<email>" shall have a list called "<task_list_name>"
