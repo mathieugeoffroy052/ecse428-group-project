@@ -2,8 +2,8 @@ from behave import given, then
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from tasklists.models import Task
-from hamcrest import assert_that, not_none, equal_to, none
+from tasklists.models import Task, TaskList
+from hamcrest import assert_that, equal_to, none, not_none
 
 User = get_user_model()
 
@@ -61,6 +61,14 @@ def step_impl(context):
     client.logout()
 
 
+@given("The following lists exist")
+def step_impl(context):
+    for row in context.table:
+        owner = User.objects.filter(email=row["owner"]).first()
+        list_name = row["list_name"]
+        TaskList.objects.create_task_list(owner, list_name)
+
+
 @then('The message "{message}" shall be displayed')
 def step_impl(context, message):
     msg = context.response.data["success"]
@@ -71,3 +79,8 @@ def step_impl(context, message):
 @then("The user shall be at the login page")
 def step_impl(context):
     pass
+
+
+@then(u'the number of task lists in the system shall be "{num_lists}"')
+def step_impl(_, num_lists):
+    assert_that(len(TaskList.objects.all()), equal_to(num_lists))
