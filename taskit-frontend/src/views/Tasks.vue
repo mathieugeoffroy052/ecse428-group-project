@@ -186,6 +186,17 @@
                 <el-row>
                   <el-input-number v-model="task_params.weight" :min="1" />
                 </el-row>
+                <el-row>
+                  <b>Task Notes</b>
+                </el-row>
+                <el-row>
+                  <input
+                    type="taskNotes"
+                    v-model="task_params.description"
+                    placeholder="Enter Task Notes/Details"
+                    required
+                  />
+                </el-row>
                 <hr />
                 <div>
                   <el-button
