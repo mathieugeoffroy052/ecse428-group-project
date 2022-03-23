@@ -4,6 +4,21 @@ from accounts.models import User
 from datetime import datetime, timedelta, date, timezone
 import math
 
+class TaskListManager(models.Manager):
+    def create_task_list(self, owner, list_name):
+        task_list = self.create(
+            owner=owner,
+            list_name=list_name
+        )
+        task_list.save()
+        return task_list
+class TaskList(models.Model):
+    """
+    Model for a user-defined task list.
+    """
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    list_name = models.CharField(max_length=200)
+    objects = TaskListManager()
 
 class TaskManager(models.Manager):
     def create_task(
@@ -19,8 +34,8 @@ class TaskManager(models.Manager):
         )
         task.save()
         return task
-
-
+    
+    
 class Task(models.Model):
     """
     Model for a user-defined task.
@@ -30,8 +45,8 @@ class Task(models.Model):
         NotStarted = "NS", gettext_lazy("Not started")
         InProgress = "IP", gettext_lazy("In progress")
         Complete = "C", gettext_lazy("Complete")
-
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    tasklist = models.ForeignKey(TaskList, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
@@ -78,3 +93,4 @@ class Task(models.Model):
             urgency[0],
             urgency[1] * 2 / 3 + self.get_weight(),
         )  # Importance is weighted more heavily than urgency
+        
