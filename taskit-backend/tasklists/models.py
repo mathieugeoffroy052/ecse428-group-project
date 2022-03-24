@@ -17,7 +17,7 @@ class TaskList(models.Model):
     Model for a user-defined task list.
     """
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    list_name = models.CharField(max_length=200)
+    list_name = models.CharField(max_length=20)
     objects = TaskListManager()
 
 class TaskManager(models.Manager):
@@ -47,7 +47,7 @@ class Task(models.Model):
         InProgress = "IP", gettext_lazy("In progress")
         Complete = "C", gettext_lazy("Complete")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    tasklist = models.ForeignKey(TaskList, on_delete=models.CASCADE, null=True)
+    tasklist = models.ForeignKey(TaskList, null=True)
     description = models.CharField(max_length=200)
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
