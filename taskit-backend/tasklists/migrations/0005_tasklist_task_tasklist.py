@@ -9,21 +9,39 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasklists', '0004_merge_0003_alter_task_state_0003_task_notes'),
+        ("tasklists", "0004_merge_0003_alter_task_state_0003_task_notes"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TaskList',
+            name="TaskList",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('list_name', models.CharField(max_length=200)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("list_name", models.CharField(max_length=200)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='task',
-            name='tasklist',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='tasklists.tasklist'),
+            model_name="task",
+            name="tasklist",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="tasklists.tasklist",
+            ),
         ),
     ]
