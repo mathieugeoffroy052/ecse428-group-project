@@ -6,6 +6,7 @@ class TaskListSerializer(serializers.ModelSerializer):
             model = TaskList
             fields = (
                 "list_name",
+                "id",
             )
 class TaskSerializer(serializers.ModelSerializer):
 

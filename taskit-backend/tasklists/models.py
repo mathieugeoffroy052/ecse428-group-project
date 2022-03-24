@@ -47,7 +47,7 @@ class Task(models.Model):
         InProgress = "IP", gettext_lazy("In progress")
         Complete = "C", gettext_lazy("Complete")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    tasklist = models.ForeignKey(TaskList, null=True)
+    tasklist = models.ForeignKey(TaskList, blank=True, null=True, on_delete=models.SET_NULL)
     description = models.CharField(max_length=200)
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
