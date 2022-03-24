@@ -46,7 +46,7 @@
                 sortable
                 label="Duration"
               />
-              <el-table-column prop="weight" sortable label="Weight" />
+              <el-table-column prop="weight" sortable label="Weight" />\
               <el-table-column prop="state" sortable label="State" />
               <el-table-column fixed="right" label="">
                 <template #default="scope">
@@ -73,6 +73,7 @@
                   </el-button>
                 </template>
               </el-table-column>
+              <el-table-column fixed="right" prop="task_notes" label="Task Notes" />
               <el-table-column fixed="right" label="Operations">
                 <template #default="scope">
                   <el-button
@@ -162,7 +163,7 @@
                     ><b>Task Duration</b></label
                   >
                 </el-row>
-                <el-row>
+                <el-row style="padding-bottom: 15px">
                   <el-time-picker
                     arrow-control
                     v-model="task_params.estimated_duration"
@@ -175,10 +176,10 @@
                       padding-top: 7px;
                     "
                   >
-                  </el-time-picker>
+                  </el-time-picker >
                 </el-row>
 
-                <el-row style="padding-top: 15px">
+                <el-row>
                   <label class="required" for="pswd-repeat"
                     ><b>Task Weight</b></label
                   >
@@ -186,15 +187,15 @@
                 <el-row>
                   <el-input-number v-model="task_params.weight" :min="1" />
                 </el-row>
-                <el-row>
+                <el-row style="padding-top: 15px">
                   <b>Task Notes</b>
                 </el-row>
                 <el-row>
                   <input
                     type="taskNotes"
-                    v-model="task_params.description"
+                    v-model="task_params.taskNotes"
                     placeholder="Enter Task Notes/Details"
-                    required
+                    maxlength="200"
                   />
                 </el-row>
                 <hr />
@@ -252,6 +253,7 @@ export default {
         estimated_duration: "",
         weight: "",
         state: "NS",
+        notes: "",
       },
       task_state: {
         state: "",
@@ -516,7 +518,8 @@ body {
 }
 input[type="taskName"],
 input[type="taskLength"],
-input[type="taskCategory"] {
+input[type="taskCategory"],
+input[type="taskNotes"] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
