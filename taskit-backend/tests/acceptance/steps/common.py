@@ -43,12 +43,7 @@ def step_impl(context):
         else:
             notes = ""
         task = Task.objects.create_task(
-            owner,
-            row["task_name"],
-            due_date,
-            duration,
-            int(row["weight"]),
-            notes
+            owner, row["task_name"], due_date, duration, int(row["weight"]), notes
         )
         task.save()
 
