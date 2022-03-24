@@ -22,7 +22,7 @@ class TaskList(models.Model):
 
 class TaskManager(models.Manager):
     def create_task(
-        self, owner, tasklist, description, due_datetime, estimated_duration, weight, notes=""
+        self, owner, description, due_datetime, estimated_duration, weight, notes="", tasklist=None
     ):
         task = self.create(
             owner=owner,
@@ -47,7 +47,7 @@ class Task(models.Model):
         InProgress = "IP", gettext_lazy("In progress")
         Complete = "C", gettext_lazy("Complete")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    # tasklist = models.ForeignKey(TaskList, on_delete=models.CASCADE)
+    tasklist = models.ForeignKey(TaskList, on_delete=models.CASCADE, null=True)
     description = models.CharField(max_length=200)
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
