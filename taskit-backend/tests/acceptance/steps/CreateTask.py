@@ -47,6 +47,23 @@ def step_impl(context, email, name, due_date, estimated_duration, weight):
     except BaseException as e:
         context.error = e
 
+@when(
+    'The user "{email}" attempts to create the task "{name:opt_?}", with due date "{due_date:opt_?}", duration "{estimated_duration:opt_?}", weight "{weight:opt_?}", and notes "{notes:opt_?}"'
+)
+def step_impl(context, email, name, due_date, estimated_duration, weight, notes):
+    request_data = {
+        "user": email if email != None else User.objects.filter(email=email).first,
+        "description": name if name != None else "",
+        "due_datetime": due_date if due_date != None else "",
+        "estimated_duration": estimated_duration if estimated_duration != None else "",
+        "weight": weight if weight != None else "",
+        "notes": notes if notes != None else ""
+    }
+    try:
+        context.response = context.client.post(reverse("task_list"), request_data)
+        print(context.response)
+    except BaseException as e:
+        context.error = e
 
 @then('the task "{name}" shall exist in the system')
 def step_impl(context, name):
@@ -70,6 +87,23 @@ def step_impl(context, email, name, due_date, estimated_duration, weight):
     )
     if weight != "NULL":
         assert_that(str(task.weight), equal_to(weight))
+
+@then(
+    '"{email}" shall have a task called "{name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", state "Not started", and notes "{notes}"'
+)
+def step_impl(context, email, name, due_date, estimated_duration, weight, notes):
+    task = Task.objects.filter(description=name).first()
+    if email != "NULL":
+        assert_that(task.owner, equal_to(User.objects.filter(email=email).first()))
+    assert_that(task.description, equal_to(name))
+    assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    assert_that(
+        str(int(task.estimated_duration.total_seconds())), equal_to(estimated_duration)
+    )
+    if weight != "NULL":
+        assert_that(str(task.weight), equal_to(weight))
+    if notes != "NULL":
+        assert_that(str(task.notes), equal_to(notes))
 
 
 @then('the number of tasks in the system shall be "5"')

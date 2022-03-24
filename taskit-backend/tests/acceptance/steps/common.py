@@ -38,12 +38,17 @@ def step_impl(context):
             duration = timedelta(minutes=int(row["estimated_duration"]))
         else:
             duration = None
+        if "notes" in row and row["notes"] != "NULL":
+            notes = row["notes"]
+        else:
+            notes = ""
         task = Task.objects.create_task(
             owner,
             row["task_name"],
             due_date,
             duration,
             int(row["weight"]),
+            notes
         )
         task.save()
 
