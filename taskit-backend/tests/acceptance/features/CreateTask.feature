@@ -59,6 +59,6 @@ Feature: Create task
 
     Examples:
       | email                        | name            | due_date   | estimated_duration | weight | notes                                                                                |
-      | obi-wan.kenobi@gar.gov       | Die a sad death | 2022-02-08 | 30                 | NULL   | NULL                                                                             |
+      | obi-wan.kenobi@gar.gov       | Die a sad death | 2022-02-08 | 30                 | NULL   | NULL                                                                                 |
       | anakin.skywalker@gar.gov     | Be the worst    | 2022-02-09 | 1576800            | 100    | This is outrageous! It's unfair! How can you be on the Council, and not be a Master? |
       | luke.skywalker@rebellion.com | Kiss sister     | 2022-02-10 | 2                  | 10     | I have a sister?                                                                     |
