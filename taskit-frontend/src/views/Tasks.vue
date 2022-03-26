@@ -47,12 +47,14 @@
                 label="Duration"
               />
               <el-table-column prop="weight" sortable label="Weight" />\
-              <el-table-column prop="state" sortable label="State" />
+              <el-table-column prop="notes" sortable label="Task Notes" />
+              <el-table-column prop="state" fixed="right" label="State" />
               <el-table-column fixed="right" label="">
                 <template #default="scope">
                   <el-button
                     color="#FF8989"
                     size="small"
+                    align="center"
                     circle
                     @click="onEditState(scope.$index, 'NS')"
                   >
@@ -60,6 +62,7 @@
                   <el-button
                     color="#FCFF89"
                     size="small"
+                    align="center"
                     circle
                     @click="onEditState(scope.$index, 'IP')"
                   >
@@ -67,13 +70,13 @@
                   <el-button
                     color="#9CFF89"
                     size="small"
+                    align="center"
                     circle
                     @click="onEditState(scope.$index, 'C')"
                   >
                   </el-button>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" prop="task_notes" label="Task Notes" />
               <el-table-column fixed="right" label="Operations">
                 <template #default="scope">
                   <el-button
@@ -193,7 +196,7 @@
                 <el-row>
                   <input
                     type="taskNotes"
-                    v-model="task_params.taskNotes"
+                    v-model="task_params.notes"
                     placeholder="Enter Task Notes/Details"
                     maxlength="200"
                   />
@@ -252,8 +255,9 @@ export default {
         due_datetime: "",
         estimated_duration: "",
         weight: "",
-        state: "NS",
         notes: "",
+        state: "NS",
+        
       },
       task_state: {
         state: "",
@@ -281,7 +285,6 @@ export default {
           label: "Complete",
         },
       ],
-      notes: "",
       tableData: [],
     };
   },
