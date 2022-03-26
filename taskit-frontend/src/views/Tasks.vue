@@ -256,7 +256,6 @@ export default {
         weight: "",
         notes: "",
         state: "NS",
-        
       },
       task_state: {
         state: "",
