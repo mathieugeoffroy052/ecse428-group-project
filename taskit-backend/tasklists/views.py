@@ -107,7 +107,8 @@ def remove_task(request):
         return Response({"success": "Task deleted"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
-    
+
+
 def edit_task(request):
     """
     EDIT:
@@ -125,10 +126,13 @@ def edit_task(request):
     tasks = Task.objects.filter(id=task_id)
     if tasks:
         task = tasks.first()
-        serializer = TaskSerializer(task,data=request.data)
+        serializer = TaskSerializer(task, data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)
-            return Response({"data": serializer.data, "success": "Task updated successfully"}, status=status.HTTP_200_OK)
+            return Response(
+                {"data": serializer.data, "success": "Task updated successfully"},
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
