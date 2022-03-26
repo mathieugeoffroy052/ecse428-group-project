@@ -50,11 +50,11 @@
               <el-table-column prop="notes" sortable label="Task Notes" />
               <el-table-column prop="state" fixed="right" label="State" />
               <el-table-column fixed="right" label="">
+              <el-row justify="center">
                 <template #default="scope">
                   <el-button
                     color="#FF8989"
                     size="small"
-                    align="center"
                     circle
                     @click="onEditState(scope.$index, 'NS')"
                   >
@@ -62,7 +62,6 @@
                   <el-button
                     color="#FCFF89"
                     size="small"
-                    align="center"
                     circle
                     @click="onEditState(scope.$index, 'IP')"
                   >
@@ -70,12 +69,12 @@
                   <el-button
                     color="#9CFF89"
                     size="small"
-                    align="center"
                     circle
                     @click="onEditState(scope.$index, 'C')"
                   >
                   </el-button>
-                </template>
+                </template>  
+              </el-row>
               </el-table-column>
               <el-table-column fixed="right" label="Operations">
                 <template #default="scope">
