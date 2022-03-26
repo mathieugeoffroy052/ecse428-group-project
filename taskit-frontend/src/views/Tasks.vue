@@ -281,6 +281,7 @@ export default {
           label: "Complete",
         },
       ],
+      notes: "",
       tableData: [],
     };
   },
