@@ -86,8 +86,8 @@ Feature: Edit task
 
     Examples:
       | owner                   | task_name           | new_task_name  | due_date  | estimated_duration  | weight  | state       | task_list_name | error                          |
-      | obi-wan.kenobi@gar.gov  | Train Anakin        |                | 2022-02-06| 1576800             | 90      | Not started | NULL           | This ${field} cannot be blank  |
-      | obi-wan.kenobi@gar.gov  | Train Anakin        | NULL           | 2022-02-06| 1576800             | 90      | Not started | NULL           | This ${field} cannot be blank  |
+      | obi-wan.kenobi@gar.gov  | Train Anakin        |                | 2022-02-06| 1576800             | 90      | Not started | NULL           | This field cannot be blank     |
+      | obi-wan.kenobi@gar.gov  | Train Anakin        | NULL           | 2022-02-06| 1576800             | 90      | Not started | NULL           | This field cannot be blank     |
 
   Scenario Outline: Attempt to edit task name and filters without being logged in (error flow)
     Given All users are logged out
