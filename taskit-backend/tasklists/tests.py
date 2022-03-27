@@ -437,7 +437,6 @@ class EditTaskTestCase(TestCase):
 
     def test_edit_task(self):
         self.client.force_authenticate(user=self.user)
-        pk = self.task.pk
         edited_task = {
             "id": 1,
             "description": "eat banana",
@@ -470,7 +469,6 @@ class EditTaskTestCase(TestCase):
 
     def test_edit_task_blank_field(self):
         self.client.force_authenticate(user=self.user)
-        pk = self.task.pk
         edited_task = {
             "id": 1,
             "description": "",
@@ -492,7 +490,6 @@ class EditTaskTestCase(TestCase):
 
     def test_edit_task_blank_field(self):
         self.client.force_authenticate(user=self.user)
-        pk = self.task.pk
         edited_task = {
             "id": 1,
             "description": None,
@@ -513,7 +510,6 @@ class EditTaskTestCase(TestCase):
         )
 
     def test_edit_task_without_being_authenticated(self):
-        pk = self.task.pk
         edited_task = {
             "id": 1,
             "description": None,
@@ -532,7 +528,6 @@ class EditTaskTestCase(TestCase):
 
     def test_edit_nonexistent_task(self):
         self.client.force_authenticate(user=self.user)
-        pk = self.task.pk
         edited_task = {
             "id": 10,
             "description": "eat banana",
