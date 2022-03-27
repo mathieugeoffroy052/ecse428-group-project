@@ -55,6 +55,7 @@ class User(AbstractUser):
         max_length=255,
         unique=True,
     )
+    has_seen_tutorial = models.BooleanField(default=False, null=False)
 
     objects = UserManager()
 

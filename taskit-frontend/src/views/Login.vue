@@ -63,110 +63,111 @@
 </template>
 
 <script>
-  import axios from "axios";
+import axios from "axios";
 
-  const axios_instance = axios.create({
-    baseURL: process.env.VUE_APP_BACKEND_URL,
-  });
+const axios_instance = axios.create({
+  baseURL: process.env.VUE_APP_BACKEND_URL,
+});
 
-  export default {
-    data() {
-      return {
-        logInForm: {
-          email: "",
-          password: "",
-        },
-        error: "",
-        showError: false,
-      };
-    },
-    methods: {
-      onLogIn() {
-        if (this.logInForm.email != "" && this.logInForm.password != "") {
-          axios_instance
-            .post("/accounts/login/", {
-              "username": this.logInForm.email,
-              "password": this.logInForm.password,
-            })
-            .then(response => {
-              localStorage.setItem("token", response.data.token)
-              this.logInForm.email = "";
-              this.logInForm.password = "";
-              if (response.data.expiry != "") {
-                window.location.href = "../tasks"
-              }
-            })
-            .catch(() => {
-              this.error = "Invalid log in attempt";
-              this.showError = true;
-            })
-        } else {
-          this.error = "Please fill in all input fields to login.";
-          this.showError = true;
-        }
+export default {
+  data() {
+    return {
+      logInForm: {
+        email: "",
+        password: "",
       },
-      onSignUpClick() {
-        window.location.href = "../signup";
-      },
+      error: "",
+      showError: false,
+    };
+  },
+  methods: {
+    onLogIn() {
+      if (this.logInForm.email != "" && this.logInForm.password != "") {
+        axios_instance
+          .post("/accounts/login/", {
+            username: this.logInForm.email,
+            password: this.logInForm.password,
+          })
+          .then((response) => {
+            localStorage.setItem("token", response.data.token);
+            this.logInForm.email = "";
+            this.logInForm.password = "";
+            if (response.data.expiry != "") {
+              window.location.href = "../tasks";
+            }
+          })
+          .catch(() => {
+            this.error = "Invalid log in attempt";
+            this.showError = true;
+          });
+      } else {
+        this.error = "Please fill in all input fields to login.";
+        this.showError = true;
+      }
     },
-  };
+    onSignUpClick() {
+      window.location.href = "../signup";
+    },
+  },
+};
 </script>
 
 <style>
-  .card {
-    border-style: solid;
-    border-radius: 5px;
-    border-color: #9277ff;
-    background-color: white;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 10px;
-    margin: 20px;
-    width: 350px;
-    margin: auto;
-  }
-  h1 {
-    font-family: "Noteworthy Light";
-    font-size: 50px;
-    padding: 0px;
-    margin: 0px;
-    font-style: normal;
-  }
-  body {
-    background-color: #9277ff47;
-  }
-  .main-button {
-    background-color: #9277ff;
-    padding: 12px 16px;
-    width: 100px; /* was 165 */
-    font-size: 16px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    opacity: 0.9;
-    color: white;
-  }
-  .main-button:hover {
-    opacity: 1;
-  }
-  a {
-    color: dodgerblue;
-  }
-  input[type="text"],
-  input[type="password"],
-  input[type="email"] {
-    width: 100%;
-    padding: 15px;
-    display: inline-block;
-    border: none;
-    background: #f1f1f1;
-    border-radius: 3px;
-  }
-  input[type="text"]:focus,
-  input[type="password"]:focus,
-  input[type="email"]:focus {
-    background-color: var(--darkGray);
-    outline: none;
-  }
+@import "generalStyle.css";
+.card {
+  border-style: solid;
+  border-radius: 5px;
+  border-color: #9277ff;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+  margin: 20px;
+  width: 350px;
+  margin: auto;
+}
+h1 {
+  font-family: "Noteworthy Light";
+  font-size: 50px;
+  padding: 0px;
+  margin: 0px;
+  font-style: normal;
+}
+body {
+  background-color: #9277ff47;
+}
+.main-button {
+  background-color: #9277ff;
+  padding: 12px 16px;
+  width: 100px; /* was 165 */
+  font-size: 16px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  color: white;
+}
+.main-button:hover {
+  opacity: 1;
+}
+a {
+  color: dodgerblue;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 15px;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  background-color: var(--darkGray);
+  outline: none;
+}
 </style>

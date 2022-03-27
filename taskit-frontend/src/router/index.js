@@ -4,8 +4,6 @@ import Login from "../views/Login.vue";
 import NotFound from "../components/NotFound.vue";
 import Tasks from "../views/Tasks.vue";
 
-
-
 const routes = [
   {
     path: "/",
@@ -34,8 +32,7 @@ const routes = [
   {
     path: "/signup",
     name: "SignUp",
-    component: () =>
-      import("../views/SignUp.vue"),
+    component: () => import("../views/SignUp.vue"),
   },
   { path: "/:pathMatch(.*)", component: NotFound },
 ];

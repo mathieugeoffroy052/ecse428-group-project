@@ -54,7 +54,8 @@ class Login(KnoxLoginView):
 
     Response: {
         "expiry": "2022-02-27T04:14:53.984918-05:00",
-        "token": "262bc7d283f698efdddd8d33dcea918dcb6ce05d1a4db7e052010b444083fb98"
+        "token": "262bc7d283f698efdddd8d33dcea918dcb6ce05d1a4db7e052010b444083fb98",
+        "has_seen_tutorial": false
     }
     """
 
@@ -70,20 +71,20 @@ class Login(KnoxLoginView):
                 {"No username entered."}, status=status.HTTP_400_BAD_REQUEST
             )
 
-            # check for invalid emaila and invalid password
-        correspondingAccount = User.objects.filter(
-            email=request.data["username"]
-        ).first()
-        if correspondingAccount is None or not check_password(
-            request.data["password"], correspondingAccount.password
-        ):
+        serializer = AuthTokenSerializer(data=request.data)
+        if not serializer.is_valid():
             return Response(
                 {"Incorrect email address or password."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         login(request, user)
         return super(Login, self).post(request, format=None)
+
+    def get_post_response_data(self, request, token, instance):
+        # Relevant documentation: https://james1345.github.io/django-rest-knox/views/#loginview
+        return {
+            "expiry": self.format_expiry_datetime(instance.expiry),
+            "token": token,
+            "has_seen_tutorial": request.user.has_seen_tutorial,
+        }
