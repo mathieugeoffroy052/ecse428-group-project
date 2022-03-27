@@ -1,13 +1,71 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-from tasklists.models import Task
+from tasklists.models import Task, TaskList
 from django.urls import reverse
 from datetime import datetime, timedelta, timezone
 import math
 import json
 
 User = get_user_model()
+
+
+class UpdateTaskListNameTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="johnsmith@example.com", password="password123"
+        )
+        self.t1 = TaskList.objects.create(
+            owner=self.user,
+            list_name="food",
+        )
+        self.t2 = TaskList.objects.create(
+            owner=self.user,
+            list_name="school",
+        )
+        self.client: APIClient = APIClient()
+
+    def test_edit_name(self):
+        self.client.force_authenticate(user=self.user)
+        pk = self.t1.pk
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": "buy food"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["list_name"], "buy food")
+
+    def test_update_nonexisting_tasklist(self):
+        self.client.force_authenticate(user=self.user)
+        pk = self.t2.pk + 100
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": None}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "Task List Not found")
+
+    def test_invalid_task_list_name(self):
+        self.client.force_authenticate(user=self.user)
+        pk = self.t1.pk
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": None}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "This field cannot be blank.")
+
+    def test_edit_name_without_auth(self):
+        pk = self.t1.pk
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": "code"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
 
 
 class UpdateTaskStateTestCase(TestCase):
