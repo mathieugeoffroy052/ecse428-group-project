@@ -82,9 +82,14 @@ class Login(KnoxLoginView):
         return super(Login, self).post(request, format=None)
 
     def get_post_response_data(self, request, token, instance):
+        # Sets has_seen_tutorial to true on the first login
+        has_seen_tutorial = request.user.has_seen_tutorial
+        if not has_seen_tutorial:
+            request.user.has_seen_tutorial = True
+            request.user.save()
         # Relevant documentation: https://james1345.github.io/django-rest-knox/views/#loginview
         return {
             "expiry": self.format_expiry_datetime(instance.expiry),
             "token": token,
-            "has_seen_tutorial": request.user.has_seen_tutorial,
+            "has_seen_tutorial": has_seen_tutorial,
         }
