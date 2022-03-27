@@ -45,8 +45,9 @@ class UpdateTaskListNameTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "Task List Not found")
 
-    def test_invalid_name(self):
+    def test_invalid_task_list_name(self):
         self.client.force_authenticate(user=self.user)
         pk = self.t1.pk
         response = self.client.put(
@@ -55,8 +56,9 @@ class UpdateTaskListNameTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "This field cannot be blank.")
 
-    def test_update_without_auth(self):
+    def test_edit_name_without_auth(self):
         pk = self.t1.pk
         response = self.client.put(
             reverse("edit_name", args=[pk]),
