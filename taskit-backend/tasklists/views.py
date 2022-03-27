@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 from django.http import HttpResponse
-from tasklists.serializers import TaskSerializer
-from tasklists.models import Task
+from tasklists.serializers import TaskSerializer, TaskListSerializer
+from tasklists.models import Task, TaskList
 
 
 def public(request):
@@ -15,6 +15,30 @@ def public(request):
 @api_view(["GET"])
 def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
+
+
+@api_view(["PUT"])
+def edit_name(request, pk):
+    """
+    PUT
+    "/api/edit-name/<pk>"
+        where pk = primary key (or id) of tasklist
+
+    {
+        "list_name": "grocery"
+    }
+    """
+    request = request.data
+    try:
+        t = TaskList.objects.get(pk=pk)
+        s = TaskListSerializer(t, data={"list_name": request["list_name"]})
+        if s.is_valid():
+            s.save()
+            return Response(s.data, status=status.HTTP_200_OK)
+        else:
+            return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
+    except TaskList.DoesNotExist:
+        return Response("Exception: Data Not Found", status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["PUT"])
