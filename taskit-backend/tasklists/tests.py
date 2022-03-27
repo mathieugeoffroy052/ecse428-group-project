@@ -9,6 +9,7 @@ import json
 
 User = get_user_model()
 
+
 class UpdateTaskListNameTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -34,7 +35,7 @@ class UpdateTaskListNameTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["list_name"], "buy food")
-    
+
     def test_update_nonexisting_tasklist(self):
         self.client.force_authenticate(user=self.user)
         pk = self.t2.pk + 100
@@ -63,6 +64,7 @@ class UpdateTaskListNameTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 401)
+
 
 class UpdateTaskStateTestCase(TestCase):
     def setUp(self):

@@ -7,18 +7,23 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('tasklists', '0005_tasklist_task_tasklist'),
+        ("tasklists", "0005_tasklist_task_tasklist"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='tasklist',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='tasklists.tasklist'),
+            model_name="task",
+            name="tasklist",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="tasklists.tasklist",
+            ),
         ),
         migrations.AlterField(
-            model_name='tasklist',
-            name='list_name',
+            model_name="tasklist",
+            name="list_name",
             field=models.CharField(max_length=20),
         ),
     ]

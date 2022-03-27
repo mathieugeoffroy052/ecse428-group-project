@@ -16,6 +16,7 @@ def public(request):
 def private(request):
     return HttpResponse("You should not see this message if not authenticated!")
 
+
 @api_view(["PUT"])
 def edit_name(request, pk):
     """
@@ -38,6 +39,7 @@ def edit_name(request, pk):
             return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
     except TaskList.DoesNotExist:
         return Response("Exception: Data Not Found", status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(["PUT"])
 def update_state(request, pk):
