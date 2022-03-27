@@ -476,3 +476,129 @@ class TaskListTestCase(TestCase):
         response = self.client.delete(reverse("task_list"), {"id": id})
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"error": "Not found"})
+
+
+class EditTaskTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="johnsmith@example.com", password="password123"
+        )
+        self.task = Task.objects.create(
+            owner=self.user,
+            description="Make dinner",
+            due_datetime="2022-03-01T22:30:30+00:00",
+            weight=10,
+            state="NS",
+            notes="aNote",
+        )
+        self.client: APIClient = APIClient()
+
+    def test_edit_task(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 1,
+            "description": "eat banana",
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task_list"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["data"]["description"], edited_task["description"]
+        )
+        self.assertEqual(
+            datetime.fromisoformat(response.json()["data"]["due_datetime"]),
+            datetime.fromisoformat(edited_task["due_datetime"]),
+        )
+        self.assertEqual(
+            response.json()["data"]["estimated_duration"],
+            edited_task["estimated_duration"],
+        )
+        self.assertEqual(response.json()["data"]["weight"], edited_task["weight"])
+        self.assertEqual(response.json()["data"]["state"], edited_task["state"])
+        self.assertEqual(response.json()["data"]["notes"], edited_task["notes"])
+
+    def test_edit_task_blank_field(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 1,
+            "description": "",
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task_list"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(), {"description": ["This field may not be blank."]}
+        )
+
+    def test_edit_task_blank_field(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 1,
+            "description": None,
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task_list"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(), {"description": ["This field may not be null."]}
+        )
+
+    def test_edit_task_without_being_authenticated(self):
+        edited_task = {
+            "id": 1,
+            "description": None,
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task_list"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_edit_nonexistent_task(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 10,
+            "description": "eat banana",
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task_list"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {"error": "Not found"})

@@ -72,12 +72,14 @@ def update_state(request, pk):
         return Response("Exception: Data Not Found", status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET", "POST", "DELETE"])
+@api_view(["GET", "PUT", "POST", "DELETE"])
 def task_list(request):
     if request.method == "GET":
         return list_tasks(request)
     elif request.method == "POST":
         return post_task(request)
+    elif request.method == "PUT":
+        return edit_task(request)
     elif request.method == "DELETE":
         return remove_task(request)
     else:
@@ -116,7 +118,6 @@ def post_task(request):
             status=status.HTTP_201_CREATED,
         )
     else:
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -127,11 +128,41 @@ def remove_task(request):
         "id": 123
     }
     """
-    id = request.data["id"]
-    tasks = Task.objects.filter(id=id)
+    task_id = request.data["id"]
+    tasks = Task.objects.filter(id=task_id)
     if tasks:
         task = tasks.first()
         task.delete()
         return Response({"success": "Task deleted"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+def edit_task(request):
+    """
+    EDIT:
+    {
+        "id": 1,
+        "description": "eat banana",
+        "due_datetime":"2040-02-26T01:34:41+00:00",
+        "estimated_duration": "09:00:00",
+        "weight": 1,
+        "state": "IP",
+        "notes": "hmmmm delicious"
+    }
+    """
+    task_id = request.data["id"]
+    tasks = Task.objects.filter(id=task_id)
+    if tasks:
+        task = tasks.first()
+        serializer = TaskSerializer(task, data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(
+                {"data": serializer.data, "success": "Task updated successfully"},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
