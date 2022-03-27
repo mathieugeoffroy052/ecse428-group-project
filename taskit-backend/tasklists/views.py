@@ -85,7 +85,7 @@ def post_task(request):
         serializer.save(owner=request.user)
         # return Response( serializer.data, status=status.HTTP_201_CREATED)
         return Response(
-            {"data": serializer.data, "success": "Task created successfully."},
+            {"data": serializer.data, "success": "Task created succesfully."},
             status=status.HTTP_201_CREATED,
         )
     else:
