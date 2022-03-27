@@ -43,13 +43,13 @@ def update_state(request, pk):
         return Response("Exception: Data Not Found", status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET", "PATCH", "POST", "DELETE"])
+@api_view(["GET", "PUT", "POST", "DELETE"])
 def task_list(request):
     if request.method == "GET":
         return list_tasks(request)
     elif request.method == "POST":
         return post_task(request)
-    elif request.method == "PATCH":
+    elif request.method == "PUT":
         return edit_task(request)
     elif request.method == "DELETE":
         return remove_task(request)

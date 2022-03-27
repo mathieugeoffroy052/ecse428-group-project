@@ -446,7 +446,7 @@ class EditTaskTestCase(TestCase):
             "state": "IP",
             "notes": "hmmmm delicious",
         }
-        response = self.client.patch(
+        response = self.client.put(
             reverse("task_list"),
             json.dumps(edited_task),
             content_type="application/json",
@@ -478,7 +478,7 @@ class EditTaskTestCase(TestCase):
             "state": "IP",
             "notes": "hmmmm delicious",
         }
-        response = self.client.patch(
+        response = self.client.put(
             reverse("task_list"),
             json.dumps(edited_task),
             content_type="application/json",
@@ -499,7 +499,7 @@ class EditTaskTestCase(TestCase):
             "state": "IP",
             "notes": "hmmmm delicious",
         }
-        response = self.client.patch(
+        response = self.client.put(
             reverse("task_list"),
             json.dumps(edited_task),
             content_type="application/json",
@@ -519,7 +519,7 @@ class EditTaskTestCase(TestCase):
             "state": "IP",
             "notes": "hmmmm delicious",
         }
-        response = self.client.patch(
+        response = self.client.put(
             reverse("task_list"),
             json.dumps(edited_task),
             content_type="application/json",
@@ -537,7 +537,7 @@ class EditTaskTestCase(TestCase):
             "state": "IP",
             "notes": "hmmmm delicious",
         }
-        response = self.client.patch(
+        response = self.client.put(
             reverse("task_list"),
             json.dumps(edited_task),
             content_type="application/json",
