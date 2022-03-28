@@ -35,7 +35,6 @@ class TaskManager(models.Manager):
     ):
         task = self.create(
             owner=owner,
-            
             description=description,
             due_datetime=due_datetime,
             estimated_duration=estimated_duration,

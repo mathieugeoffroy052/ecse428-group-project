@@ -40,12 +40,12 @@ Feature: Edit Task List Name
         When The user "<email>" attempts to edit the task list name "<list_name>" to "<new_task_list_name>"
         Then The user "<email>" shall have a task list named "<list_name>"
         And "<list_name>" shall include "<task_name>"
-        And The error message "<error>" shall be displayed
+        And The error message "Invalid list name" shall be displayed
 
         Examples:
-            | email                    | task_name           | due_date   | estimated_duration | weight | notes | list_name              | new_task_list_name | error                       |
-            | obi-wan.kenobi@gar.gov   | Train Anakin        | 2022-02-06 | 1576800            | 90     |       | Training               | NULL               | This field cannot be blank. |
-            | anakin.skywalker@gar.gov | Kill the younglings | 2022-02-07 | 5                  | 25     |       | Rebel against the Jedi |                    | This field cannot be blank. |
+            | email                    | task_name           | due_date   | estimated_duration | weight | notes | list_name              | new_task_list_name | 
+            | obi-wan.kenobi@gar.gov   | Train Anakin        | 2022-02-06 | 1576800            | 90     |       | Training               | NULL               |
+            | anakin.skywalker@gar.gov | Kill the younglings | 2022-02-07 | 5                  | 25     |       | Rebel against the Jedi |                    |
 
     Scenario Outline: Edit task list name without being logged in (error flow)
         Given All users are logged out
@@ -65,9 +65,9 @@ Feature: Edit Task List Name
         When The user "<email>" attempts to edit the task list name "<list_name>" to "<new_task_list_name>"
         Then The user "<email>" shall have a task list named "<task_list_name>"
         And "<list_name>" shall include "<task_name>"
-        And The error message "<error>" shall be displayed
+        And The error message "Invalid list name" shall be displayed
 
         Examples:
-            | email                    | task_name           | due_date   | estimated_duration | weight | notes | list_name              | new_task_list_name     | error                              |
-            | obi-wan.kenobi@gar.gov   | Train Anakin        | 2022-02-06 | 1576800            | 90     |       | Training               | Rebel against the Jedi | The task list name already exists. |
-            | anakin.skywalker@gar.gov | Kill the younglings | 2022-02-07 | 5                  | 25     |       | Rebel against the Jedi | Rebel against the Jedi | The task list name already exists. |
+            | email                    | task_name           | due_date   | estimated_duration | weight | notes | list_name              | new_task_list_name     | 
+            | obi-wan.kenobi@gar.gov   | Train Anakin        | 2022-02-06 | 1576800            | 90     |       | Training               | Rebel against the Jedi | 
+            | anakin.skywalker@gar.gov | Kill the younglings | 2022-02-07 | 5                  | 25     |       | Rebel against the Jedi | Rebel against the Jedi | 

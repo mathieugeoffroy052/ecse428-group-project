@@ -29,6 +29,8 @@ def edit_name(request, pk):
     }
     """
     request = request.data
+    if not request["list_name"]:
+        return Response("Invalid list name", status=status.HTTP_400_BAD_REQUEST)
     try:
         t = TaskList.objects.get(pk=pk)
         s = TaskListSerializer(t, data={"list_name": request["list_name"]})
@@ -37,7 +39,7 @@ def edit_name(request, pk):
             return Response(s.data, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"error": "This field cannot be blank."},
+                {"error": "Invalid list name"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
     except TaskList.DoesNotExist:
