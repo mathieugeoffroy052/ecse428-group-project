@@ -152,7 +152,7 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
 
 
-class TaskListTestCase(TestCase):
+class TaskTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="johnsmith@example.com", password="password123"
