@@ -304,13 +304,26 @@
                 <el-row>
                   <el-input-number v-model="edit_task_params.weight" :min="1" />
                 </el-row>
+                <el-row style="padding-top: 15px">
+                  <label class="required" for="pswd">
+                    <b>Task notes</b>
+                  </label>
+                </el-row>
+                <el-row>
+                  <input
+                    id="test"
+                    type="updateTaskName"
+                    required
+                    v-model="edit_task_params.notes"
+                  />
+                </el-row>
                 <hr />
                 <div style="width: 395px; margin: auto; padding: 20px">
                   <el-button
                     type="submit"
                     class="submit"
                     style="border-radius: 10px; width: 30%"
-                    @click="onEditTask(scope.$index)"
+                    @click="onEditTask()"
                   >
                     Edit task
                   </el-button>
@@ -459,12 +472,10 @@ export default {
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
-    onEditTask: function (id) {
-      this.edit_task_params.id = this.tableData[id]["id"];
-      this.edit_task_params.state = id.state;
+    onEditTask: function () {
       if (this.task_params.task_description != "") {
         axios_instance
-          .post("/api/tasks/", this.edit_task_params, {
+          .put("/api/tasks/", this.edit_task_params, {
             headers: {
               Authorization: "Token " + localStorage.getItem("token"),
             },
@@ -501,7 +512,7 @@ export default {
       this.edit_task_params.estimated_duration = task.estimated_duration;
       this.edit_task_params.weight = task.weight;
       this.edit_task_params.state = task.state;
-      // this.edit_task_params.notes = notes;
+      this.edit_task_params.notes = task.notes;
     },
   },
 };
