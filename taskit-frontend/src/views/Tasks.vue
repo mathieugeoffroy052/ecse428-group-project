@@ -48,6 +48,7 @@
               />
               <el-table-column prop="weight" sortable label="Weight" />
               <el-table-column prop="state" sortable label="State" />
+              <el-table-column prop="notes" label="Notes" />
               <el-table-column fixed="right" label="">
                 <template #default="scope">
                   <el-button
@@ -78,8 +79,8 @@
                   <el-button
                     size="small"
                     @click="
+                      setDescriptionForEditTask(scope.$index);
                       edit_drawer = true;
-                      onEditTask();
                     "
                   >
                     Edit
@@ -212,11 +213,107 @@
               title="I am the title2"
               :with-header="false"
             >
-              <el-row justify="center">
+              <span>Edit Task</span>
+              <el-form @submit.prevent="handleSubmit" :model="addTaskForm">
+                <h1>TaskIt</h1>
+                <el-row>
+                  <el-divider style="margin: 0px; padding: 0px"
+                    >Edit Task
+                  </el-divider>
+                </el-row>
+                <el-row justify="center">
+                  <p
+                    style="
+                      font-family: 'Noteworthy Light';
+                      font-style: italic;
+                      padding-bottom: 10px;
+                    "
+                  >
+                    Please fill in this form to edit your task.
+                  </p>
+                </el-row>
+                <el-row>
+                  <b>Task Description</b>
+                </el-row>
+                <el-row>
+                  <input
+                    id="test"
+                    type="updateTaskName"
+                    v-model="edit_task_params.description"
+                    required
+                  />
+                </el-row>
+                <el-row>
+                  <label class="required" for="pswd"
+                    ><b>Task Due Date</b></label
+                  >
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <el-date-picker
+                    v-model="edit_task_params.due_datetime"
+                    type="datetime"
+                    placeholder="Select date and time"
+                    style="
+                      height: 45px;
+                      width: 600px;
+                      background-color: #eeeeee;
+                      padding-top: 7px;
+                    "
+                    value-format="YYYY-MM-DDThh:mm"
+                  >
+                  </el-date-picker>
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <label class="required" for="pswd"
+                    ><b>Task Duration</b></label
+                  >
+                </el-row>
+                <el-row>
+                  <el-time-picker
+                    arrow-control
+                    v-model="edit_task_params.estimated_duration"
+                    placeholder="Enter Task Duration"
+                    value-format="hh:mm:ss"
+                    style="
+                      height: 45px;
+                      width: 600px;
+                      background-color: #eeeeee;
+                      padding-top: 7px;
+                    "
+                  >
+                  </el-time-picker>
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <label class="required" for="pswd-repeat"
+                    ><b>Task Weight</b></label
+                  >
+                </el-row>
+                <el-row>
+                  <el-input-number v-model="edit_task_params.weight" :min="1" />
+                </el-row>
+                <hr />
+                <div style="width: 395px; margin: auto; padding: 20px">
+                  <el-button
+                    type="submit"
+                    class="submit"
+                    style="border-radius: 10px; width: 30%"
+                    @click="onEditTask(scope.$index)"
+                  >
+                    Edit task
+                  </el-button>
+                  <el-alert
+                    v-if="showError"
+                    type="error"
+                    @close="this.showError = false"
+                    >{{ error }}</el-alert
+                  >
+                </div>
+              </el-form>
+              <!-- <el-row justify="center">
                 <span>Edit Task</span>
                 <el-divider content-position="center">o</el-divider>
               </el-row>
-              <el-divider content-position="center">o</el-divider>
+              <el-divider content-position="center">o</el-divider> -->
             </el-drawer>
           </div>
         </el-main>
@@ -240,7 +337,17 @@ export default {
         due_datetime: "",
         estimated_duration: "",
         weight: "",
+        notes: "",
         state: "NS",
+      },
+      edit_task_params: {
+        id: "",
+        description: "",
+        due_datetime: "",
+        estimated_duration: "",
+        weight: "",
+        notes: "",
+        state: "",
       },
       task_state: {
         state: "",
@@ -307,7 +414,7 @@ export default {
         });
     },
     onAddTask() {
-      if (this.task_params.task_description != "") {
+      if (this.task_params.description != "") {
         axios_instance
           .post("/api/tasks/", this.task_params, {
             headers: {
@@ -339,8 +446,27 @@ export default {
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
-    onEditTask() {
-      this.test = "";
+    onEditTask: function (id) {
+      this.edit_task_params.id = this.tableData[id]["id"];
+      this.edit_task_params.state = id.state;
+      if (this.task_params.task_description != "") {
+        axios_instance
+          .post("/api/tasks/", this.edit_task_params, {
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            (this.error = response), location.reload(true);
+          })
+          .catch(() => {
+            this.error = "Error editing task";
+            this.showError = true;
+          });
+      } else {
+        this.error = "Tasks must have a description!";
+        this.showError = true;
+      }
     },
     onEditState: function (id, state) {
       this.task_state.state = state;
@@ -353,6 +479,16 @@ export default {
         })
         .then(alert("Edited Successfully!"));
       location.reload(true);
+    },
+    setDescriptionForEditTask(id) {
+      var task = this.tableData[id];
+      this.edit_task_params.id = task.id;
+      this.edit_task_params.description = task.description;
+      this.edit_task_params.due_datetime = task.due_datetime;
+      this.edit_task_params.estimated_duration = task.estimated_duration;
+      this.edit_task_params.weight = task.weight;
+      this.edit_task_params.state = task.state;
+      // this.edit_task_params.notes = notes;
     },
   },
 };
@@ -504,6 +640,7 @@ body {
   color: rgb(255, 255, 255);
 }
 input[type="taskName"],
+input[type="updateTaskName"],
 input[type="taskLength"],
 input[type="taskCategory"] {
   width: 100%;
