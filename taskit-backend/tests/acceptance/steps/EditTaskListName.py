@@ -50,20 +50,15 @@ def step_impl(context):
     'The user "{email}" attempts to edit the task list name "{list_name}" to "{new_task_list_name}'
 )
 def step_impl(context, email, list_name, new_task_list_name):
-    # request_data = {
-    #     "user": email if email != None else User.objects.filter(email=email).first,
-    #     "list_name": list_name if list_name != None else "",
-    #     "new_task_list_name": list_name if list_name != None else "",
-    # }
     find_tasklist = TaskList.objects.filter(list_name=list_name).first()
     if find_tasklist != None:
         tasklist_id = find_tasklist.id
     else:
         tasklist_id = -1
     try:
+        list_str = str(new_task_list_name) if new_task_list_name is not None else ""
         context.response = context.client.put(
-            reverse("edit_name", kwargs={"pk": tasklist_id})
-        )
+            reverse("edit_name", kwargs={"pk": tasklist_id}), {"list_name": list_str})
         print(context.response)
     except BaseException as e:
         context.error = e
@@ -71,13 +66,12 @@ def step_impl(context, email, list_name, new_task_list_name):
 
 @then('The user "{email}" shall have a task list named "{new_task_list_name}"')
 def step_impl(context, email, new_task_list_name):
-    owner = User.objects.filter(email=email)
     task_list = TaskList.objects.filter(list_name=new_task_list_name)
     assert_that(task_list, not_none)
 
 
-@then('"{new_task_list_name}" shall include "{task_names}"')
-def step_impl(context, new_task_list_name, task_names):
+@then('"{new_task_list_name}" shall include "{task_name}"')
+def step_impl(context, new_task_list_name, task_name):
     task_list = TaskList.objects.filter(list_name=new_task_list_name)
-    task = Task.objects.filter(task_names=task_names)
+    task = Task.objects.filter(description=task_name)
     assert_that(task, not_none())

@@ -26,7 +26,7 @@ Feature: Edit Task List Name
     Scenario Outline: Successfully edit task list name (normal flow)
         Given "<email>" is logged in
         When The user "<email>" attempts to edit the task list name "<list_name>" to "<new_task_list_name>"
-        Then the user "<email>" shall have a task list named "<new_task_list_name>"
+        Then The user "<email>" shall have a task list named "<new_task_list_name>"
         And "<new_task_list_name>" shall include "<task_names>"
         And The message "Task list name updated successfully." shall be displayed
 
