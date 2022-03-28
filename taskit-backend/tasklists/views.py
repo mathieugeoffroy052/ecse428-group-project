@@ -172,7 +172,7 @@ def remove_task(request):
 
 # APIs for TaskList
 @api_view(["GET", "POST", "DELETE"])
-def task_list_list(request):
+def task_list(request):
     if request.method == "POST":
         return post_task_list(request)
     elif request.method == "DELETE":

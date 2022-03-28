@@ -608,3 +608,70 @@ class EditTaskTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"error": "Not found"})
+
+
+class TaskListTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="johnsmith@example.com", password="password123"
+        )
+        self.client: APIClient = APIClient()
+
+    def test_create_task_list_with_name(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": "School Work"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertDictContainsSubset(
+            {"list_name": "School Work"},
+            response.json()["data"],
+        )
+        self.assertEqual(response.json()["success"], "Task list created succesfully.")
+
+    def test_create_task_list_with_blank_name(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": ""}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "list_name": ["This field may not be blank."],
+            },
+        )
+
+    def test_create_task_list_without_a_name(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "list_name": ["This field is required."],
+            },
+        )
+
+    def test_create_task_list_name_too_long(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": "I am choosing a very long name"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "list_name": ["Ensure this field has no more than 20 characters."],
+            },
+        )
