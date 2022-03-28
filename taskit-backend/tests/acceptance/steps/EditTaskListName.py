@@ -67,7 +67,7 @@ def step_impl(context, email, list_name, new_task_list_name):
 @then('The user "{email}" shall have a task list named "{new_task_list_name}"')
 def step_impl(context, email, new_task_list_name):
     task_list = TaskList.objects.filter(list_name=new_task_list_name)
-    assert_that(task_list, not_none)
+    assert_that(str(task_list), new_task_list_name)
 
 
 @then('"{new_task_list_name}" shall include "{task_name}"')
