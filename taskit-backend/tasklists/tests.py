@@ -675,3 +675,34 @@ class TaskListTestCase(TestCase):
                 "list_name": ["Ensure this field has no more than 20 characters."],
             },
         )
+
+    def test_create_task_list_without_being_authenticated(self):
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": "School Work"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_delete_task_list(self):
+        self.client.force_authenticate(user=self.user)
+        taskListSchool = TaskList.objects.create(
+            owner=self.user, list_name="School Work"
+        )
+        response = self.client.delete(reverse("task_list"), {"id": taskListSchool.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["success"], "Task list deleted.")
+
+    def test_delete_nonexistent_task_list(self):
+        self.client.force_authenticate(user=self.user)
+        fakeId = 101
+        existing_task_lists = TaskList.objects.filter(id=fakeId)
+        if existing_task_lists:
+            existing_task_lists.first().delete()
+        response = self.client.delete(reverse("task_list"), {"id": fakeId})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"], "Not found")
+
+    def test_delete_task_list_without_being_authenticated(self):
+        response = self.client.delete(reverse("task_list"), {"id": 101})
+        self.assertEqual(response.status_code, 401)

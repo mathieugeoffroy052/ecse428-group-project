@@ -213,6 +213,8 @@ def remove_task_list(request):
     id = request.data["id"]
     taskLists = TaskList.objects.filter(id=id)
     if taskLists:
-        taskList = taskList.first()
+        taskList = taskLists.first()
         taskList.delete()
-        return Response({"success": "Task list deleted"}, status=status.HTTP_200_OK)
+        return Response({"success": "Task list deleted."}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
