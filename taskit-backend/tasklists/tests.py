@@ -1,13 +1,71 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
-from tasklists.models import Task
+from tasklists.models import Task, TaskList
 from django.urls import reverse
 from datetime import datetime, timedelta, timezone
 import math
 import json
 
 User = get_user_model()
+
+
+class UpdateTaskListNameTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="johnsmith@example.com", password="password123"
+        )
+        self.t1 = TaskList.objects.create(
+            owner=self.user,
+            list_name="food",
+        )
+        self.t2 = TaskList.objects.create(
+            owner=self.user,
+            list_name="school",
+        )
+        self.client: APIClient = APIClient()
+
+    def test_edit_name(self):
+        self.client.force_authenticate(user=self.user)
+        pk = self.t1.pk
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": "buy food"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["list_name"], "buy food")
+
+    def test_update_nonexisting_tasklist(self):
+        self.client.force_authenticate(user=self.user)
+        pk = self.t2.pk + 100
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": None}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "Task List Not found")
+
+    def test_invalid_task_list_name(self):
+        self.client.force_authenticate(user=self.user)
+        pk = self.t1.pk
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": None}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"], "This field cannot be blank.")
+
+    def test_edit_name_without_auth(self):
+        pk = self.t1.pk
+        response = self.client.put(
+            reverse("edit_name", args=[pk]),
+            json.dumps({"list_name": "code"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
 
 
 class UpdateTaskStateTestCase(TestCase):
@@ -104,7 +162,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_with_all_fields(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            reverse("task_list"),
+            reverse("task"),
             json.dumps(
                 {
                     "description": "eat chocolate",
@@ -131,7 +189,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_with_just_a_description(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            reverse("task_list"),
+            reverse("task"),
             json.dumps(
                 {
                     "description": "eat chocolate",
@@ -154,7 +212,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_with_a_blank_description(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            reverse("task_list"),
+            reverse("task"),
             json.dumps({"description": ""}),
             content_type="application/json",
         )
@@ -169,7 +227,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_without_a_description(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            reverse("task_list"),
+            reverse("task"),
             json.dumps({}),
             content_type="application/json",
         )
@@ -184,7 +242,7 @@ class TaskListTestCase(TestCase):
     def test_create_task_without_a_note(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
-            reverse("task_list"),
+            reverse("task"),
             json.dumps(
                 {
                     "description": "Test",
@@ -209,7 +267,7 @@ class TaskListTestCase(TestCase):
 
     def test_create_task_without_being_authenticated(self):
         response = self.client.post(
-            reverse("task_list"),
+            reverse("task"),
             json.dumps({"description": "eat chocolate"}),
             content_type="application/json",
         )
@@ -222,7 +280,7 @@ class TaskListTestCase(TestCase):
             email="other@example.com", password="password123"
         )
         Task.objects.create(owner=other_user, description="eat toothpaste")
-        response = self.client.get(reverse("task_list"))
+        response = self.client.get(reverse("task"))
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(len(response.json()), 1)
@@ -400,12 +458,12 @@ class TaskListTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
         choccy_task = Task.objects.create(owner=self.user, description="eat chocolate")
         chips_task = Task.objects.create(owner=self.user, description="eat chips")
-        response = self.client.delete(reverse("task_list"), {"id": choccy_task.id})
+        response = self.client.delete(reverse("task"), {"id": choccy_task.id})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"success": "Task deleted"})
 
     def test_deleting_task_without_being_authenticated(self):
-        response = self.client.delete(reverse("task_list"), {"id": 42})
+        response = self.client.delete(reverse("task"), {"id": 42})
         self.assertEqual(response.status_code, 401)
 
     def test_deleting_nonexistent_task(self):
@@ -415,6 +473,132 @@ class TaskListTestCase(TestCase):
         existing_tasks = Task.objects.filter(id=id)
         if existing_tasks:
             existing_tasks.first().delete()
-        response = self.client.delete(reverse("task_list"), {"id": id})
+        response = self.client.delete(reverse("task"), {"id": id})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json(), {"error": "Not found"})
+
+
+class EditTaskTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="johnsmith@example.com", password="password123"
+        )
+        self.task = Task.objects.create(
+            owner=self.user,
+            description="Make dinner",
+            due_datetime="2022-03-01T22:30:30+00:00",
+            weight=10,
+            state="NS",
+            notes="aNote",
+        )
+        self.client: APIClient = APIClient()
+
+    def test_edit_task(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 1,
+            "description": "eat banana",
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["data"]["description"], edited_task["description"]
+        )
+        self.assertEqual(
+            datetime.fromisoformat(response.json()["data"]["due_datetime"]),
+            datetime.fromisoformat(edited_task["due_datetime"]),
+        )
+        self.assertEqual(
+            response.json()["data"]["estimated_duration"],
+            edited_task["estimated_duration"],
+        )
+        self.assertEqual(response.json()["data"]["weight"], edited_task["weight"])
+        self.assertEqual(response.json()["data"]["state"], edited_task["state"])
+        self.assertEqual(response.json()["data"]["notes"], edited_task["notes"])
+
+    def test_edit_task_blank_field(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 1,
+            "description": "",
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(), {"description": ["This field may not be blank."]}
+        )
+
+    def test_edit_task_blank_field(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 1,
+            "description": None,
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(), {"description": ["This field may not be null."]}
+        )
+
+    def test_edit_task_without_being_authenticated(self):
+        edited_task = {
+            "id": 1,
+            "description": None,
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_edit_nonexistent_task(self):
+        self.client.force_authenticate(user=self.user)
+        edited_task = {
+            "id": 10,
+            "description": "eat banana",
+            "due_datetime": "2040-02-26T01:34:41+00:00",
+            "estimated_duration": "09:00:00",
+            "weight": 1,
+            "state": "IP",
+            "notes": "hmmmm delicious",
+        }
+        response = self.client.put(
+            reverse("task"),
+            json.dumps(edited_task),
+            content_type="application/json",
+        )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"error": "Not found"})
