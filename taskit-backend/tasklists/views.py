@@ -73,7 +73,7 @@ def update_state(request, pk):
 
 
 @api_view(["GET", "PUT", "POST", "DELETE"])
-def task_list(request):
+def task(request):
     if request.method == "GET":
         return list_tasks(request)
     elif request.method == "POST":

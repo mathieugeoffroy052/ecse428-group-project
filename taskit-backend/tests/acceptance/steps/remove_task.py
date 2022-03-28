@@ -27,7 +27,7 @@ def step_impl(context, email, task_name, due_date):
 
     # attempt to remove task
     try:
-        context.response = context.client.delete(reverse("task_list"), {"id": task_id})
+        context.response = context.client.delete(reverse("task"), {"id": task_id})
     except BaseException as e:
         context.error = e
 
