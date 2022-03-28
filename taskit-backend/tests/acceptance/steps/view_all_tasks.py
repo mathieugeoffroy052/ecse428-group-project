@@ -9,7 +9,7 @@ optional.init_opt_()
 @when("The user attempts to view all their tasks")
 def step_impl(context):
     try:
-        context.response = context.client.get(reverse("task_list"))
+        context.response = context.client.get(reverse("task"))
         print(f"Response: {context.response}")
         print(f"Response: {context.response.data}")
 
