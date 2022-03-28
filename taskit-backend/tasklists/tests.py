@@ -56,7 +56,7 @@ class UpdateTaskListNameTestCase(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["error"], "This field cannot be blank.")
+        self.assertEqual(response.json()["error"], "Invalid list name")
 
     def test_edit_name_without_auth(self):
         pk = self.t1.pk
@@ -524,48 +524,6 @@ class EditTaskTestCase(TestCase):
         self.assertEqual(response.json()["data"]["weight"], edited_task["weight"])
         self.assertEqual(response.json()["data"]["state"], edited_task["state"])
         self.assertEqual(response.json()["data"]["notes"], edited_task["notes"])
-
-    def test_edit_task_blank_field(self):
-        self.client.force_authenticate(user=self.user)
-        edited_task = {
-            "id": 1,
-            "description": "",
-            "due_datetime": "2040-02-26T01:34:41+00:00",
-            "estimated_duration": "09:00:00",
-            "weight": 1,
-            "state": "IP",
-            "notes": "hmmmm delicious",
-        }
-        response = self.client.put(
-            reverse("task_list"),
-            json.dumps(edited_task),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json(), {"description": ["This field may not be blank."]}
-        )
-
-    def test_edit_task_blank_field(self):
-        self.client.force_authenticate(user=self.user)
-        edited_task = {
-            "id": 1,
-            "description": None,
-            "due_datetime": "2040-02-26T01:34:41+00:00",
-            "estimated_duration": "09:00:00",
-            "weight": 1,
-            "state": "IP",
-            "notes": "hmmmm delicious",
-        }
-        response = self.client.put(
-            reverse("task_list"),
-            json.dumps(edited_task),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json(), {"description": ["This field may not be null."]}
-        )
 
     def test_edit_task_without_being_authenticated(self):
         edited_task = {
