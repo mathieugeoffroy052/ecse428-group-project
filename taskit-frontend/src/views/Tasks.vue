@@ -46,15 +46,9 @@
                 sortable
                 label="Duration"
               />
-<<<<<<< HEAD
-              <el-table-column prop="weight" sortable label="Weight" />
-              <el-table-column prop="state" sortable label="State" />
-              <el-table-column prop="notes" label="Notes" />
-=======
               <el-table-column prop="weight" sortable label="Weight" />\
               <el-table-column prop="notes" sortable label="Task Notes" />
               <el-table-column prop="state" fixed="right" label="State" />
->>>>>>> fa74508ab2e49328f0c4430368477cccccd77c59
               <el-table-column fixed="right" label="">
                 <el-row justify="center">
                   <template #default="scope">
