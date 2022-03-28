@@ -101,7 +101,10 @@ class UpdateTaskStateTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["description"], "Make dinner")
-        self.assertEqual(response.json()["due_datetime"], "2022-03-01T17:30:30-05:00")
+        self.assertEqual(
+            datetime.fromisoformat(response.json()["due_datetime"]),
+            datetime.fromisoformat(self.t1.due_datetime),
+        )
         self.assertEqual(response.json()["weight"], 10)
         self.assertEqual(response.json()["state"], "C")
         self.assertEqual(response.json()["notes"], "aNote")
@@ -117,7 +120,10 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["description"], "Order takeout")
-        self.assertEqual(response.json()["due_datetime"], "2022-03-01T17:30:30-05:00")
+        self.assertEqual(
+            datetime.fromisoformat(response.json()["due_datetime"]),
+            datetime.fromisoformat(self.t2.due_datetime),
+        )
         self.assertEqual(response.json()["weight"], 20)
         self.assertEqual(response.json()["state"], "NS")
         self.assertEqual(response.json()["notes"], "Second note")
