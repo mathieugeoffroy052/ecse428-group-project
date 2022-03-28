@@ -7,13 +7,14 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 @given("The following task lists exist")
 def step_impl(context):
     for row in context.table:
         owner = User.objects.filter(email=row["email"]).first()
         if row["list_name"] != "NULL":
             task_list_name = row["list_name"]
-        else: 
+        else:
             task_list_name = ""
         task_list = TaskList.objects.create_task_list(owner, task_list_name)
         task_list.save()
@@ -37,11 +38,17 @@ def step_impl(context):
             notes = ""
         if row["list_name"] != "NULL":
             task_list_name = row["list_name"]
-        else: 
+        else:
             task_list_name = ""
         task_list = TaskList.objects.create_task_list(owner, task_list_name)
         task = Task.objects.create_task(
-            owner, row["task_name"], due_date, duration, int(row["weight"]), notes, task_list
+            owner,
+            row["task_name"],
+            due_date,
+            duration,
+            int(row["weight"]),
+            notes,
+            task_list,
         )
         task.save()
 
@@ -58,7 +65,8 @@ def step_impl(context, email, list_name, new_task_list_name):
     try:
         list_str = str(new_task_list_name) if new_task_list_name is not None else ""
         context.response = context.client.put(
-            reverse("edit_name", kwargs={"pk": tasklist_id}), {"list_name": list_str})
+            reverse("edit_name", kwargs={"pk": tasklist_id}), {"list_name": list_str}
+        )
         print(context.response)
     except BaseException as e:
         context.error = e
