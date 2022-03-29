@@ -9,7 +9,7 @@ User = get_user_model()
 @when('The user "{email}" attempts to order their tasks')
 def step_impl(context, email):
     try:
-        context.response = context.client.get(reverse("task_list"))
+        context.response = context.client.get(reverse("task"))
     except BaseException as e:
         context.error = e
 
