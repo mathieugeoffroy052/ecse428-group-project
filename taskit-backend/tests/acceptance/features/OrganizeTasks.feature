@@ -9,8 +9,8 @@ Feature: Organize Tasks
       | luke.skywalker@rebellion.com | jediknight457 |
 
     Given The following lists exist:
-      | list_name                        | owner                        |                   
-      | Achieve victory in the monarchy  | obi-wan.kenobi@gar.gov       |  
+      | list_name                        | owner                        |
+      | Achieve victory in the monarchy  | obi-wan.kenobi@gar.gov       |
       | Obliterate the tomato metropolis | luke.skywalker@rebellion.com |
 
   Scenario Outline: Successfully add task list (normal flow)
@@ -22,11 +22,11 @@ Feature: Organize Tasks
     And The message "Task list created succesfully." shall be displayed
 
     Examples:
-      | email                        | name                               |
-      | obi-wan.kenobi@gar.gov       | Accompany ally to the wet swamp    |
-      | anakin.skywalker@gar.gov     | Heal injured ally                  |
-      | luke.skywalker@rebellion.com | Drink carafe rapidly               |
-      | luke.skywalker@rebellion.com | Achieve victory in the monarchy    |
+      | email                        | name                            |
+      | obi-wan.kenobi@gar.gov       | Accompany ally to the wet swamp |
+      | anakin.skywalker@gar.gov     | Heal injured ally               |
+      | luke.skywalker@rebellion.com | Drink carafe rapidly            |
+      | luke.skywalker@rebellion.com | Achieve victory in the monarchy |
 
   Scenario Outline: Create a task list with invalid parameters (error flow)
     Given "<email>" is logged in
@@ -37,10 +37,17 @@ Feature: Organize Tasks
     Then an error message "<error>" shall be raised
 
     Examples:
-      | email                          | name                             | error                         |
-      | obi-wan.kenobi@gar.gov         | NULL                             | This field may not be blank.  |
-      | luke.skywalker@rebellion.com   | Obliterate the tomato metropolis | This list name already exists.|
-      | anakin.skywalker@gar.gov       |                                  | This field may not be blank.  |
+      | email                    | name | error                        |
+      | obi-wan.kenobi@gar.gov   | NULL | This field may not be blank. |
+      | anakin.skywalker@gar.gov |      | This field may not be blank. |
+
+  Scenario: Create a task list with duplicate name (error flow)
+    Given "luke.skywalker@rebellion.com" is logged in
+    When the user "luke.skywalker@rebellion.com" attempts to create the task list "Obliterate the tomato metropolis"
+    Then the number of task lists in the system shall be "2"
+    Then the task list "Obliterate the tomato metropolis" shall exist in the system
+    Then no new task list shall be created
+    Then an error message "This list name already exists." shall be raised
 
   Scenario Outline: Attempt to create task list without being logged in (error flow)
     Given All users are logged out
@@ -51,5 +58,5 @@ Feature: Organize Tasks
     Then The error message "Authentication credentials were not provided." shall be displayed
 
     Examples:
-      | email                  | name                      |
-      | obi-wan.kenobi@gar.gov | Spend virtual currency    |
+      | email                  | name                   |
+      | obi-wan.kenobi@gar.gov | Spend virtual currency |
