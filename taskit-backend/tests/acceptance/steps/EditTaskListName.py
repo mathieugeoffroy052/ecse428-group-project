@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta
 from behave import given, then, when
 from django.urls import reverse
-from hamcrest import assert_that, equal_to, not_none
-from tasklists.models import Task, TaskList, TaskListManager, TaskManager
+from hamcrest import assert_that, not_none
+from tasklists.models import Task, TaskList
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -18,39 +17,6 @@ def step_impl(context):
             task_list_name = ""
         task_list = TaskList.objects.create_task_list(owner, task_list_name)
         task_list.save()
-
-
-@given("The following tasks in the task list exist")
-def step_impl(context):
-    for row in context.table:
-        owner = User.objects.filter(email=row["email"]).first()
-        if row["due_date"] != "NULL":
-            due_date = datetime.fromisoformat(row["due_date"])
-        else:
-            due_date = None
-        if row["estimated_duration"] != "NULL":
-            duration = timedelta(minutes=int(row["estimated_duration"]))
-        else:
-            duration = None
-        if "notes" in row and row["notes"] != "NULL":
-            notes = row["notes"]
-        else:
-            notes = ""
-        if row["list_name"] != "NULL":
-            task_list_name = row["list_name"]
-        else:
-            task_list_name = ""
-        task_list = TaskList.objects.create_task_list(owner, task_list_name)
-        task = Task.objects.create_task(
-            owner,
-            row["task_name"],
-            due_date,
-            duration,
-            int(row["weight"]),
-            notes,
-            task_list,
-        )
-        task.save()
 
 
 @when(
