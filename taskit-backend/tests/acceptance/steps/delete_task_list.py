@@ -14,11 +14,16 @@ optional.init_opt_()
 def when_the_user_attempts_to_delete_the_task_list_with_tasks(context, email, list_name, task_names):
     owner = User.objects.filter(email=email).first()
     task_list = TaskList.objects.filter(owner=owner, list_name=list_name).first()
-    print(f"List '{list_name}': {task_list}")
-    task_list_id = -1 if task_list is None else task_list.id
-    request_data = {
-        "id": task_list_id
-    }
+    # Missing ID
+    if list_name is None:
+        request_data = {}
+    # Invalid ID
+    elif task_list is None:
+        request_data = {"id": -1}
+    # Valid ID
+    else:
+        print(f"List '{list_name}': {task_list} (owner {task_list.owner}, name {task_list.list_name})")
+        request_data = {"id": task_list.id}
     try:
         print(f"Request data: {request_data}")
         context.response = context.client.delete(reverse("task_list"), request_data)
@@ -55,6 +60,8 @@ def step_impl(context, task_names):
     task_names_split = [x.strip() for x in task_names.split(",") if x]
     task_objects = [Task.objects.filter(description=name).first() for name in task_names_split]
     for to in task_objects:
+        if to.tasklist is not None:
+            print(f"Task list for '{to.description}': {to.tasklist} (owner: {to.tasklist.owner}, name: {to.tasklist.list_name})")
         assert_that(to.tasklist, none())
 
 
