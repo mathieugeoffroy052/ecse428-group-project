@@ -3,9 +3,21 @@ from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from tasklists.models import Task, TaskList
-from hamcrest import assert_that, equal_to, not_none
+from hamcrest import assert_that, equal_to, not_none, none
 
 User = get_user_model()
+
+
+def get_task_status_from_string(status_string):
+    if status_string == "In progress" or status_string == "IP":
+        print("Here's the problem! " + status_string)
+        return Task.TaskState.InProgress
+    elif status_string == "Not started" or status_string == "NS":
+        return Task.TaskState.NotStarted
+    elif status_string == "Complete" or status_string == "C":
+        return Task.TaskState.Complete
+    else:
+        return status_string
 
 
 @given("The following users exist")
@@ -42,10 +54,10 @@ def given_the_following_tasks_exist(context):
         else:
             due_date = None
         if row["estimated_duration"] != "NULL":
-            duration = timedelta(minutes=int(row["estimated_duration"]))
+            duration = timedelta(seconds=int(row["estimated_duration"]))
         else:
             duration = None
-        if "notes" in row and row["notes"] != "NULL":
+        if "notes" in context.table.headings and row["notes"] != "NULL":
             notes = row["notes"]
         else:
             notes = ""
@@ -65,6 +77,8 @@ def given_the_following_tasks_exist(context):
             notes,
             task_list,
         )
+        if "state" in context.table.headings and row["state"] != "NULL":
+            task.state = get_task_status_from_string(row["state"])
         print(
             f"Created task {task} (name '{task.description}', list '{task.tasklist}')"
         )
@@ -110,3 +124,33 @@ def step_impl(context, error):
 @then("The user shall be at the login page")
 def step_impl(context):
     pass
+
+
+@then(
+    '"{email}" shall have a task called "{task_name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{new_state}"'
+)
+def step_impl(
+    context, email, task_name, due_date, estimated_duration, weight, new_state
+):
+    task = Task.objects.filter(description=task_name).first()
+    assert_that(task.owner, equal_to(User.objects.filter(email=email).first()))
+    assert_that(task.description, equal_to(task_name))
+    if due_date != "NULL":
+        assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    else:
+        assert_that(task.due_datetime, none())
+    if estimated_duration != "NULL":
+        assert_that(
+            str(int(task.estimated_duration.total_seconds())),
+            equal_to(estimated_duration),
+        )
+    else:
+        assert_that(task.estimated_duration, none())
+
+    if weight != "NULL":
+        assert_that(str(task.weight), equal_to(weight))
+    else:
+        assert_that(task.weight, none())
+
+    task_status = get_task_status_from_string(new_state)
+    assert_that(task.state, equal_to(task_status))
