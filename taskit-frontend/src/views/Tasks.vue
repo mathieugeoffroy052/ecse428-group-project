@@ -253,6 +253,7 @@
                     id="test"
                     type="updateTaskName"
                     v-model="edit_task_params.description"
+                    placeholder="Enter Task description"
                     required
                   />
                 </el-row>
@@ -317,6 +318,17 @@
                     v-model="edit_task_params.notes"
                   />
                 </el-row>
+                <el-row>
+                  <b>Task List</b>
+                </el-row>
+                <el-row>
+                  <input
+                    type="taskName"
+                    v-model="task_params.tasklist"
+                    placeholder="Enter list"
+                    required
+                  />
+                </el-row>
                 <hr />
                 <div style="width: 395px; margin: auto; padding: 20px">
                   <el-button
@@ -374,6 +386,7 @@ export default {
         weight: "",
         notes: "",
         state: "",
+        tasklist: "",
       },
       task_state: {
         state: "",
@@ -473,7 +486,7 @@ export default {
       location.reload(true);
     },
     onEditTask: function () {
-      if (this.task_params.task_description != "") {
+      if (this.task_params.description != "") {
         axios_instance
           .put("/api/tasks/", this.edit_task_params, {
             headers: {
@@ -513,6 +526,7 @@ export default {
       this.edit_task_params.weight = task.weight;
       this.edit_task_params.state = task.state;
       this.edit_task_params.notes = task.notes;
+      this.edit_task_params.tasklist = task.tasklist;
     },
   },
 };
