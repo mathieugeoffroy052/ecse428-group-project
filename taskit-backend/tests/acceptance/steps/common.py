@@ -129,6 +129,18 @@ def step_impl(context, error):
         )
 
 
+@then('an error message "{error}" shall be raised')
+def step_impl(context, error):
+    e = context.error
+    if context.error is not None:
+        assert_that(e.message, equal_to(error))
+    else:
+        assert_that(
+            error in str(context.response.data),
+            f"Expected response containing '{error}' but received {context.response.data}.",
+        )
+
+
 @then("The user shall be at the login page")
 def step_impl(context):
     pass
