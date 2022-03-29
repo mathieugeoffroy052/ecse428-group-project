@@ -190,6 +190,7 @@ def remove_task_list(request):
     else:
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
 # API for editing a task list name
 @api_view(["PUT"])
 def edit_name(request, pk):
