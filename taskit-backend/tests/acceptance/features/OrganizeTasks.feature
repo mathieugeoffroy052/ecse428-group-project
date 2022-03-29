@@ -34,7 +34,7 @@ Feature: Organize Tasks
     Then the number of task lists in the system shall be "2"
     Then shall not be a list called "<name>"
     Then no new task list shall be created
-    Then an error message "<error>" shall be raised
+    Then The error message "<error>" shall be displayed
 
     Examples:
       | email                    | name | error                        |
@@ -47,7 +47,7 @@ Feature: Organize Tasks
     Then the number of task lists in the system shall be "2"
     Then the task list "Obliterate the tomato metropolis" shall exist in the system
     Then no new task list shall be created
-    Then an error message "This list name already exists." shall be raised
+    Then The error message "This list name already exists." shall be displayed
 
   Scenario Outline: Attempt to create task list without being logged in (error flow)
     Given All users are logged out
