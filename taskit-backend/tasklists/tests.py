@@ -299,6 +299,24 @@ class TaskTestCase(TestCase):
             },
             response.json()["data"],
         )
+    
+    def test_create_task_invalid_list(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task"),
+            json.dumps(
+                {
+                    "description": "Test",
+                    "due_datetime": "2022-02-26T01:34:41+00:00",
+                    "estimated_duration": "04:00:00",
+                    "weight": 10000,
+                    "list_id": -1
+                }
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"], "Task list not found.")
 
     def test_create_task_without_being_authenticated(self):
         response = self.client.post(
