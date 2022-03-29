@@ -46,32 +46,35 @@
                 sortable
                 label="Duration"
               />
-              <el-table-column prop="weight" sortable label="Weight" />
-              <el-table-column prop="state" sortable label="State" />
+              <el-table-column prop="weight" sortable label="Weight" />\
+              <el-table-column prop="notes" sortable label="Task Notes" />
+              <el-table-column prop="state" fixed="right" label="State" />
               <el-table-column fixed="right" label="">
-                <template #default="scope">
-                  <el-button
-                    color="#FF8989"
-                    size="small"
-                    circle
-                    @click="onEditState(scope.$index, 'NS')"
-                  >
-                  </el-button>
-                  <el-button
-                    color="#FCFF89"
-                    size="small"
-                    circle
-                    @click="onEditState(scope.$index, 'IP')"
-                  >
-                  </el-button>
-                  <el-button
-                    color="#9CFF89"
-                    size="small"
-                    circle
-                    @click="onEditState(scope.$index, 'C')"
-                  >
-                  </el-button>
-                </template>
+                <el-row justify="center">
+                  <template #default="scope">
+                    <el-button
+                      color="#FF8989"
+                      size="small"
+                      circle
+                      @click="onEditState(scope.$index, 'NS')"
+                    >
+                    </el-button>
+                    <el-button
+                      color="#FCFF89"
+                      size="small"
+                      circle
+                      @click="onEditState(scope.$index, 'IP')"
+                    >
+                    </el-button>
+                    <el-button
+                      color="#9CFF89"
+                      size="small"
+                      circle
+                      @click="onEditState(scope.$index, 'C')"
+                    >
+                    </el-button>
+                  </template>
+                </el-row>
               </el-table-column>
               <el-table-column fixed="right" label="Operations">
                 <template #default="scope">
@@ -162,7 +165,7 @@
                     ><b>Task Duration</b></label
                   >
                 </el-row>
-                <el-row>
+                <el-row style="padding-bottom: 15px">
                   <el-time-picker
                     arrow-control
                     v-model="task_params.estimated_duration"
@@ -178,13 +181,24 @@
                   </el-time-picker>
                 </el-row>
 
-                <el-row style="padding-top: 15px">
+                <el-row>
                   <label class="required" for="pswd-repeat"
                     ><b>Task Weight</b></label
                   >
                 </el-row>
                 <el-row>
                   <el-input-number v-model="task_params.weight" :min="1" />
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <b>Task Notes</b>
+                </el-row>
+                <el-row>
+                  <input
+                    type="taskNotes"
+                    v-model="task_params.notes"
+                    placeholder="Enter Task Notes/Details"
+                    maxlength="200"
+                  />
                 </el-row>
                 <hr />
                 <div>
@@ -240,6 +254,7 @@ export default {
         due_datetime: "",
         estimated_duration: "",
         weight: "",
+        notes: "",
         state: "NS",
       },
       task_state: {
@@ -505,7 +520,8 @@ body {
 }
 input[type="taskName"],
 input[type="taskLength"],
-input[type="taskCategory"] {
+input[type="taskCategory"],
+input[type="taskNotes"] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;

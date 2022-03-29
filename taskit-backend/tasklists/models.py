@@ -5,12 +5,37 @@ from datetime import datetime, timedelta, date, timezone
 import math
 
 
+class TaskListManager(models.Manager):
+    def create_task_list(self, owner, list_name):
+        task_list = self.create(owner=owner, list_name=list_name)
+        task_list.save()
+        return task_list
+
+
+class TaskList(models.Model):
+    """
+    Model for a user-defined task list.
+    """
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    list_name = models.CharField(max_length=20)
+    objects = TaskListManager()
+
+
 class TaskManager(models.Manager):
     def create_task(
-        self, owner, description, due_datetime, estimated_duration, weight, notes=""
+        self,
+        owner,
+        description,
+        due_datetime,
+        estimated_duration,
+        weight,
+        notes="",
+        tasklist=None,
     ):
         task = self.create(
             owner=owner,
+            tasklist=tasklist,
             description=description,
             due_datetime=due_datetime,
             estimated_duration=estimated_duration,
@@ -32,6 +57,9 @@ class Task(models.Model):
         Complete = "C", gettext_lazy("Complete")
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    tasklist = models.ForeignKey(
+        TaskList, blank=True, null=True, on_delete=models.SET_NULL
+    )
     description = models.CharField(max_length=200)
     due_datetime = models.DateTimeField(default=None, blank=True, null=True)
     estimated_duration = models.DurationField(default=None, blank=True, null=True)
