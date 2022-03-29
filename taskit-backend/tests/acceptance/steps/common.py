@@ -94,13 +94,6 @@ def step_impl(context):
     given_the_following_tasks_exist(context)
 
 
-@given('"{email}" is logged in to their account')
-def step_impl(context, email):
-    user = User.objects.filter(email=email).first()
-    context.client.force_authenticate(user=user)
-    print(f"Logging in user {email}")
-
-
 @given("All users are logged out")
 def step_impl(context):
     client = context.client
