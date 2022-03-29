@@ -37,15 +37,3 @@ def step_impl(context, email):
 def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(400))
-
-
-@then('The error message "{error}" shall be displayed')
-def step_impl(context, error):
-    e = context.error
-    if context.error is not None:
-        assert_that(e.message, equal_to(error))
-    else:
-        assert_that(
-            error in str(context.response.data),
-            f"Expected response containing {error} but received {context.response.data}.",
-        )

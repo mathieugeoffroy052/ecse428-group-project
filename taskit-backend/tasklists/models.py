@@ -35,12 +35,12 @@ class TaskManager(models.Manager):
     ):
         task = self.create(
             owner=owner,
-            tasklist=tasklist,
             description=description,
             due_datetime=due_datetime,
             estimated_duration=estimated_duration,
             weight=weight,
             notes=notes,
+            tasklist=tasklist,
         )
         task.save()
         return task
