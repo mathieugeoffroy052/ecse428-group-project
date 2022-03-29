@@ -106,22 +106,3 @@ class Task(models.Model):
             urgency[0],
             urgency[1] * 2 / 3 + self.get_weight(),
         )  # Importance is weighted more heavily than urgency
-
-class TaskListManager(models.Manager):
-    def create_task_list(self, owner, list_name):
-        # task_list = self.create(
-        #     owner=owner,
-        #     list_name=list_name
-        # )
-        # task_list.save()
-        # return task_list
-        pass
-
-class TaskList(models.Model):
-    """
-    Model for a user-defined task list.
-    """
-
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    list_name = models.CharField(max_length=200)
-    objects = TaskListManager()
