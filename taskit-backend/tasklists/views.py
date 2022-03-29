@@ -117,7 +117,9 @@ def post_task(request):
             task_list = TaskList.objects.filter(pk=request.data["list_id"]).first()
             # List not found
             if task_list is None:
-                return Response({"error": "Task list not found."}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"error": "Task list not found."}, status=status.HTTP_404_NOT_FOUND
+                )
         else:
             task_list = None
         task = serializer.save(owner=request.user)

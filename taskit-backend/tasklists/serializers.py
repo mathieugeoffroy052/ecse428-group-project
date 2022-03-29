@@ -56,5 +56,5 @@ class TaskSerializer(serializers.ModelSerializer):
             "state",
             "notes",
             "id",
-            "list_id"
+            "list_id",
         )

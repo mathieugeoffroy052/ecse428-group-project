@@ -177,7 +177,7 @@ class TaskTestCase(TestCase):
                     "estimated_duration": "03:00:00",
                     "weight": 10000,
                     "notes": "aNote",
-                    "list_id": task_list.id
+                    "list_id": task_list.id,
                 }
             ),
             content_type="application/json",
@@ -190,7 +190,7 @@ class TaskTestCase(TestCase):
                 "estimated_duration": "03:00:00",
                 "weight": 10000,
                 "notes": "aNote",
-                "list_id": task_list.id
+                "list_id": task_list.id,
             },
             response.json()["data"],
         )
@@ -273,7 +273,7 @@ class TaskTestCase(TestCase):
             },
             response.json()["data"],
         )
-    
+
     def test_create_task_without_list(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
@@ -295,11 +295,11 @@ class TaskTestCase(TestCase):
                 "due_datetime": "2022-02-25T20:34:41-05:00",
                 "estimated_duration": "04:00:00",
                 "weight": 10000,
-                "list_id": None
+                "list_id": None,
             },
             response.json()["data"],
         )
-    
+
     def test_create_task_invalid_list(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
@@ -310,7 +310,7 @@ class TaskTestCase(TestCase):
                     "due_datetime": "2022-02-26T01:34:41+00:00",
                     "estimated_duration": "04:00:00",
                     "weight": 10000,
-                    "list_id": -1
+                    "list_id": -1,
                 }
             ),
             content_type="application/json",
