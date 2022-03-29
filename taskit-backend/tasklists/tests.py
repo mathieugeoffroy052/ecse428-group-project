@@ -101,7 +101,10 @@ class UpdateTaskStateTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["description"], "Make dinner")
-        self.assertEqual(response.json()["due_datetime"], "2022-03-01T17:30:30-05:00")
+        self.assertEqual(
+            datetime.fromisoformat(response.json()["due_datetime"]),
+            datetime.fromisoformat(self.t1.due_datetime),
+        )
         self.assertEqual(response.json()["weight"], 10)
         self.assertEqual(response.json()["state"], "C")
         self.assertEqual(response.json()["notes"], "aNote")
@@ -117,7 +120,10 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["description"], "Order takeout")
-        self.assertEqual(response.json()["due_datetime"], "2022-03-01T17:30:30-05:00")
+        self.assertEqual(
+            datetime.fromisoformat(response.json()["due_datetime"]),
+            datetime.fromisoformat(self.t2.due_datetime),
+        )
         self.assertEqual(response.json()["weight"], 20)
         self.assertEqual(response.json()["state"], "NS")
         self.assertEqual(response.json()["notes"], "Second note")
@@ -152,7 +158,7 @@ class UpdateTaskStateTestCase(TestCase):
         self.assertEqual(response.status_code, 401)
 
 
-class TaskListTestCase(TestCase):
+class TaskTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="johnsmith@example.com", password="password123"
@@ -602,3 +608,101 @@ class EditTaskTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"error": "Not found"})
+
+
+class TaskListTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="johnsmith@example.com", password="password123"
+        )
+        self.client: APIClient = APIClient()
+
+    def test_create_task_list_with_name(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": "School Work"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertDictContainsSubset(
+            {"list_name": "School Work"},
+            response.json()["data"],
+        )
+        self.assertEqual(response.json()["success"], "Task list created succesfully.")
+
+    def test_create_task_list_with_blank_name(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": ""}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "list_name": ["This field may not be blank."],
+            },
+        )
+
+    def test_create_task_list_without_a_name(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "list_name": ["This field is required."],
+            },
+        )
+
+    def test_create_task_list_name_too_long(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": "I am choosing a very long name"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {
+                "list_name": ["Ensure this field has no more than 20 characters."],
+            },
+        )
+
+    def test_create_task_list_without_being_authenticated(self):
+        response = self.client.post(
+            reverse("task_list"),
+            json.dumps({"list_name": "School Work"}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_delete_task_list(self):
+        self.client.force_authenticate(user=self.user)
+        taskListSchool = TaskList.objects.create(
+            owner=self.user, list_name="School Work"
+        )
+        response = self.client.delete(reverse("task_list"), {"id": taskListSchool.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["success"], "Task list deleted.")
+
+    def test_delete_nonexistent_task_list(self):
+        self.client.force_authenticate(user=self.user)
+        fakeId = 101
+        existing_task_lists = TaskList.objects.filter(id=fakeId)
+        if existing_task_lists:
+            existing_task_lists.first().delete()
+        response = self.client.delete(reverse("task_list"), {"id": fakeId})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"], "Not found")
+
+    def test_delete_task_list_without_being_authenticated(self):
+        response = self.client.delete(reverse("task_list"), {"id": 101})
+        self.assertEqual(response.status_code, 401)
