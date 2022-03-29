@@ -9,21 +9,23 @@
           <el-button class="logout" @click="tutorial_one = true"
             >Tutorial
           </el-button>
-          <el-dialog
-            v-model="tutorial_one"
-            title="Welcome"
-            width="30%"
-            :before-close="handleClose"
-          >
-            <span>Welcome to TaskIt, you task tracking tool! Here is a small tutorial to get you started.
-            </span>
-            <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="tutorial_one = false">Skip</el-button>
-                <el-button type="primary" @click="(tutorial_one = false), (tutorial_two = true)">Next</el-button>
+          <el-container class="box1">
+            <el-dialog
+              v-model="tutorial_one"
+              title="Welcome"
+              width="30%"
+              :before-close="handleClose"
+            >
+              <span>Welcome to TaskIt, you task tracking tool! Here is a small tutorial to get you started.
               </span>
-            </template>
-          </el-dialog>
+              <template #footer>
+                <span class="dialog-footer">
+                  <el-button @click="tutorial_one = false">Skip</el-button>
+                  <el-button type="primary" @click="(tutorial_one = false), (tutorial_two = true)">Next</el-button>
+                </span>
+              </template>
+            </el-dialog>
+          </el-container>
           <el-dialog
             v-model="tutorial_two"
             title="Main Header"
@@ -470,10 +472,12 @@ body {
 }
 .viewtasks .el-header {
   position: relative;
-
   background-color: #9277ff;
   height: 10vh;
   color: var(--el-text-color-primary);
+}
+.viewtasks .box1{
+  white-space: pre-line;
 }
 .viewtasks .card {
   border-style: solid;
