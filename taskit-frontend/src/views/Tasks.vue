@@ -5,6 +5,82 @@
         <div class="logo">
           <el-button class="logobutton" type="text">TaskIt</el-button>
         </div>
+        <div>
+          <el-button class="logout" @click="tutorial_one = true"
+            >Tutorial
+          </el-button>
+          <el-dialog
+            v-model="tutorial_one"
+            title="Welcome"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>Welcome to TaskIt, you task tracking tool! Here is a small tutorial to get you started.
+            </span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="tutorial_one = false">Skip</el-button>
+                <el-button type="primary" @click="(tutorial_one = false), (tutorial_two = true)">Next</el-button>
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_two"
+            title="Main Header"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>Up here you have the Main Header. You are currently on the home page of your account.You can find more information about the app in the abaout section.</span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="tutorial_two = false">Skip</el-button>
+                <el-button type="primary" @click="(tutorial_two = false),(tutorial_three = true)"
+                  >Next</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_three"
+            title="Current Task List"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span> Here, you will have a list of all of your tasks.
+              For each item, there is a brief description, With a due date, weight, additional notes and the task state.
+              The characteristics can be modified by clicking the edit button.
+              You can delete tasks by clicking the delete button.
+              You can also create new tasks by clicking the "+".
+            </span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="tutorial_three = false">Skip</el-button>
+                <el-button type="primary" @click="(tutorial_three = false),(tutorial_four = true)"
+                  >Next</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_four"
+            title="Current Task List"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span> Here, you will have all of you different lists.For you can add a task to a specific list through the edit button on the task.
+              There characteristics can be modified by clicking the edit button.
+              You can delete lists by clicking the delete button. You can also create new lists by clicking the "+".
+            </span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="tutorial_four = false">Skip</el-button>
+                <el-button type="primary" @click="tutorial_four = false"
+                  >Start</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+        </div>
         <div class="options">
           <el-button class="logout" color="#ccbfff" @click="onLogOut()">
             Logout
@@ -241,10 +317,22 @@
 
 <script>
 import axios from "axios";
+//import { ElMessageBox } from 'element-plus'
 
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
 });
+
+// const handleClose = () => {
+//   ElMessageBox.confirm('Are you sure you want to skip?')
+//     .then(() => {
+//       done();
+//     })
+//     .catch(() => {
+//       // catch error
+//     });
+// };
+
 export default {
   name: "Tasks",
   data() {
@@ -284,6 +372,10 @@ export default {
         },
       ],
       tableData: [],
+      tutorial_one: false,
+      tutorial_two: false,
+      tutorial_three: false,
+      tutorial_four: false,
     };
   },
   created: function () {
