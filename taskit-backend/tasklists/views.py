@@ -197,7 +197,10 @@ def post_task_list(request):
         # Check that the user doesn't already have a task list with the given name
         new_list_name = request.data["list_name"]
         if TaskList.objects.filter(owner=request.user, list_name=new_list_name).first():
-            return Response({"error": "This list name already exists."}, status=status.HTTP_409_CONFLICT)
+            return Response(
+                {"error": "This list name already exists."},
+                status=status.HTTP_409_CONFLICT,
+            )
         serializer.save(owner=request.user)
         return Response(
             {"data": serializer.data, "success": "Task list created succesfully."},

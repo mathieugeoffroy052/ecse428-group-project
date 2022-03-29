@@ -8,12 +8,12 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasklists', '0007_alter_tasklist_list_name'),
+        ("tasklists", "0007_alter_tasklist_list_name"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='tasklist',
-            unique_together={('owner', 'list_name')},
+            name="tasklist",
+            unique_together={("owner", "list_name")},
         ),
     ]

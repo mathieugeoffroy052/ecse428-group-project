@@ -23,7 +23,10 @@ class TaskList(models.Model):
 
     # Prevent duplicate list names for a given user
     class Meta:
-        unique_together = ("owner", "list_name",)
+        unique_together = (
+            "owner",
+            "list_name",
+        )
 
 
 class TaskManager(models.Manager):
