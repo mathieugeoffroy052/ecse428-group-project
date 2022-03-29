@@ -49,11 +49,11 @@ Feature: Delete task list
     And An error message "<error>" shall be raised
 
     Examples:
-      | email                    | task_list_name       | error                          |
-      | obi-wan.kenobi@gar.gov   | say memorable quotes | This task list does not exist. |
-      | anakin.skywalker@gar.gov | remembering past     | This task list does not exist. |
-      | obi-wan.kenobi@gar.gov   | NULL                 | This field is blank.           |
-      | anakin.skywalker@gar.gov |                      | This field is blank.           |
+      | email                    | task_list_name       | error                |
+      | obi-wan.kenobi@gar.gov   | say memorable quotes | Not found.           |
+      | anakin.skywalker@gar.gov | remembering past     | Not found.           |
+      | obi-wan.kenobi@gar.gov   | NULL                 | This field is blank. |
+      | anakin.skywalker@gar.gov |                      | This field is blank. |
 
   Scenario Outline: Attempt to delete a task list when not logged in (error flow)
     Given All users are logged out
