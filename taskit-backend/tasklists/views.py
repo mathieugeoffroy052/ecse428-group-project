@@ -142,10 +142,12 @@ def remove_task(request):
 
 
 # APIs for TaskList
-@api_view(["POST", "DELETE"])
+@api_view(["GET", "POST", "DELETE"])
 def task_list(request):
     if request.method == "POST":
         return post_task_list(request)
+    elif request.method == "GET":
+        return list_task_list(request)
     elif request.method == "DELETE":
         return remove_task_list(request)
     else:
@@ -153,6 +155,15 @@ def task_list(request):
             {"error": f"Invalid HTTP method {request.method}"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+def list_task_list(request):
+    """
+    GET
+    """
+    tasklists = TaskList.objects.filter(owner=request.user)
+    serializer = TaskListSerializer(tasklists, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def post_task_list(request):
