@@ -47,9 +47,13 @@ def step_impl(context):
             notes = row["notes"]
         else:
             notes = ""
-        task_list = TaskList.objects.filter(
-            owner=owner, list_name=row["task_list_name"]
-        ).first()
+        if "task_list_name" in row.headings:
+            task_list = TaskList.objects.filter(
+                owner=owner, list_name=row["task_list_name"]
+            ).first()
+        else:
+            print(f"'task_list_name' not in row headings: {row.headings}")
+            task_list = None
         task = Task.objects.create_task(
             owner,
             row["task_name"],
