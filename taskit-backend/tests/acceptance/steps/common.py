@@ -2,8 +2,8 @@ from behave import given, then
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from tasklists.models import Task
-from hamcrest import assert_that, not_none, equal_to, none
+from tasklists.models import Task, TaskList
+from hamcrest import assert_that, equal_to, not_none, none
 
 User = get_user_model()
 
@@ -46,7 +46,7 @@ def step_impl(context, email):
 
 
 @given("The following tasks exist")
-def step_impl(context):
+def given_the_following_tasks_exist(context):
     for row in context.table:
         owner = User.objects.filter(email=row["email"]).first()
         if row["due_date"] != "NULL":
@@ -61,12 +61,32 @@ def step_impl(context):
             notes = row["notes"]
         else:
             notes = ""
+        if "task_list_name" in row.headings:
+            task_list = TaskList.objects.filter(
+                owner=owner, list_name=row["task_list_name"]
+            ).first()
+        else:
+            print(f"'task_list_name' not in row headings: {row.headings}")
+            task_list = None
         task = Task.objects.create_task(
-            owner, row["task_name"], due_date, duration, int(row["weight"]), notes
+            owner,
+            row["task_name"],
+            due_date,
+            duration,
+            int(row["weight"]),
+            notes,
+            task_list,
         )
         if "state" in context.table.headings and row["state"] != "NULL":
             task.state = get_task_status_from_string(row["state"])
-        task.save()
+        print(
+            f"Created task {task} (name '{task.description}', list '{task.tasklist}')"
+        )
+
+
+@given("The following tasks in the task list exist")
+def step_impl(context):
+    given_the_following_tasks_exist(context)
 
 
 @given('"{email}" is logged in to their account')
@@ -87,6 +107,18 @@ def step_impl(context, message):
     msg = context.response.data["success"]
     assert_that(msg, not_none())
     assert_that(message in msg)
+
+
+@then('The error message "{error}" shall be displayed')
+def step_impl(context, error):
+    e = context.error
+    if context.error is not None:
+        assert_that(e.message, equal_to(error))
+    else:
+        assert_that(
+            error in str(context.response.data),
+            f"Expected response containing {error} but received {context.response.data}.",
+        )
 
 
 @then("The user shall be at the login page")
