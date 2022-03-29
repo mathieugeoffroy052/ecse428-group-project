@@ -47,11 +47,21 @@ def step_impl(context):
             notes = row["notes"]
         else:
             notes = ""
-        task_list = TaskList.objects.filter(owner=owner, list_name=row['task_list_name']).first()
+        task_list = TaskList.objects.filter(
+            owner=owner, list_name=row["task_list_name"]
+        ).first()
         task = Task.objects.create_task(
-            owner, row["task_name"], due_date, duration, int(row["weight"]), notes, task_list
+            owner,
+            row["task_name"],
+            due_date,
+            duration,
+            int(row["weight"]),
+            notes,
+            task_list,
         )
-        print(f"Created task {task} (name '{task.description}', list '{task.tasklist}')")
+        print(
+            f"Created task {task} (name '{task.description}', list '{task.tasklist}')"
+        )
 
 
 @given("All users are logged out")
@@ -72,7 +82,9 @@ def step_impl(context):
 def step_impl(context, message):
     msg = context.response.data["success"]
     assert_that(msg, not_none())
-    assert_that(message in msg, f"Expected message containing '{message}' but received '{msg}'.")
+    assert_that(
+        message in msg, f"Expected message containing '{message}' but received '{msg}'."
+    )
 
 
 @then('an error message "{error}" shall be raised')
@@ -92,11 +104,11 @@ def step_impl(context):
     pass
 
 
-@then(u'the number of lists in the system shall be "{num_lists}"')
+@then('the number of lists in the system shall be "{num_lists}"')
 def then_the_number_of_lists_in_the_system_shall_be(_, num_lists):
     assert_that(len(TaskList.objects.all()), equal_to(int(num_lists)))
 
 
-@then(u'the number of task lists in the system shall be "{num_lists}"')
+@then('the number of task lists in the system shall be "{num_lists}"')
 def step_impl(context, num_lists):
     then_the_number_of_lists_in_the_system_shall_be(context, num_lists)

@@ -211,12 +211,16 @@ def remove_task_list(request):
     }
     """
     if "id" not in request.data:
-        return Response({"error": "This field is blank."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": "This field is blank."}, status=status.HTTP_400_BAD_REQUEST
+        )
     id = request.data["id"]
     taskLists = TaskList.objects.filter(id=id)
     if taskLists:
         taskList = taskLists.first()
         taskList.delete()
-        return Response({"success": "Task list deleted successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"success": "Task list deleted successfully."}, status=status.HTTP_200_OK
+        )
     else:
         return Response({"error": "Not found."}, status=status.HTTP_404_NOT_FOUND)

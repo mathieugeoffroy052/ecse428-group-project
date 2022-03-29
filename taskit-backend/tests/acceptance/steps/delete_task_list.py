@@ -10,8 +10,12 @@ User = get_user_model()
 optional.init_opt_()
 
 
-@when(u'The user "{email}" attempts to delete the task list "{list_name:opt_?}" with tasks "{task_names}"')
-def when_the_user_attempts_to_delete_the_task_list_with_tasks(context, email, list_name, task_names):
+@when(
+    'The user "{email}" attempts to delete the task list "{list_name:opt_?}" with tasks "{task_names}"'
+)
+def when_the_user_attempts_to_delete_the_task_list_with_tasks(
+    context, email, list_name, task_names
+):
     context.email = email
     owner = User.objects.filter(email=email).first()
     task_list = TaskList.objects.filter(owner=owner, list_name=list_name).first()
@@ -33,54 +37,60 @@ def when_the_user_attempts_to_delete_the_task_list_with_tasks(context, email, li
         context.error = e
 
 
-@when(u'The user "{email}" attempts to delete the task list "{list_name:opt_?}"')
+@when('The user "{email}" attempts to delete the task list "{list_name:opt_?}"')
 def step_impl(context, email, list_name):
-    when_the_user_attempts_to_delete_the_task_list_with_tasks(context, email, list_name, "")
+    when_the_user_attempts_to_delete_the_task_list_with_tasks(
+        context, email, list_name, ""
+    )
 
 
-@then(u'The task list "{list_name}" shall be deleted')
+@then('The task list "{list_name}" shall be deleted')
 def step_impl(context, list_name):
     status_first_digit = context.response.status_code // 100
     assert_that(status_first_digit, equal_to(2))
 
 
-@then(u'The user "{email}" shall have no task list "{list_name}"')
+@then('The user "{email}" shall have no task list "{list_name}"')
 def step_impl(context, email, list_name):
     owner = User.objects.filter(email=email).first()
     task_lists = TaskList.objects.filter(owner=owner, list_name=list_name)
     assert_that(len(task_lists), equal_to(0))
 
 
-@then(u'The tasks "{task_names}" will be assigned to no lists')
+@then('The tasks "{task_names}" will be assigned to no lists')
 def step_impl(context, task_names):
     # Split the task names and discard empty names
     task_names_split = [x.strip() for x in task_names.split(",") if x]
-    task_objects = [Task.objects.filter(description=name).first() for name in task_names_split]
+    task_objects = [
+        Task.objects.filter(description=name).first() for name in task_names_split
+    ]
     for to in task_objects:
         assert_that(to.tasklist, none())
 
 
-@then(u'No task list shall be deleted')
+@then("No task list shall be deleted")
 def step_impl(context):
     if context.response != None:
         status_first_digit = context.response.status_code // 100
         assert_that(status_first_digit, equal_to(4))
 
 
-@then(u'The user "{email}" shall have a list called "{list_name}"')
+@then('The user "{email}" shall have a list called "{list_name}"')
 def step_impl(context, email, list_name):
     owner = User.objects.filter(email=email).first()
     task_list = TaskList.objects.filter(owner=owner, list_name=list_name)
     assert_that(task_list, not_none())
 
 
-@then(u'The tasks "{task_names}" will be assigned to task list "{list_name}"')
+@then('The tasks "{task_names}" will be assigned to task list "{list_name}"')
 def step_impl(context, task_names, list_name):
     # Get the owner from context.email
     owner = User.objects.filter(email=context.email).first()
     task_list = TaskList.objects.filter(owner=owner, list_name=list_name).first()
     # Split the task names and discard empty names
     task_names_split = [x.strip() for x in task_names.split(",") if x]
-    task_objects = [Task.objects.filter(description=name).first() for name in task_names_split]
+    task_objects = [
+        Task.objects.filter(description=name).first() for name in task_names_split
+    ]
     for to in task_objects:
         assert_that(to.tasklist, equal_to(task_list))
