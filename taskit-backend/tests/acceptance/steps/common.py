@@ -17,13 +17,18 @@ def step_impl(context):
 
 
 @given('"{email}" is logged in')
-def step_impl(context, email):
+def user_is_logged_in(context, email):
     user = User.objects.filter(email=email).first()
     resp = context.client.post(
         reverse("login"),
         {"username": str(user), "password": context.user_pwd[str(user)]},
     )
     context.client.credentials(HTTP_AUTHORIZATION="Token " + resp.data["token"])
+
+
+@given('"{email}" is logged in to their account')
+def step_impl(context, email):
+    user_is_logged_in(context, email)
 
 
 @given("The following tasks exist")
@@ -46,13 +51,6 @@ def step_impl(context):
             owner, row["task_name"], due_date, duration, int(row["weight"]), notes
         )
         task.save()
-
-
-@given('"{email}" is logged in to their account')
-def step_impl(context, email):
-    user = User.objects.filter(email=email).first()
-    context.client.force_authenticate(user=user)
-    print(f"Logging in user {email}")
 
 
 @given("All users are logged out")
@@ -81,6 +79,11 @@ def step_impl(context):
     pass
 
 
-@then(u'the number of task lists in the system shall be "{num_lists}"')
-def step_impl(_, num_lists):
-    assert_that(len(TaskList.objects.all()), equal_to(num_lists))
+@then('the number of lists in the system shall be "{num_lists}"')
+def then_the_number_of_lists_in_the_system_shall_be(_, num_lists):
+    assert_that(len(TaskList.objects.all()), equal_to(int(num_lists)))
+
+
+@then('the number of task lists in the system shall be "{num_lists}"')
+def step_impl(context, num_lists):
+    then_the_number_of_lists_in_the_system_shall_be(context, num_lists)

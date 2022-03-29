@@ -17,7 +17,7 @@ def when_the_user_attempts_to_create_the_task_list(context, email, list_name):
     }
     try:
         print(f"Request data: {request_data}")
-        context.response = context.client.post(reverse("create_task_list"), request_data)
+        context.response = context.client.post(reverse("task_list"), request_data)
         print(f"Response: {context.response}")
     except BaseException as e:
         print(f"Exception: {e}")
@@ -31,20 +31,21 @@ def step_impl(context, email, list_name):
 
 @then(u'the task list "{list_name}" shall exist in the system')
 def step_impl(_, list_name):
-    task_list = TaskList.objects.filter(list_name=list_name)
+    task_list = TaskList.objects.filter(list_name=list_name).first()
     assert_that(task_list, not_none())
 
 
 @then(u'"{email}" shall have a task list called "{list_name}"')
 def step_impl(_, email, list_name):
-    owner = User.objects.filter(email=email)
-    task_list = TaskList.objects.filter(list_name=list_name, owner=owner)
+    owner = User.objects.filter(email=email).first()
+    print(f"Task lists: {TaskList.objects.filter(list_name=list_name, owner=owner)}")
+    task_list = TaskList.objects.filter(list_name=list_name, owner=owner).first()
     assert_that(task_list, not_none())
 
 
 @then(u'shall not be a list called "{list_name:opt_?}"')
 def step_impl(_, list_name):
-    task_list = TaskList.objects.filter(list_name=list_name)
+    task_list = TaskList.objects.filter(list_name=list_name).first()
     assert_that(task_list, none())
 
 
