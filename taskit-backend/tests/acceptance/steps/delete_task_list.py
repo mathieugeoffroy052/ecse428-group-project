@@ -23,18 +23,10 @@ def when_the_user_attempts_to_delete_the_task_list_with_tasks(context, email, li
         request_data = {"id": -1}
     # Valid ID
     else:
-        print(f"List '{list_name}': {task_list} (owner {task_list.owner}, name {task_list.list_name})")
         request_data = {"id": task_list.id}
     try:
         print(f"Request data: {request_data}")
-        tasks = Task.objects.filter(tasklist=task_list)
-        print("Tasks before:")
-        for t in tasks:
-            print(f"{t}: owner '{t.owner}', name '{t.description}'")
         context.response = context.client.delete(reverse("task_list"), request_data)
-        print("Tasks after:")
-        for t in tasks:
-            print(f"{t}: owner '{t.owner}', name '{t.description}'")
         print(f"Response: {context.response}")
     except BaseException as e:
         print(f"Exception: {e}")
@@ -56,9 +48,6 @@ def step_impl(context, list_name):
 def step_impl(context, email, list_name):
     owner = User.objects.filter(email=email).first()
     task_lists = TaskList.objects.filter(owner=owner, list_name=list_name)
-    print(f"task_lists: {task_lists}")
-    if len(task_lists) > 0:
-        print(f"task list: {task_lists.first()}, owner: {task_lists.first().owner}, name: {task_lists.first().list_name}")
     assert_that(len(task_lists), equal_to(0))
 
 
@@ -68,8 +57,6 @@ def step_impl(context, task_names):
     task_names_split = [x.strip() for x in task_names.split(",") if x]
     task_objects = [Task.objects.filter(description=name).first() for name in task_names_split]
     for to in task_objects:
-        if to.tasklist is not None:
-            print(f"Task list for '{to.description}': {to.tasklist} (owner: {to.tasklist.owner}, name: {to.tasklist.list_name})")
         assert_that(to.tasklist, none())
 
 
@@ -94,8 +81,6 @@ def step_impl(context, task_names, list_name):
     task_list = TaskList.objects.filter(owner=owner, list_name=list_name).first()
     # Split the task names and discard empty names
     task_names_split = [x.strip() for x in task_names.split(",") if x]
-    print(f"task_names_split: {task_names_split}")
     task_objects = [Task.objects.filter(description=name).first() for name in task_names_split]
-    print(f"task_objects: {task_objects}")
     for to in task_objects:
         assert_that(to.tasklist, equal_to(task_list))
