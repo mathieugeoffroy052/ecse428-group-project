@@ -16,6 +16,13 @@ def step_impl(context):
         user.save()
 
 
+@given('There exists a user with email "{email}" and password "{password}"')
+def step_impl(context, email, password):
+    user = User.objects.create_user(email, password)
+    context.user_pwd[email] = password
+    user.save()
+
+
 @given('"{email}" is logged in')
 def user_is_logged_in(context, email):
     user = User.objects.filter(email=email).first()
