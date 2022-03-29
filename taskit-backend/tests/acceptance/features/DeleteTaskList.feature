@@ -46,7 +46,7 @@ Feature: Delete task list
     When The user "<email>" attempts to delete the task list "<task_list_name>"
     Then No task list shall be deleted
     Then The number of lists in the system shall be "4"
-    And An error message "<error>" shall be raised
+    And The error message "<error>" shall be displayed
 
     Examples:
       | email                    | task_list_name       | error                |
