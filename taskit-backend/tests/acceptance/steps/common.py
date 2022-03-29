@@ -3,11 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from tasklists.models import Task, TaskList
-<<<<<<< HEAD
 from hamcrest import assert_that, equal_to, none, not_none
-=======
-from hamcrest import assert_that, equal_to, not_none, none
->>>>>>> main
 
 User = get_user_model()
 
@@ -136,7 +132,6 @@ def step_impl(context):
     pass
 
 
-<<<<<<< HEAD
 @then('the number of lists in the system shall be "{num_lists}"')
 def then_the_number_of_lists_in_the_system_shall_be(_, num_lists):
     assert_that(len(TaskList.objects.all()), equal_to(int(num_lists)))
@@ -145,7 +140,8 @@ def then_the_number_of_lists_in_the_system_shall_be(_, num_lists):
 @then('the number of task lists in the system shall be "{num_lists}"')
 def step_impl(context, num_lists):
     then_the_number_of_lists_in_the_system_shall_be(context, num_lists)
-=======
+
+
 @then(
     '"{email}" shall have a task called "{task_name}" with due date "{due_date}", duration "{estimated_duration}", weight "{weight}", and state "{new_state}"'
 )
@@ -174,4 +170,3 @@ def step_impl(
 
     task_status = get_task_status_from_string(new_state)
     assert_that(task.state, equal_to(task_status))
->>>>>>> main
