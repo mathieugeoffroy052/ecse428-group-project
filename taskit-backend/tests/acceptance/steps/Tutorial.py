@@ -1,5 +1,5 @@
 from behave import given, then
-from hamcrest import assert_that
+from hamcrest import assert_that, equal_to
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -10,12 +10,14 @@ User = get_user_model()
 )
 def step_impl(context, email, has_seen_tutorial):
     user = User.objects.filter(email=email).first()
-    user.has_seen_tutorial = has_seen_tutorial
+    user.has_seen_tutorial = True if has_seen_tutorial.lower() == "true" else False
+    user.save()
 
 
 @then("The user shall view the tutorial")
 def step_impl(context):
-    pass
+    assert_that(context.response.status_code, equal_to(200))
+    assert_that(context.response.data["has_seen_tutorial"], equal_to(False))
 
 
 @then("The user shall not view the tutorial")
@@ -28,4 +30,5 @@ def step_impl(context):
 )
 def step_impl(context, email, has_seen_tutorial):
     user = User.objects.filter(email=email).first()
-    assert_that(has_seen_tutorial, user.has_seen_tutorial)
+    has_seen_tutorial = True if has_seen_tutorial.lower() == "true" else False
+    assert_that(user.has_seen_tutorial, equal_to(has_seen_tutorial))
