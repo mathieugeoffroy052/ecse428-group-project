@@ -16,10 +16,21 @@
 
       <el-container>
         <el-aside width="300px">
-          <div class="card">
-            <span>Lists</span>
-            <el-divider content-position="center">o</el-divider>
-          </div>
+          <template #default="scope">
+            <div class="card">
+              <span>Lists</span>
+              <el-divider content-position="center">o</el-divider>
+              <el-table
+                :data="listTableData"
+                height="55vh"
+                stripe
+                style="color: black"
+                @click="onGetTaskFromTaskList(scope.$index)"
+              >
+                <el-table-column prop="description" />
+              </el-table>
+            </div>
+          </template>
         </el-aside>
         <el-main>
           <div class="maincard">
@@ -33,7 +44,7 @@
               +
             </el-button>
             <el-table
-              :data="tableData"
+              :data="TaskFromListData"
               height="55vh"
               stripe
               border
@@ -102,7 +113,6 @@
                 </template>
               </el-table-column>
             </el-table>
-
             <el-drawer
               v-model="add_task_drawer"
               title="I am the title"
@@ -402,6 +412,8 @@ export default {
         },
       ],
       tableData: [],
+      listTableData: [],
+      TaskFromListData: [],
     };
   },
   created: function () {
@@ -416,6 +428,13 @@ export default {
         this.tableData = response.data.sort((a, b) =>
           a.priority < b.priority ? 1 : -1
         );
+        for (var i = 0; i < this.tableData.length; i++) {
+          if (
+            this.listTableData.includes(this.tableData[i]).tasklist == false
+          ) {
+            this.listTableData.push(this.tableData[i].tasklist);
+          }
+        }
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -513,6 +532,18 @@ export default {
       this.edit_task_params.weight = task.weight;
       this.edit_task_params.state = task.state;
       this.edit_task_params.notes = task.notes;
+    },
+    onGetTaskFromTaskList(id) {
+      var task = this.tableData[id];
+      for (var i = 0; i < this.tableData.length; i++) {
+        var list = task.tasklist;
+        if (this.tableData[i].tasklist == null) {
+          //tasks with no lists should just be included in all lists
+          this.TaskFromListData.push(this.tableData[i]);
+        } else if (this.tableData[i].tasklist == list) {
+          this.TaskFromListData.push(this.tableData[i]);
+        }
+      }
     },
   },
 };
