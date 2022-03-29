@@ -210,11 +210,19 @@ def edit_name(request, pk):
         "list_name": "grocery"
     }
     """
-    request = request.data
+
     try:
         t = TaskList.objects.get(pk=pk)
-        s = TaskListSerializer(t, data={"list_name": request["list_name"]})
+        s = TaskListSerializer(t, data={"list_name": request.data["list_name"]})
         if s.is_valid():
+            new_list_name = request.data["list_name"]
+            if TaskList.objects.filter(
+                owner=request.user, list_name=new_list_name
+            ).first():
+                return Response(
+                    {"error": "This list name already exists."},
+                    status=status.HTTP_409_CONFLICT,
+                )
             s.save()
             return Response(s.data, status=status.HTTP_200_OK)
         else:
