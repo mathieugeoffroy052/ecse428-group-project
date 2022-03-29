@@ -34,7 +34,7 @@ def step_impl(context, email):
 
 
 @given("The following tasks exist")
-def step_impl(context):
+def given_the_following_tasks_exist(context):
     for row in context.table:
         owner = User.objects.filter(email=row["email"]).first()
         if row["due_date"] != "NULL":
@@ -49,30 +49,13 @@ def step_impl(context):
             notes = row["notes"]
         else:
             notes = ""
-        task = Task.objects.create_task(
-            owner, row["task_name"], due_date, duration, int(row["weight"]), notes
-        )
-        task.save()
-
-
-@given("The following tasks in the task list exist")
-def step_impl(context):
-    for row in context.table:
-        owner = User.objects.filter(email=row["email"]).first()
-        if row["due_date"] != "NULL":
-            due_date = datetime.fromisoformat(row["due_date"])
+        if "task_list_name" in row.headings:
+            task_list = TaskList.objects.filter(
+                owner=owner, list_name=row["task_list_name"]
+            ).first()
         else:
-            due_date = None
-        if row["estimated_duration"] != "NULL":
-            duration = timedelta(minutes=int(row["estimated_duration"]))
-        else:
-            duration = None
-        if "notes" in row and row["notes"] != "NULL":
-            notes = row["notes"]
-        else:
-            notes = ""
-        task_list_name = row["list_name"]
-        task_list = TaskList.objects.create_task_list(owner, task_list_name)
+            print(f"'task_list_name' not in row headings: {row.headings}")
+            task_list = None
         task = Task.objects.create_task(
             owner,
             row["task_name"],
@@ -82,7 +65,14 @@ def step_impl(context):
             notes,
             task_list,
         )
-        task.save()
+        print(
+            f"Created task {task} (name '{task.description}', list '{task.tasklist}')"
+        )
+
+
+@given("The following tasks in the task list exist")
+def step_impl(context):
+    given_the_following_tasks_exist(context)
 
 
 @given('"{email}" is logged in to their account')

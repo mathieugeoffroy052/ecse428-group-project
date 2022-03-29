@@ -24,16 +24,16 @@ def step_impl(context):
 )
 def step_impl(context, email, list_name, new_task_list_name):
     find_tasklist = TaskList.objects.filter(list_name=list_name).first()
-    if find_tasklist != None:
+    if find_tasklist is not None:
         tasklist_id = find_tasklist.id
     else:
-        tasklist_id = -1
+        assert_that(False, f"Task '{list_name}' not found.")
     try:
         list_str = str(new_task_list_name) if new_task_list_name is not None else ""
         context.response = context.client.put(
             reverse("edit_name", kwargs={"pk": tasklist_id}), {"list_name": list_str}
         )
-        print(context.response)
+        print(f"Response: {context.response}")
     except BaseException as e:
         context.error = e
 
