@@ -47,10 +47,11 @@ def step_impl(context):
             notes = row["notes"]
         else:
             notes = ""
-        task_list = TaskList.objects.filter(list_name=row['task_list_name']).first()
-        Task.objects.create_task(
+        task_list = TaskList.objects.filter(owner=owner, list_name=row['task_list_name']).first()
+        task = Task.objects.create_task(
             owner, row["task_name"], due_date, duration, int(row["weight"]), notes, task_list
         )
+        print(f"Created task {task} (name '{task.description}', list '{task.tasklist}')")
 
 
 @given("All users are logged out")

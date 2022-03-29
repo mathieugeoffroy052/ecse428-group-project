@@ -12,6 +12,7 @@ optional.init_opt_()
 
 @when(u'The user "{email}" attempts to delete the task list "{list_name:opt_?}" with tasks "{task_names}"')
 def when_the_user_attempts_to_delete_the_task_list_with_tasks(context, email, list_name, task_names):
+    context.email = email
     owner = User.objects.filter(email=email).first()
     task_list = TaskList.objects.filter(owner=owner, list_name=list_name).first()
     # Missing ID
@@ -26,7 +27,14 @@ def when_the_user_attempts_to_delete_the_task_list_with_tasks(context, email, li
         request_data = {"id": task_list.id}
     try:
         print(f"Request data: {request_data}")
+        tasks = Task.objects.filter(tasklist=task_list)
+        print("Tasks before:")
+        for t in tasks:
+            print(f"{t}: owner '{t.owner}', name '{t.description}'")
         context.response = context.client.delete(reverse("task_list"), request_data)
+        print("Tasks after:")
+        for t in tasks:
+            print(f"{t}: owner '{t.owner}', name '{t.description}'")
         print(f"Response: {context.response}")
     except BaseException as e:
         print(f"Exception: {e}")
@@ -81,7 +89,9 @@ def step_impl(context, email, list_name):
 
 @then(u'The tasks "{task_names}" will be assigned to task list "{list_name}"')
 def step_impl(context, task_names, list_name):
-    task_list = TaskList.objects.filter(list_name=list_name).first()
+    # Get the owner from context.email
+    owner = User.objects.filter(email=context.email).first()
+    task_list = TaskList.objects.filter(owner=owner, list_name=list_name).first()
     # Split the task names and discard empty names
     task_names_split = [x.strip() for x in task_names.split(",") if x]
     print(f"task_names_split: {task_names_split}")
