@@ -113,8 +113,13 @@ def post_task(request):
     serializer = TaskSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save(owner=request.user)
-        # return Response( serializer.data, status=status.HTTP_201_CREATED)
+        if "list_id" in request.data and request.data["list_id"] is not None:
+            task_list = TaskList.objects.filter(pk=request.data["list_id"]).first()
+        else:
+            task_list = None
+        task = serializer.save(owner=request.user)
+        task.tasklist = task_list
+        task.save()
         return Response(
             {"data": serializer.data, "success": "Task created succesfully."},
             status=status.HTTP_201_CREATED,
