@@ -167,6 +167,7 @@ class TaskTestCase(TestCase):
 
     def test_create_task_with_all_fields(self):
         self.client.force_authenticate(user=self.user)
+        task_list = TaskList.objects.create_task_list(self.user, "Food")
         response = self.client.post(
             reverse("task"),
             json.dumps(
@@ -176,6 +177,7 @@ class TaskTestCase(TestCase):
                     "estimated_duration": "03:00:00",
                     "weight": 10000,
                     "notes": "aNote",
+                    "tasklist": task_list.id,
                 }
             ),
             content_type="application/json",
@@ -188,6 +190,7 @@ class TaskTestCase(TestCase):
                 "estimated_duration": "03:00:00",
                 "weight": 10000,
                 "notes": "aNote",
+                "tasklist": task_list.id,
             },
             response.json()["data"],
         )
@@ -269,6 +272,52 @@ class TaskTestCase(TestCase):
                 "notes": "",
             },
             response.json()["data"],
+        )
+
+    def test_create_task_without_list(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task"),
+            json.dumps(
+                {
+                    "description": "Test",
+                    "due_datetime": "2022-02-26T01:34:41+00:00",
+                    "estimated_duration": "04:00:00",
+                    "weight": 10000,
+                }
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertDictContainsSubset(
+            {
+                "description": "Test",
+                "due_datetime": "2022-02-25T20:34:41-05:00",
+                "estimated_duration": "04:00:00",
+                "weight": 10000,
+                "tasklist": None,
+            },
+            response.json()["data"],
+        )
+
+    def test_create_task_invalid_list(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            reverse("task"),
+            json.dumps(
+                {
+                    "description": "Test",
+                    "due_datetime": "2022-02-26T01:34:41+00:00",
+                    "estimated_duration": "04:00:00",
+                    "weight": 10000,
+                    "tasklist": -1,
+                }
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["tasklist"], ['Invalid pk "-1" - object does not exist.']
         )
 
     def test_create_task_without_being_authenticated(self):
