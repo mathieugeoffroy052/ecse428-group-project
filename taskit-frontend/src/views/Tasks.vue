@@ -9,75 +9,18 @@
           <el-button class="logout" @click="tutorial_one = true"
             >Tutorial
           </el-button>
-          <el-container class="box1">
-            <el-dialog
-              v-model="tutorial_one"
-              title="Welcome"
-              width="30%"
-              :before-close="handleClose"
-            >
-              <span>Welcome to TaskIt, you task tracking tool! Here is a small tutorial to get you started.
-              </span>
-              <template #footer>
-                <span class="dialog-footer">
-                  <el-button @click="tutorial_one = false">Skip</el-button>
-                  <el-button type="primary" @click="(tutorial_one = false), (tutorial_two = true)">Next</el-button>
-                </span>
-              </template>
-            </el-dialog>
-          </el-container>
           <el-dialog
-            v-model="tutorial_two"
-            title="Main Header"
+            v-model="tutorial_one"
+            title="Welcome!"
             width="30%"
             :before-close="handleClose"
           >
-            <span>Up here you have the Main Header. You are currently on the home page of your account.You can find more information about the app in the abaout section.</span>
+            <span>Welcome to TaskIt! Would you like to view a quick tutorial?</span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="tutorial_two = false">Skip</el-button>
-                <el-button type="primary" @click="(tutorial_two = false),(tutorial_three = true)"
-                  >Next</el-button
-                >
-              </span>
-            </template>
-          </el-dialog>
-          <el-dialog
-            v-model="tutorial_three"
-            title="Current Task List"
-            width="30%"
-            :before-close="handleClose"
-          >
-            <span> Here, you will have a list of all of your tasks.
-              For each item, there is a brief description, With a due date, weight, additional notes and the task state.
-              The characteristics can be modified by clicking the edit button.
-              You can delete tasks by clicking the delete button.
-              You can also create new tasks by clicking the "+".
-            </span>
-            <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="tutorial_three = false">Skip</el-button>
-                <el-button type="primary" @click="(tutorial_three = false),(tutorial_four = true)"
-                  >Next</el-button
-                >
-              </span>
-            </template>
-          </el-dialog>
-          <el-dialog
-            v-model="tutorial_four"
-            title="Current Task List"
-            width="30%"
-            :before-close="handleClose"
-          >
-            <span> Here, you will have all of you different lists.For you can add a task to a specific list through the edit button on the task.
-              There characteristics can be modified by clicking the edit button.
-              You can delete lists by clicking the delete button. You can also create new lists by clicking the "+".
-            </span>
-            <template #footer>
-              <span class="dialog-footer">
-                <el-button @click="tutorial_four = false">Skip</el-button>
-                <el-button type="primary" @click="tutorial_four = false"
-                  >Start</el-button
+                <el-button @click="dialogVisible = false">Skip</el-button>
+                <el-button type="primary" @click="(tutorial_one = false), (disable = false), (visibility = true)"
+                  >Confirm</el-button
                 >
               </span>
             </template>
@@ -95,92 +38,127 @@
       <el-container>
         <el-aside width="300px">
           <div class="card">
-            <span>Lists</span>
+            <el-tooltip
+              class="box-item"
+              :disabled="disable"
+              effect="dark"
+              content="All of your lists"
+              placement="right"
+              :visible="visibility"
+            >
+              <span>Lists</span>
+            </el-tooltip>
             <el-divider content-position="center">o</el-divider>
           </div>
         </el-aside>
         <el-main>
           <div class="maincard">
-            <span>Current Task List</span>
+            <el-tooltip
+              :disabled="disable"
+              class="box-item"
+              effect="dark"
+              content="All the current tasks in a list"
+              placement="right"
+              :visible="visibility"
+            >
+              <span>Current Task List</span>
+            </el-tooltip>
             <el-divider content-position="center">o</el-divider>
-            <el-button
-              class="addtaskbutton"
-              circle
-              @click="add_task_drawer = true"
+            <el-tooltip
+              class="box-item"
+              :disabled="disable"
+              effect="dark"
+              content="Add a New task to Current Task List"
+              placement="top-start"
+              :visible="visibility"
             >
-              +
-            </el-button>
-            <el-table
-              :data="tableData"
-              height="55vh"
-              stripe
-              border
-              style="color: black"
+              <el-button
+                class="addtaskbutton"
+                circle
+                @click="add_task_drawer = true"
+              >
+                +
+              </el-button>
+            </el-tooltip>
+            <el-tooltip
+              class="box-item"
+              :disabled="disable"
+              effect="dark"
+              content="All tasks and their attributes will be listed here. You will also be able to edit and delete tasks"
+              placement="top"
+              :visible="visibility"
             >
-              <el-table-column prop="description" label="Description" />
-              <el-table-column prop="due_datetime" sortable label="Due Date" />
-              <el-table-column
-                prop="estimated_duration"
-                sortable
-                label="Duration"
-              />
-              <el-table-column prop="weight" sortable label="Weight" />\
-              <el-table-column prop="notes" sortable label="Task Notes" />
-              <el-table-column prop="state" fixed="right" label="State" />
-              <el-table-column fixed="right" label="">
-                <el-row justify="center">
+              <el-table
+                :data="tableData"
+                height="55vh"
+                stripe
+                border
+                style="color: black"
+              >
+                <el-table-column prop="description" label="Description" />
+                <el-table-column prop="due_datetime" sortable label="Due Date" />
+                <el-table-column
+                  prop="estimated_duration"
+                  sortable
+                  label="Duration"
+                />
+                <el-table-column prop="weight" sortable label="Weight" />\
+                <el-table-column prop="notes" sortable label="Task Notes" />
+                <el-table-column prop="state" fixed="right" label="State" />
+                <el-table-column fixed="right" label="">
+                  <el-row justify="center">
+                    <template #default="scope">
+                      <el-button
+                        color="#FF8989"
+                        size="small"
+                        circle
+                        @click="onEditState(scope.$index, 'NS')"
+                      >
+                      </el-button>
+                      <el-button
+                        color="#FCFF89"
+                        size="small"
+                        circle
+                        @click="onEditState(scope.$index, 'IP')"
+                      >
+                      </el-button>
+                      <el-button
+                        color="#9CFF89"
+                        size="small"
+                        circle
+                        @click="onEditState(scope.$index, 'C')"
+                      >
+                      </el-button>
+                    </template>
+                  </el-row>
+                </el-table-column>
+                <el-table-column fixed="right" label="Operations">
                   <template #default="scope">
                     <el-button
-                      color="#FF8989"
                       size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'NS')"
+                      @click="
+                        edit_drawer = true;
+                        onEditTask();
+                      "
                     >
+                      Edit
                     </el-button>
-                    <el-button
-                      color="#FCFF89"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'IP')"
+                    <el-popconfirm
+                      confirm-button-text="OK"
+                      cancel-button-text="No, Thanks"
+                      @confirm="onDeleteTask(scope.$index)"
+                      icon-color="red"
+                      title="Are you sure to delete this task?"
+                      font-family="Noteworthy Light"
                     >
-                    </el-button>
-                    <el-button
-                      color="#9CFF89"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'C')"
-                    >
-                    </el-button>
+                      <template #reference>
+                        <el-button size="small" type="danger"> Delete </el-button>
+                      </template>
+                    </el-popconfirm>
                   </template>
-                </el-row>
-              </el-table-column>
-              <el-table-column fixed="right" label="Operations">
-                <template #default="scope">
-                  <el-button
-                    size="small"
-                    @click="
-                      edit_drawer = true;
-                      onEditTask();
-                    "
-                  >
-                    Edit
-                  </el-button>
-                  <el-popconfirm
-                    confirm-button-text="OK"
-                    cancel-button-text="No, Thanks"
-                    @confirm="onDeleteTask(scope.$index)"
-                    icon-color="red"
-                    title="Are you sure to delete this task?"
-                    font-family="Noteworthy Light"
-                  >
-                    <template #reference>
-                      <el-button size="small" type="danger"> Delete </el-button>
-                    </template>
-                  </el-popconfirm>
-                </template>
-              </el-table-column>
-            </el-table>
-
+                </el-table-column>
+              </el-table>
+            </el-tooltip>
             <el-drawer
               v-model="add_task_drawer"
               title="I am the title"
@@ -375,9 +353,9 @@ export default {
       ],
       tableData: [],
       tutorial_one: false,
-      tutorial_two: false,
-      tutorial_three: false,
-      tutorial_four: false,
+      disable: true,
+      visibility: false,
+      has_seen_t : sessionStorage.getItem("hasSeenTutorial"),
     };
   },
   created: function () {
@@ -475,9 +453,6 @@ body {
   background-color: #9277ff;
   height: 10vh;
   color: var(--el-text-color-primary);
-}
-.viewtasks .box1{
-  white-space: pre-line;
 }
 .viewtasks .card {
   border-style: solid;
