@@ -33,13 +33,9 @@ class TaskSerializer(serializers.ModelSerializer):
     def get_priority(self, object):
         return object.get_priority()[1]
 
-    list_id = serializers.SerializerMethodField("get_list_id")
-
-    def get_list_id(self, object):
-        if object.tasklist is not None:
-            return object.tasklist.id
-        else:
-            return None
+    tasklist = serializers.PrimaryKeyRelatedField(
+        queryset=TaskList.objects.all(), required=False, allow_null=True, default=None
+    )
 
     class Meta:
         model = Task
@@ -56,5 +52,5 @@ class TaskSerializer(serializers.ModelSerializer):
             "state",
             "notes",
             "id",
-            "list_id",
+            "tasklist",
         )
