@@ -14,11 +14,12 @@ Feature: Edit Task List Name
             | anakin.skywalker@gar.gov | Kill the younglings              | 2022-02-07 | 5                  | 25     | Complete    |
             | obi-wan.kenobi@gar.gov   | Train Luke                       | NULL       | NULL               | 100    | Not started |
         Given The following task lists exist:
-            | email                    | list_name              |
-            | obi-wan.kenobi@gar.gov   | Training               |
-            | anakin.skywalker@gar.gov | Rebel against the Jedi |
+            | email                    | list_name                |
+            | obi-wan.kenobi@gar.gov   | Training                 |
+            | obi-wan.kenobi@gar.gov   | Rebel against the Empire |
+            | anakin.skywalker@gar.gov | Rebel against the Jedi   |
         Given The following tasks in the task list exist:
-            | email                    | task_name           | due_date   | estimated_duration | weight | notes | list_name              |
+            | email                    | task_name           | due_date   | estimated_duration | weight | notes | task_list_name         |
             | obi-wan.kenobi@gar.gov   | Train Anakin        | 2022-02-06 | 1576800            | 90     |       | Training               |
             | anakin.skywalker@gar.gov | Kill the younglings | 2022-02-07 | 5                  | 25     |       | Rebel against the Jedi |
 
@@ -52,9 +53,9 @@ Feature: Edit Task List Name
         When The user "<email>" attempts to edit the task list name "<list_name>" to "<new_task_list_name>"
         Then The user "<email>" shall have a task list named "<task_list_name>"
         And "<list_name>" shall include "<task_name>"
-        And The error message "Invalid list name" shall be displayed
+        And The error message "This list name already exists." shall be displayed
 
         Examples:
-            | email                    | task_name           | due_date   | estimated_duration | weight | notes | list_name              | new_task_list_name     |
-            | obi-wan.kenobi@gar.gov   | Train Anakin        | 2022-02-06 | 1576800            | 90     |       | Training               | Rebel against the Jedi |
-            | anakin.skywalker@gar.gov | Kill the younglings | 2022-02-07 | 5                  | 25     |       | Rebel against the Jedi | Rebel against the Jedi |
+            | email                    | task_name           | due_date   | estimated_duration | weight | notes | list_name              | new_task_list_name       |
+            | obi-wan.kenobi@gar.gov   | Train Anakin        | 2022-02-06 | 1576800            | 90     |       | Training               | Rebel against the Empire |
+            | anakin.skywalker@gar.gov | Kill the younglings | 2022-02-07 | 5                  | 25     |       | Rebel against the Jedi | Rebel against the Jedi   |
