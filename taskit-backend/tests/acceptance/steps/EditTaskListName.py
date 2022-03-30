@@ -20,10 +20,11 @@ def step_impl(context):
 
 
 @when(
-    'The user "{email}" attempts to edit the task list name "{list_name}" to "{new_task_list_name}'
+    'The user "{email}" attempts to edit the task list name "{list_name}" to "{new_task_list_name}"'
 )
 def step_impl(context, email, list_name, new_task_list_name):
-    find_tasklist = TaskList.objects.filter(list_name=list_name).first()
+    owner = User.objects.filter(email=email).first()
+    find_tasklist = TaskList.objects.filter(owner=owner, list_name=list_name).first()
     if find_tasklist is not None:
         tasklist_id = find_tasklist.id
     else:

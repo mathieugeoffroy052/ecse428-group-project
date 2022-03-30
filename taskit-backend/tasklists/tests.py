@@ -623,14 +623,14 @@ class TaskListTestCase(TestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
             reverse("task_list"),
-            json.dumps({"list_name": "I am choosing a very long name"}),
+            json.dumps({"list_name": "I am choosing a very very very long name"}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json(),
             {
-                "list_name": ["Ensure this field has no more than 20 characters."],
+                "list_name": ["Ensure this field has no more than 35 characters."],
             },
         )
 
