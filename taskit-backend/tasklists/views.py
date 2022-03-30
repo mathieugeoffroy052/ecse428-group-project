@@ -115,11 +115,14 @@ def edit_task(request):
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(
-                {"data": serializer.data, "success": "Task updated successfully"},
+                {"data": serializer.data, "success": "Task updated successfully."},
                 status=status.HTTP_200_OK,
             )
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "This field cannot be blank."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
     else:
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
