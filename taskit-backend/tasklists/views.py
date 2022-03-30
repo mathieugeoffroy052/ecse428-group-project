@@ -19,35 +19,6 @@ def private(request):
 
 # API to update task (state)
 @api_view(["PUT"])
-def edit_name(request, pk):
-    """
-    PUT
-    "/api/edit-name/<pk>"
-        where pk = primary key (or id) of tasklist
-
-    {
-        "list_name": "grocery"
-    }
-    """
-    request = request.data
-    try:
-        t = TaskList.objects.get(pk=pk)
-        s = TaskListSerializer(t, data={"list_name": request["list_name"]})
-        if s.is_valid():
-            s.save()
-            return Response(s.data, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {"error": "Invalid list name"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-    except TaskList.DoesNotExist:
-        return Response(
-            {"error": "Task List Not found"}, status=status.HTTP_400_BAD_REQUEST
-        )
-
-
-@api_view(["PUT"])
 def update_state(request, pk):
     """
     PUT
@@ -171,7 +142,7 @@ def remove_task(request):
 
 
 # APIs for TaskList
-@api_view(["GET", "POST", "DELETE"])
+@api_view(["POST", "DELETE"])
 def task_list(request):
     if request.method == "POST":
         return post_task_list(request)
@@ -225,3 +196,41 @@ def remove_task_list(request):
         return Response({"success": "Task list deleted."}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# API for editing a task list name
+@api_view(["PUT"])
+def edit_name(request, pk):
+    """
+    PUT
+    "/api/edit-name/<pk>"
+        where pk = primary key (or id) of tasklist
+
+    {
+        "list_name": "grocery"
+    }
+    """
+
+    try:
+        t = TaskList.objects.get(pk=pk)
+        s = TaskListSerializer(t, data={"list_name": request.data["list_name"]})
+        if s.is_valid():
+            new_list_name = request.data["list_name"]
+            if TaskList.objects.filter(
+                owner=request.user, list_name=new_list_name
+            ).first():
+                return Response(
+                    {"error": "This list name already exists."},
+                    status=status.HTTP_409_CONFLICT,
+                )
+            s.save()
+            return Response(s.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": "Invalid list name"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    except TaskList.DoesNotExist:
+        return Response(
+            {"error": "Task List Not found"}, status=status.HTTP_400_BAD_REQUEST
+        )
