@@ -575,6 +575,20 @@ class TaskListTestCase(TestCase):
         )
         self.client: APIClient = APIClient()
 
+    def test_getting_all_task_lists(self):
+        self.client.force_authenticate(user=self.user)
+        TaskList.objects.create(owner=self.user, list_name="consume")
+        other_user = User.objects.create_user(
+            email="other@example.com", password="password123"
+        )
+        TaskList.objects.create(owner=other_user, list_name="eject")
+        response = self.client.get(reverse("task_list"))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.json()), 1)
+        response = response.json()[0]
+        self.assertEqual(response.get("list_name"), "consume")
+
     def test_create_task_list_with_name(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
