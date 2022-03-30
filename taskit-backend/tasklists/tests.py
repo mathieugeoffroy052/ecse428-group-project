@@ -649,7 +649,7 @@ class TaskListTestCase(TestCase):
         )
         response = self.client.delete(reverse("task_list"), {"id": taskListSchool.id})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["success"], "Task list deleted.")
+        self.assertEqual(response.json()["success"], "Task list deleted successfully.")
 
     def test_delete_nonexistent_task_list(self):
         self.client.force_authenticate(user=self.user)
@@ -659,7 +659,7 @@ class TaskListTestCase(TestCase):
             existing_task_lists.first().delete()
         response = self.client.delete(reverse("task_list"), {"id": fakeId})
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()["error"], "Not found")
+        self.assertEqual(response.json()["error"], "Not found.")
 
     def test_delete_task_list_without_being_authenticated(self):
         response = self.client.delete(reverse("task_list"), {"id": 101})

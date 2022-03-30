@@ -112,7 +112,9 @@ def step_impl(context):
 def step_impl(context, message):
     msg = context.response.data["success"]
     assert_that(msg, not_none())
-    assert_that(message in msg)
+    assert_that(
+        message in msg, f"Expected message containing '{message}' but received '{msg}'."
+    )
 
 
 @then('The error message "{error}" shall be displayed')
@@ -124,6 +126,18 @@ def step_impl(context, error):
         assert_that(
             error in str(context.response.data),
             f"Expected response containing {error} but received {context.response.data}.",
+        )
+
+
+@then('an error message "{error}" shall be raised')
+def step_impl(context, error):
+    e = context.error
+    if context.error is not None:
+        assert_that(e.message, equal_to(error))
+    else:
+        assert_that(
+            error in str(context.response.data),
+            f"Expected response containing '{error}' but received {context.response.data}.",
         )
 
 
