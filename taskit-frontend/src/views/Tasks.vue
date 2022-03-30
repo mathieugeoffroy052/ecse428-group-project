@@ -167,10 +167,10 @@
                 </el-row>
                 <el-row style="padding-bottom: 15px">
                   <el-time-picker
-                    arrow-control
+          
                     v-model="task_params.estimated_duration"
                     placeholder="Enter Task Duration"
-                    value-format="hh:mm:ss"
+                    value-format="HH:mm:ss"
                     style="
                       height: 45px;
                       width: 600px;
@@ -179,6 +179,7 @@
                     "
                   >
                   </el-time-picker>
+                  
                 </el-row>
 
                 <el-row>
