@@ -39,17 +39,17 @@
               border
               style="color: black"
             >
+              <el-table-column type="expand" width=40>
+                <template #default="props">
+                  <p>Duration: {{ props.row.estimated_duration }}</p>
+                  <p>Weight: {{ props.row.weight }}</p>
+                  <p>State: {{ props.row.state }}</p>
+                  <p>Notes: {{ props.row.notes }}</p>
+                </template>
+              </el-table-column>
               <el-table-column prop="description" label="Description" />
-              <el-table-column prop="due_datetime" sortable label="Due Date" />
-              <el-table-column
-                prop="estimated_duration"
-                sortable
-                label="Duration"
-              />
-              <el-table-column prop="weight" sortable label="Weight" />\
-              <el-table-column prop="notes" sortable label="Task Notes" />
-              <el-table-column prop="state" fixed="right" label="State" />
-              <el-table-column fixed="right" label="">
+              <el-table-column prop="due_datetime" sortable label="Due Date" width=230 />
+              <el-table-column fixed="right" label="" width=150>
                 <el-row justify="center">
                   <template #default="scope">
                     <el-button
@@ -76,7 +76,7 @@
                   </template>
                 </el-row>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations">
+              <el-table-column fixed="right" label="Operations" width=150>
                 <template #default="scope">
                   <el-button
                     size="small"
@@ -299,6 +299,12 @@ export default {
         this.tableData = response.data.sort((a, b) =>
           a.priority < b.priority ? 1 : -1
         );
+        for (var i = 0; i < this.tableData.length; i++) {
+            const date = this.tableData[i]["due_datetime"].split("T");
+            const time = date[1].split("-");
+            const dateTime = date[0] + " at " + time[0]
+            this.tableData[i]["due_datetime"] = dateTime;
+        }
       })
       .catch(() => {
         alert("You are not logged in!");
