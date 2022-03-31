@@ -169,8 +169,8 @@
                   <el-button
                     size="small"
                     @click="
-                      setDescriptionForEditTask(scope.$index);
                       edit_drawer = true;
+                      onEditTask();
                     "
                   >
                     Edit
@@ -345,20 +345,9 @@ export default {
         weight: "",
         notes: "",
         state: "NS",
-        tasklist: "",
       },
       task_list_params: {
         list_name: "",
-      },
-      edit_task_params: {
-        id: "",
-        description: "",
-        due_datetime: "",
-        estimated_duration: "",
-        weight: "",
-        notes: "",
-        state: "",
-        tasklist: "",
       },
       task_state: {
         state: "",
@@ -515,17 +504,6 @@ created: function () {
         })
         .then(alert("Edited Successfully!"));
       location.reload(true);
-    },
-    setDescriptionForEditTask(id) {
-      var task = this.tableData[id];
-      this.edit_task_params.id = task.id;
-      this.edit_task_params.description = task.description;
-      this.edit_task_params.due_datetime = task.due_datetime;
-      this.edit_task_params.estimated_duration = task.estimated_duration;
-      this.edit_task_params.weight = task.weight;
-      this.edit_task_params.state = task.state;
-      this.edit_task_params.notes = task.notes;
-      this.edit_task_params.tasklist = task.tasklist;
     },
     onGetTaskFromTaskList(id) {
       this.TaskFromListData = [];
@@ -720,7 +698,6 @@ body {
   color: rgb(255, 255, 255);
 }
 input[type="taskName"],
-input[type="updateTaskName"],
 input[type="taskLength"],
 input[type="taskCategory"],
 input[type="taskNotes"] {
