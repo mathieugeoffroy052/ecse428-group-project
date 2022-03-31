@@ -105,46 +105,46 @@
               border
               style="color: black"
             >
-              <el-table-column prop="description" label="Description" />
-              <el-table-column prop="due_datetime" sortable label="Due Date" />
-              <el-table-column
-                prop="estimated_duration"
-                sortable
-                label="Duration"
-              />
-              <el-table-column prop="weight" sortable label="Weight" />\
-              <el-table-column prop="notes" sortable label="Task Notes" />
-              <el-table-column prop="state" fixed="right" label="State" />
-              <el-table-column fixed="right" label="">
-                <template #default="scope">
-                  <el-row justify="center">
-                    
-                      <el-button
-                        color="#FF8989"
-                        size="small"
-                        circle
-                        @click="onEditState(scope.$index, 'NS')"
-                      >
-                      </el-button>
-                      <el-button
-                        color="#FCFF89"
-                        size="small"
-                        circle
-                        @click="onEditState(scope.$index, 'IP')"
-                      >
-                      </el-button>
-                      <el-button
-                        color="#9CFF89"
-                        size="small"
-                        circle
-                        @click="onEditState(scope.$index, 'C')"
-                      >
-                      </el-button>
-                    
-                  </el-row>
+              <el-table-column type="expand" width=40>
+                <template #default="props">
+                  <p>Duration: {{ props.row.estimated_duration }}</p>
+                  <p>Weight: {{ props.row.weight }}</p>
+                  <p>State: {{ props.row.state }}</p>
+                  <p>Notes: {{ props.row.notes }}</p>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations">
+              <el-table-column prop="description" label="Description" />
+              <el-table-column prop="due_datetime" sortable label="Due Date" width=230 />
+              <el-table-column label="" width=150>
+                <template #default="scope">
+                <el-row justify="center">
+                  
+                    <el-button
+                      color="#FF8989"
+                      size="small"
+                      circle
+                      @click="onEditState(scope.$index, 'NS')"
+                    >
+                    </el-button>
+                    <el-button
+                      color="#FCFF89"
+                      size="small"
+                      circle
+                      @click="onEditState(scope.$index, 'IP')"
+                    >
+                    </el-button>
+                    <el-button
+                      color="#9CFF89"
+                      size="small"
+                      circle
+                      @click="onEditState(scope.$index, 'C')"
+                    >
+                    </el-button>
+                  
+                </el-row>
+                </template>
+              </el-table-column>
+              <el-table-column label="Operations" width=150>
                 <template #default="scope">
                   <el-button
                     size="small"
@@ -235,10 +235,10 @@
                 </el-row>
                 <el-row style="padding-bottom: 15px">
                   <el-time-picker
-                    arrow-control
+          
                     v-model="task_params.estimated_duration"
                     placeholder="Enter Task Duration"
-                    value-format="hh:mm:ss"
+                    value-format="HH:mm:ss"
                     style="
                       height: 45px;
                       width: 600px;
@@ -247,6 +247,7 @@
                     "
                   >
                   </el-time-picker>
+                  
                 </el-row>
 
                 <el-row>
@@ -372,6 +373,10 @@ export default {
         this.tableData = response.data.sort((a, b) =>
           a.priority < b.priority ? 1 : -1
         );
+        for (var i = 0; i < this.tableData.length; i++) {
+            const date = new Date(this.tableData[i]["due_datetime"]);
+            this.tableData[i]["due_datetime"] = date.toLocaleString();
+        }
       })
       .catch(() => {
         alert("You are not logged in!");
