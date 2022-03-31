@@ -22,11 +22,11 @@
               <el-table :data="listData" stripe border>
                 <el-table-column prop="list_name" label="List Name">
                   <template v-slot="scope">
-                    <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && !edit_task_list.includes(scope?.row.id)">
+                    <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && currentTasklist != scope?.row.id">
                       {{ scope.row.list_name }}
                     </div>
                     <el-input
-                        v-if="scope?.row && edit_task_list.includes(scope?.row.id)"
+                        v-if="scope?.row && currentTasklist === scope?.row.id"
                         v-model="scope.row.list_name"
                         v-on:keyup.enter="edit_task_list_name(scope.row)"
                     ></el-input>
@@ -327,7 +327,7 @@ export default {
   name: "Tasks",
   data() {
     return {
-      edit_task_list:[],
+      currentTasklist: "",
       task_params: {
         description: "",
         due_datetime: "",
@@ -489,7 +489,7 @@ export default {
       location.reload(true);
     },
     editTaskList(tasklistId) {
-      this.edit_task_list.push(tasklistId)
+      this.currentTasklist = tasklistId
     },
     edit_task_list_name({id, list_name}) {
       axios_instance
@@ -500,7 +500,7 @@ export default {
         })
         .then((response) => {
           console.log(response)
-          this.edit_task_list = this.edit_task_list.filter(row => row.id === id)
+          this.currentTasklist = ""
         });
       }
   },
