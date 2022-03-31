@@ -283,6 +283,17 @@
                     maxlength="200"
                   />
                 </el-row>
+                <el-row>
+                  <b>Task List</b>
+                </el-row>
+                <el-row>
+                  <input
+                    type="taskName"
+                    v-model="task_params.tasklist"
+                    placeholder="Enter list"
+                    required
+                  />
+                </el-row>
                 <hr />
                 <div>
                   <el-button
@@ -407,7 +418,7 @@
                 <el-row>
                   <input
                     type="taskName"
-                    v-model="task_params.tasklist"
+                    v-model="edit_task_params.tasklist"
                     placeholder="Enter list"
                     required
                   />
@@ -461,6 +472,7 @@ export default {
         weight: "",
         notes: "",
         state: "NS",
+        tasklist: "",
       },
       edit_task_params: {
         id: "",
@@ -468,8 +480,8 @@ export default {
         due_datetime: "",
         estimated_duration: "",
         weight: "",
-        notes: "",
         state: "",
+        notes: "",
         tasklist: "",
       },
       task_list_params: {
@@ -560,6 +572,20 @@ export default {
         });
     },
     onAddTask() {
+      this.showError = false;
+      var listname = this.task_params.tasklist;
+      if (this.task_params.tasklist != "") {
+        for (var i = 0; i < this.listData.length; i++) {
+          if (this.listData[i]["list_name"] == listname) {
+            this.task_params.tasklist = this.listData[i]["id"];
+            break;
+          }
+        }
+        if (this.task_params.tasklist == listname) {
+          this.error = "list name does not exist!";
+          this.showError = true;
+        }
+      }
       if (this.task_params.description != "") {
         axios_instance
           .post("/api/tasks/", this.task_params, {
@@ -595,7 +621,7 @@ export default {
             this.showError = true;
           });
       } else {
-        this.error = "Task list must have a name!";
+        this.error = "list name does not exist!";
         this.showError = true;
       }
     },
@@ -613,7 +639,20 @@ export default {
       location.reload(true);
     },
     onEditTask: function () {
-      if (this.task_params.description != "") {
+      var listname = this.task_params.tasklist;
+      if (this.task_params.tasklist != "") {
+        for (var i = 0; i < this.listData.length; i++) {
+          if (this.listData[i]["list_name"] == listname) {
+            this.task_params.tasklist = this.listData[i]["id"];
+            break;
+          }
+        }
+        if (this.task_params.tasklist == listname) {
+          this.error = "Tasks must have a description!";
+          this.showError = true;
+        }
+      }
+      if (this.edit_task_params.description != "") {
         axios_instance
           .put("/api/tasks/", this.edit_task_params, {
             headers: {
@@ -645,6 +684,7 @@ export default {
       location.reload(true);
     },
     setDescriptionForEditTask(id) {
+      this.showError = false;
       var task = this.tableData[id];
       this.edit_task_params.id = task.id;
       this.edit_task_params.description = task.description;
@@ -653,7 +693,13 @@ export default {
       this.edit_task_params.weight = task.weight;
       this.edit_task_params.state = task.state;
       this.edit_task_params.notes = task.notes;
-      this.edit_task_params.tasklist = task.tasklist;
+      var list_id = task.tasklist;
+      this.edit_task_params.tasklist = "";
+      for (var i = 0; i < this.listData.length; i++) {
+        if (this.listData[i]["id"] == list_id) {
+          this.edit_task_params.tasklist = this.listData[i]["list_name"];
+        }
+      }
     },
     editTaskList(tasklistId) {
       this.currentTasklist = tasklistId;
