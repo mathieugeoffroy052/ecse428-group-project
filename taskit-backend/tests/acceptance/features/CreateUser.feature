@@ -22,18 +22,18 @@ Feature: Sign up for user
     When the user provides a new email address "<email>" and a password "<password>"
     Then no new account shall be created
     Then there will exist no user with email address "<email>" and a password "<password>"
-    Then an error message "<error>" shall be raised
+    Then The error message "<error>" shall be displayed
 
     Examples:
-      | email                        | password      | error                                 |
-      | leia.organa@senate.gov       |               | No password entered.                  |
-      |                              | rocketman7    | No email address entered.             |
+      | email                  | password   | error                     |
+      | leia.organa@senate.gov |            | No password entered.      |
+      |                        | rocketman7 | No email address entered. |
 
   Scenario Outline: Create user using an email that is already taken (error flow)
     When the user provides a new email address "<email>" and a password "<password>"
     Then no new account shall be created
     Then there will exist no user with email address "<email>" and a password "<password>"
-    Then an error message "<error>" shall be raised
+    Then The error message "<error>" shall be displayed
 
     Examples:
       | email                        | password      | error                                 |
@@ -43,7 +43,7 @@ Feature: Sign up for user
     When the user provides a new email address "<email>" and a password "<password>"
     Then no new account shall be created
     Then there will exist no user with email address "<email>" and a password "<password>"
-    Then an error message "<error>" shall be raised
+    Then The error message "<error>" shall be displayed
 
     Examples:
       | email              | password      | error         |

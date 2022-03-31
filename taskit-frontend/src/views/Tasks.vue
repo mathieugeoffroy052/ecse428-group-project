@@ -19,6 +19,86 @@
           <div class="card">
             <span>Lists</span>
             <el-divider content-position="center">o</el-divider>
+            <el-table :data="listData" stripe border>
+              <el-table-column prop="list_name" label="List Name">
+                <template v-slot="scope">
+                  <div
+                    v-on:dblclick="editTaskList(scope.row.id)"
+                    v-if="scope?.row && currentTasklist != scope?.row.id"
+                  >
+                    {{ scope.row.list_name }}
+                  </div>
+                  <el-input
+                    v-if="scope?.row && currentTasklist === scope?.row.id"
+                    v-model="scope.row.list_name"
+                    v-on:keyup.enter="edit_task_list_name(scope.row)"
+                  ></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button
+              round
+              class="addtasklistbutton"
+              @click="add_task_list_drawer = true"
+            >
+              New Task List
+            </el-button>
+            <el-drawer
+              v-model="add_task_list_drawer"
+              :direction="direction"
+              :with-header="false"
+            >
+              <span>Create New Task List</span>
+              <el-form>
+                <h1>TaskIt</h1>
+                <el-row>
+                  <el-divider style="margin: 0px; padding: 0px"
+                    >New Task List
+                  </el-divider>
+                </el-row>
+                <el-row justify="center">
+                  <p
+                    style="
+                      font-family: 'Noteworthy Light';
+                      font-style: italic;
+                      padding-bottom: 10px;
+                    "
+                  >
+                    Please fill in this form to create a new task list.
+                  </p>
+                </el-row>
+
+                <el-row>
+                  <b>Task List Name</b>
+                </el-row>
+                <el-row>
+                  <input
+                    type="taskName"
+                    v-model="task_list_params.list_name"
+                    placeholder="Enter Task List Name"
+                    required
+                  />
+                </el-row>
+                <div>
+                  <el-button
+                    type="submit"
+                    class="submit"
+                    style="border-radius: 10px; width: 30%"
+                    @click="onAddTaskList()"
+                  >
+                    Add Task List
+                  </el-button>
+                </div>
+                <div style="width: 395px; margin: auto; padding: 20px">
+                  <el-alert
+                    v-if="showError"
+                    type="error"
+                    @close="this.showError = false"
+                    >{{ error }}</el-alert
+                  >
+                </div>
+              </el-form>
+            </el-drawer>
           </div>
         </el-aside>
         <el-main>
@@ -35,23 +115,27 @@
             <el-table
               :data="tableData"
               height="55vh"
-              stripe
               border
               style="color: black"
             >
+              <el-table-column type="expand" width="40">
+                <template #default="props">
+                  <p>Duration: {{ props.row.estimated_duration }}</p>
+                  <p>Weight: {{ props.row.weight }}</p>
+                  <p>State: {{ props.row.state }}</p>
+                  <p>Notes: {{ props.row.notes }}</p>
+                </template>
+              </el-table-column>
               <el-table-column prop="description" label="Description" />
-              <el-table-column prop="due_datetime" sortable label="Due Date" />
               <el-table-column
-                prop="estimated_duration"
+                prop="due_datetime"
                 sortable
-                label="Duration"
+                label="Due Date"
+                width="230"
               />
-              <el-table-column prop="weight" sortable label="Weight" />\
-              <el-table-column prop="notes" sortable label="Task Notes" />
-              <el-table-column prop="state" fixed="right" label="State" />
-              <el-table-column fixed="right" label="">
-                <el-row justify="center">
-                  <template #default="scope">
+              <el-table-column label="" width="150">
+                <template #default="scope">
+                  <el-row justify="center">
                     <el-button
                       color="#FF8989"
                       size="small"
@@ -73,10 +157,10 @@
                       @click="onEditState(scope.$index, 'C')"
                     >
                     </el-button>
-                  </template>
-                </el-row>
+                  </el-row>
+                </template>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations">
+              <el-table-column label="Operations" width="150">
                 <template #default="scope">
                   <el-button
                     size="small"
@@ -167,10 +251,9 @@
                 </el-row>
                 <el-row style="padding-bottom: 15px">
                   <el-time-picker
-                    arrow-control
                     v-model="task_params.estimated_duration"
                     placeholder="Enter Task Duration"
-                    value-format="hh:mm:ss"
+                    value-format="HH:mm:ss"
                     style="
                       height: 45px;
                       width: 600px;
@@ -370,6 +453,7 @@ export default {
   name: "Tasks",
   data() {
     return {
+      currentTasklist: "",
       task_params: {
         description: "",
         due_datetime: "",
@@ -388,6 +472,9 @@ export default {
         state: "",
         tasklist: "",
       },
+      task_list_params: {
+        list_name: "",
+      },
       task_state: {
         state: "",
       },
@@ -398,7 +485,9 @@ export default {
       username: "",
       add_task_drawer: false,
       edit_drawer: false,
+      add_task_list_drawer: false,
       error: "",
+      direction: "ltr",
       showError: false,
       options: [
         {
@@ -415,6 +504,7 @@ export default {
         },
       ],
       tableData: [],
+      listData: [],
     };
   },
   created: function () {
@@ -429,6 +519,23 @@ export default {
         this.tableData = response.data.sort((a, b) =>
           a.priority < b.priority ? 1 : -1
         );
+        for (var i = 0; i < this.tableData.length; i++) {
+          const date = new Date(this.tableData[i]["due_datetime"]);
+          this.tableData[i]["due_datetime"] = date.toLocaleString();
+        }
+      })
+      .catch(() => {
+        alert("You are not logged in!");
+        window.location.href = "../login";
+      });
+    axios_instance
+      .get("/api/task_list/", {
+        headers: {
+          Authorization: "Token " + localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        this.listData = response.data.sort();
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -469,6 +576,26 @@ export default {
           });
       } else {
         this.error = "Tasks must have a description!";
+        this.showError = true;
+      }
+    },
+    onAddTaskList() {
+      if (this.task_list_params.list_name != "") {
+        axios_instance
+          .post("/api/task_list/", this.task_list_params, {
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            (this.error = response), location.reload(true);
+          })
+          .catch(() => {
+            this.error = "Error creating task list";
+            this.showError = true;
+          });
+      } else {
+        this.error = "Task list must have a name!";
         this.showError = true;
       }
     },
@@ -527,6 +654,25 @@ export default {
       this.edit_task_params.state = task.state;
       this.edit_task_params.notes = task.notes;
       this.edit_task_params.tasklist = task.tasklist;
+    },
+    editTaskList(tasklistId) {
+      this.currentTasklist = tasklistId;
+    },
+    edit_task_list_name({ id, list_name }) {
+      axios_instance
+        .put(
+          "/api/edit-name/" + id,
+          { list_name: list_name },
+          {
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          this.currentTasklist = "";
+        });
     },
   },
 };
@@ -587,6 +733,17 @@ body {
   font-style: normal;
   right: 8vh;
   bottom: 1vh;
+}
+
+.viewtasks .addtasklistbutton {
+  display: inline-flex;
+  transform: translateY(+50%);
+  font-size: 15px;
+  background-color: #ffffff;
+  border-color: #9277ff;
+  border-width: 2px;
+  font-family: Futura, "Trebuchet MS";
+  color: #9277ff;
 }
 .viewtasks .el-main {
   position: relative;
