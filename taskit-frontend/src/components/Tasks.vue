@@ -233,7 +233,6 @@
                       background-color: #eeeeee;
                       padding-top: 7px;
                     "
-                    value-format="YYYY-MM-DDThh:mm"
                   >
                   </el-date-picker>
                 </el-row>
@@ -245,7 +244,6 @@
                 </el-row>
                 <el-row style="padding-bottom: 15px">
                   <el-time-picker
-          
                     v-model="task_params.estimated_duration"
                     placeholder="Enter Task Duration"
                     value-format="HH:mm:ss"
