@@ -119,7 +119,6 @@
                 <template #default="props">
                   <p>Duration: {{ props.row.estimated_duration }}</p>
                   <p>Weight: {{ props.row.weight }}</p>
-                  <p>State: {{ props.row.state }}</p>
                   <p>Notes: {{ props.row.notes }}</p>
                 </template>
               </el-table-column>
