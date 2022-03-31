@@ -127,31 +127,32 @@
               <el-table-column prop="due_datetime" sortable label="Due Date" width=230 />
               <el-table-column label="" width=150>
                 <template #default="scope">
-                <el-row justify="center">
-                  
-                    <el-button
-                      color="#FF8989"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'NS')"
+                  <el-row justify="center">
+                    <el-dropdown
+                      trigger="click"
+                      @command="(option) => onEditState(scope.$index, option)"
                     >
-                    </el-button>
-                    <el-button
-                      color="#FCFF89"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'IP')"
-                    >
-                    </el-button>
-                    <el-button
-                      color="#9CFF89"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'C')"
-                    >
-                    </el-button>
-                  
-                </el-row>
+                      <el-button type="default">
+                        {{ taskStateOptions[scope.row.state] }}
+                        <el-icon class="el-icon--right">
+                          <arrow-down />
+                        </el-icon>
+                      </el-button>
+                      <template #dropdown>
+                        <el-dropdown-menu>
+                          <el-dropdown-item command="NS">
+                            {{ taskStateOptions["NS"] }}
+                          </el-dropdown-item>
+                          <el-dropdown-item command="IP">
+                            {{ taskStateOptions["IP"] }}
+                          </el-dropdown-item>
+                          <el-dropdown-item command="C">
+                            {{ taskStateOptions["C"] }}
+                          </el-dropdown-item>
+                        </el-dropdown-menu>
+                      </template>
+                    </el-dropdown>
+                  </el-row>
                 </template>
               </el-table-column>
               <el-table-column label="Operations" width=150>
@@ -318,12 +319,16 @@
 
 <script>
 import axios from "axios";
+import { ArrowDown } from "@element-plus/icons-vue";
 
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
 });
 export default {
   name: "Tasks",
+  components: {
+    ArrowDown,
+  },
   data() {
     return {
       currentTasklist: "",
@@ -352,20 +357,11 @@ export default {
       error: "",
       direction: "ltr",
       showError: false,
-      options: [
-        {
-          value: "NS",
-          label: "Not Started",
-        },
-        {
-          value: "IP",
-          label: "In Progress",
-        },
-        {
-          value: "CP",
-          label: "Complete",
-        },
-      ],
+      taskStateOptions: {
+        "NS": "Not Started",
+        "IP": "In Progress",
+        "C": "Completed",
+      },
       tableData: [],
       listData: [],
     };
