@@ -116,8 +116,9 @@
               <el-table-column prop="description" label="Description" />
               <el-table-column prop="due_datetime" sortable label="Due Date" width=230 />
               <el-table-column label="" width=150>
+                <template #default="scope">
                 <el-row justify="center">
-                  <template #default="scope">
+                  
                     <el-button
                       color="#FF8989"
                       size="small"
@@ -139,8 +140,9 @@
                       @click="onEditState(scope.$index, 'C')"
                     >
                     </el-button>
-                  </template>
+                  
                 </el-row>
+                </template>
               </el-table-column>
               <el-table-column label="Operations" width=150>
                 <template #default="scope">
