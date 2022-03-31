@@ -76,7 +76,10 @@ def step_impl(context, email, name, due_date, estimated_duration, weight, notes)
     except BaseException as e:
         context.error = e
 
-@when('The user attempts to add the task of "{email}" called "{task_name}" to the list with name "{tasklist_name}"')
+
+@when(
+    'The user attempts to add the task of "{email}" called "{task_name}" to the list with name "{tasklist_name}"'
+)
 def step_impl(context, email, task_name, tasklist_name):
     tasklist_id = TaskList.objects.filter(list_name=tasklist_name).first().id
     request_data = {
@@ -120,19 +123,29 @@ def step_impl(context, email, name, due_date, estimated_duration, weight, notes)
         assert_that(task.notes, equal_to(""))
 
 
-@then('"{email}" shall have a task called "{task_name}" in the list with name "{tasklist_name}"')
+@then(
+    '"{email}" shall have a task called "{task_name}" in the list with name "{tasklist_name}"'
+)
 def step_impl(context, email, task_name, tasklist_name):
     user = get_user_model().objects.filter(email=email).first()
     tasklist = TaskList.objects.filter(list_name=tasklist_name).first()
-    task = Task.objects.filter(owner=user, description=task_name, tasklist=tasklist).first()
+    task = Task.objects.filter(
+        owner=user, description=task_name, tasklist=tasklist
+    ).first()
     assert_that(task, not_none())
 
-@then('"{email}" shall not have a task called "{task_name}" in the list with name "{tasklist_name}"')
+
+@then(
+    '"{email}" shall not have a task called "{task_name}" in the list with name "{tasklist_name}"'
+)
 def step_impl(context, email, task_name, tasklist_name):
     user = get_user_model().objects.filter(email=email).first()
     tasklist = TaskList.objects.filter(list_name=tasklist_name).first()
-    task = Task.objects.filter(owner=user, description=task_name, tasklist=tasklist).first()
+    task = Task.objects.filter(
+        owner=user, description=task_name, tasklist=tasklist
+    ).first()
     assert_that(task, none())
+
 
 @then('the number of tasks in the system shall be "5"')
 def step_impl(context):
