@@ -20,7 +20,18 @@
             <span>Lists</span>
             <el-divider content-position="center">o</el-divider>
               <el-table :data="listData" stripe border>
-                <el-table-column prop="list_name" label="List Name" />
+                <el-table-column prop="list_name" label="List Name">
+                  <template v-slot="scope">
+                    <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && !edit_task_list.includes(scope?.row.id)">
+                      {{ scope.row.list_name }}
+                    </div>
+                    <el-input
+                        v-if="scope?.row && edit_task_list.includes(scope?.row.id)"
+                        v-model="scope.row.list_name"
+                        v-on:keyup.enter="edit_task_list_name(scope.row)"
+                    ></el-input>
+                  </template>
+                </el-table-column>
               </el-table>
             <el-button
               round
@@ -101,7 +112,6 @@
             <el-table
               :data="tableData"
               height="55vh"
-              stripe
               border
               style="color: black"
             >
@@ -317,6 +327,7 @@ export default {
   name: "Tasks",
   data() {
     return {
+      edit_task_list:[],
       task_params: {
         description: "",
         due_datetime: "",
@@ -477,6 +488,21 @@ export default {
         .then(alert("Edited Successfully!"));
       location.reload(true);
     },
+    editTaskList(tasklistId) {
+      this.edit_task_list.push(tasklistId)
+    },
+    edit_task_list_name({id, list_name}) {
+      axios_instance
+        .put("/api/edit-name/" + id, {"list_name":list_name}, {
+          headers: {
+            Authorization: "Token " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          console.log(response)
+          this.edit_task_list = this.edit_task_list.filter(row => row.id === id)
+        });
+      }
   },
 };
 </script>
