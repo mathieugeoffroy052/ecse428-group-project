@@ -32,7 +32,7 @@ Feature: Create task
     Given "<email>" is logged in
     When the user "<email>" attempts to create the task "<name>", with due date "<due_date>", duration "<estimated_duration>", and weight "<weight>"
     Then no new task shall be created
-    And an error message "<error>" shall be raised
+    And The error message "<error>" shall be displayed
 
     Examples:
       | email                    | name | due_date   | estimated_duration | weight | notes              | error                        |

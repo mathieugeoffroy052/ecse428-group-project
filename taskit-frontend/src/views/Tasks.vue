@@ -19,6 +19,72 @@
           <div class="card">
             <span>Lists</span>
             <el-divider content-position="center">o</el-divider>
+              <el-table :data="listData" stripe border>
+                <el-table-column prop="list_name" label="List Name" />
+              </el-table>
+            <el-button
+              round
+              class="addtasklistbutton"
+              @click="add_task_list_drawer = true"
+            >
+              New Task List
+            </el-button>
+            <el-drawer
+              v-model= "add_task_list_drawer"
+              :direction= "direction"
+              :with-header="false"
+            >
+              <span>Create New Task List</span>
+              <el-form>
+                <h1>TaskIt</h1>
+                <el-row>
+                  <el-divider style="margin: 0px; padding: 0px"
+                    >New Task List
+                  </el-divider>
+                </el-row>
+                <el-row justify="center">
+                  <p
+                    style="
+                      font-family: 'Noteworthy Light';
+                      font-style: italic;
+                      padding-bottom: 10px;
+                    "
+                  >
+                    Please fill in this form to create a new task list.
+                  </p>
+                </el-row>
+
+                <el-row>
+                  <b>Task List Name</b>
+                </el-row>
+                <el-row>
+                  <input
+                    type="taskName"
+                    v-model="task_list_params.list_name"
+                    placeholder="Enter Task List Name"
+                    required
+                  />
+                </el-row>
+                <div>
+                  <el-button
+                    type="submit"
+                    class="submit"
+                    style="border-radius: 10px; width: 30%"
+                    @click="onAddTaskList()"
+                  >
+                    Add Task List
+                  </el-button>
+                </div>
+                <div style="width: 395px; margin: auto; padding: 20px">
+                  <el-alert
+                    v-if="showError"
+                    type="error"
+                    @close="this.showError = false"
+                    >{{ error }}</el-alert
+                  >
+                </div>
+              </el-form>
+            </el-drawer>
           </div>
         </el-aside>
         <el-main>
@@ -258,6 +324,9 @@ export default {
         notes: "",
         state: "NS",
       },
+      task_list_params: {
+        list_name: "",
+      },
       task_state: {
         state: "",
       },
@@ -268,7 +337,9 @@ export default {
       username: "",
       add_task_drawer: false,
       edit_drawer: false,
+      add_task_list_drawer: false,
       error: "",
+      direction: "ltr",
       showError: false,
       options: [
         {
@@ -285,6 +356,7 @@ export default {
         },
       ],
       tableData: [],
+      listData: [],
     };
   },
   created: function () {
@@ -303,6 +375,20 @@ export default {
             const date = new Date(this.tableData[i]["due_datetime"]);
             this.tableData[i]["due_datetime"] = date.toLocaleString();
         }
+      })
+      .catch(() => {
+        alert("You are not logged in!");
+        window.location.href = "../login";
+      });
+    axios_instance
+      .get("/api/task_list/", {
+        headers: {
+          Authorization: "Token " + localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        this.listData = response.data.sort(
+        );
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -343,6 +429,26 @@ export default {
           });
       } else {
         this.error = "Tasks must have a description!";
+        this.showError = true;
+      }
+    },
+    onAddTaskList() {
+      if (this.task_list_params.list_name != "") {
+        axios_instance
+          .post("/api/task_list/", this.task_list_params, {
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            (this.error = response), location.reload(true);
+          })
+          .catch(() => {
+            this.error = "Error creating task list";
+            this.showError = true;
+          });
+      } else {
+        this.error = "Task list must have a name!";
         this.showError = true;
       }
     },
@@ -433,6 +539,17 @@ body {
   font-style: normal;
   right: 8vh;
   bottom: 1vh;
+}
+
+.viewtasks .addtasklistbutton {
+  display: inline-flex;
+  transform: translateY(+50%);
+  font-size: 15px;
+  background-color: #ffffff;
+  border-color: #9277ff;
+  border-width: 2px;
+  font-family: Futura, "Trebuchet MS";
+  color: #9277ff;
 }
 .viewtasks .el-main {
   position: relative;

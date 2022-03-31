@@ -10,7 +10,6 @@ User = get_user_model()
 
 def get_task_status_from_string(status_string):
     if status_string == "In progress" or status_string == "IP":
-        print("Here's the problem! " + status_string)
         return Task.TaskState.InProgress
     elif status_string == "Not started" or status_string == "NS":
         return Task.TaskState.NotStarted
@@ -84,6 +83,7 @@ def given_the_following_tasks_exist(context):
         )
         if "state" in context.table.headings and row["state"] != "NULL":
             task.state = get_task_status_from_string(row["state"])
+        task.save()
         print(
             f"Created task {task} (name '{task.description}', list '{task.tasklist}')"
         )
@@ -184,3 +184,32 @@ def step_impl(
 
     task_status = get_task_status_from_string(new_state)
     assert_that(task.state, equal_to(task_status))
+
+
+@then(
+    '"{email}" shall have a task called "{task_name}" with due date "{due_date}", duration "{duration}", weight "{weight}", state "{state}", and note "{note}"'
+)
+def step_impl(context, email, task_name, due_date, duration, weight, state, note):
+    task = Task.objects.filter(description=task_name).first()
+    assert_that(task.owner, equal_to(User.objects.filter(email=email).first()))
+    assert_that(task.description, equal_to(task_name))
+    if due_date != "NULL":
+        assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    else:
+        assert_that(task.due_datetime, none())
+    if duration != "NULL":
+        assert_that(
+            str(int(task.estimated_duration.total_seconds())),
+            equal_to(duration),
+        )
+    else:
+        assert_that(task.estimated_duration, none())
+
+    if weight != "NULL":
+        assert_that(str(task.weight), equal_to(weight))
+    else:
+        assert_that(task.weight, none())
+
+    task_status = get_task_status_from_string(state)
+    assert_that(task.state, equal_to(task_status))
+    assert_that(task.notes, equal_to(note))

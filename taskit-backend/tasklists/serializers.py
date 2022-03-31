@@ -33,6 +33,10 @@ class TaskSerializer(serializers.ModelSerializer):
     def get_priority(self, object):
         return object.get_priority()[1]
 
+    tasklist = serializers.PrimaryKeyRelatedField(
+        queryset=TaskList.objects.all(), required=False, allow_null=True, default=None
+    )
+
     class Meta:
         model = Task
         fields = (
@@ -48,4 +52,5 @@ class TaskSerializer(serializers.ModelSerializer):
             "state",
             "notes",
             "id",
+            "tasklist",
         )
