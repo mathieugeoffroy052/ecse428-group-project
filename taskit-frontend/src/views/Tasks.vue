@@ -49,7 +49,7 @@
               </el-table-column>
               <el-table-column prop="description" label="Description" />
               <el-table-column prop="due_datetime" sortable label="Due Date" width=230 />
-              <el-table-column fixed="right" label="" width=150>
+              <el-table-column label="" width=150>
                 <el-row justify="center">
                   <template #default="scope">
                     <el-button
@@ -76,7 +76,7 @@
                   </template>
                 </el-row>
               </el-table-column>
-              <el-table-column fixed="right" label="Operations" width=150>
+              <el-table-column label="Operations" width=150>
                 <template #default="scope">
                   <el-button
                     size="small"
@@ -300,10 +300,8 @@ export default {
           a.priority < b.priority ? 1 : -1
         );
         for (var i = 0; i < this.tableData.length; i++) {
-            const date = this.tableData[i]["due_datetime"].split("T");
-            const time = date[1].split("-");
-            const dateTime = date[0] + " at " + time[0]
-            this.tableData[i]["due_datetime"] = dateTime;
+            const date = new Date(this.tableData[i]["due_datetime"]);
+            this.tableData[i]["due_datetime"] = date.toLocaleString();
         }
       })
       .catch(() => {
