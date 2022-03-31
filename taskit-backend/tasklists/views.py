@@ -19,35 +19,6 @@ def private(request):
 
 # API to update task (state)
 @api_view(["PUT"])
-def edit_name(request, pk):
-    """
-    PUT
-    "/api/edit-name/<pk>"
-        where pk = primary key (or id) of tasklist
-
-    {
-        "list_name": "grocery"
-    }
-    """
-    request = request.data
-    try:
-        t = TaskList.objects.get(pk=pk)
-        s = TaskListSerializer(t, data={"list_name": request["list_name"]})
-        if s.is_valid():
-            s.save()
-            return Response(s.data, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {"error": "This field cannot be blank."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-    except TaskList.DoesNotExist:
-        return Response(
-            {"error": "Task List Not found"}, status=status.HTTP_400_BAD_REQUEST
-        )
-
-
-@api_view(["PUT"])
 def update_state(request, pk):
     """
     PUT
@@ -114,7 +85,6 @@ def post_task(request):
 
     if serializer.is_valid():
         serializer.save(owner=request.user)
-        # return Response( serializer.data, status=status.HTTP_201_CREATED)
         return Response(
             {"data": serializer.data, "success": "Task created succesfully."},
             status=status.HTTP_201_CREATED,
@@ -144,11 +114,14 @@ def edit_task(request):
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(
-                {"data": serializer.data, "success": "Task updated successfully"},
+                {"data": serializer.data, "success": "Task updated successfully."},
                 status=status.HTTP_200_OK,
             )
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "This field cannot be blank."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
     else:
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -193,6 +166,15 @@ def list_task_list(request):
     serializer = TaskListSerializer(tasklists, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+def list_task_list(request):
+    """
+    GET
+    """
+    tasklists = TaskList.objects.filter(owner=request.user)
+    serializer = TaskListSerializer(tasklists, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 def post_task_list(request):
     """
     POST:
@@ -203,6 +185,13 @@ def post_task_list(request):
     serializer = TaskListSerializer(data=request.data)
 
     if serializer.is_valid():
+        # Check that the user doesn't already have a task list with the given name
+        new_list_name = request.data["list_name"]
+        if TaskList.objects.filter(owner=request.user, list_name=new_list_name).first():
+            return Response(
+                {"error": "This list name already exists."},
+                status=status.HTTP_409_CONFLICT,
+            )
         serializer.save(owner=request.user)
         return Response(
             {"data": serializer.data, "success": "Task list created succesfully."},
@@ -219,11 +208,55 @@ def remove_task_list(request):
         "id": 123
     }
     """
+    if "id" not in request.data:
+        return Response(
+            {"error": "This field is blank."}, status=status.HTTP_400_BAD_REQUEST
+        )
     id = request.data["id"]
     taskLists = TaskList.objects.filter(id=id)
     if taskLists:
         taskList = taskLists.first()
         taskList.delete()
-        return Response({"success": "Task list deleted."}, status=status.HTTP_200_OK)
+        return Response(
+            {"success": "Task list deleted successfully."}, status=status.HTTP_200_OK
+        )
     else:
-        return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+# API for editing a task list name
+@api_view(["PUT"])
+def edit_name(request, pk):
+    """
+    PUT
+    "/api/edit-name/<pk>"
+        where pk = primary key (or id) of tasklist
+
+    {
+        "list_name": "grocery"
+    }
+    """
+
+    try:
+        t = TaskList.objects.get(pk=pk)
+        s = TaskListSerializer(t, data={"list_name": request.data["list_name"]})
+        if s.is_valid():
+            new_list_name = request.data["list_name"]
+            if TaskList.objects.filter(
+                owner=request.user, list_name=new_list_name
+            ).first():
+                return Response(
+                    {"error": "This list name already exists."},
+                    status=status.HTTP_409_CONFLICT,
+                )
+            s.save()
+            return Response(s.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": "Invalid list name"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    except TaskList.DoesNotExist:
+        return Response(
+            {"error": "Task List Not found"}, status=status.HTTP_400_BAD_REQUEST
+        )

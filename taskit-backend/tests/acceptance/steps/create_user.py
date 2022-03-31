@@ -55,18 +55,6 @@ def step_impl(context):
         assert_that(status_first_digit, equal_to(4))
 
 
-@then('an error message "{error}" shall be raised')
-def step_impl(context, error):
-    e = context.error
-    if context.error is not None:
-        assert_that(e.message, equal_to(error))
-    else:
-        assert_that(
-            error in str(context.response.data),
-            f"Expected response containing {error} but received {context.response.data}.",
-        )
-
-
 @then(
     "there will exist no user with email address {email:opt_?} and a password {password:opt_?}"
 )

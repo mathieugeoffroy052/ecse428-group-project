@@ -18,8 +18,15 @@ class TaskList(models.Model):
     """
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    list_name = models.CharField(max_length=20)
+    list_name = models.CharField(max_length=35)
     objects = TaskListManager()
+
+    # Prevent duplicate list names for a given user
+    class Meta:
+        unique_together = (
+            "owner",
+            "list_name",
+        )
 
 
 class TaskManager(models.Manager):
@@ -35,12 +42,12 @@ class TaskManager(models.Manager):
     ):
         task = self.create(
             owner=owner,
-            tasklist=tasklist,
             description=description,
             due_datetime=due_datetime,
             estimated_duration=estimated_duration,
             weight=weight,
             notes=notes,
+            tasklist=tasklist,
         )
         task.save()
         return task
