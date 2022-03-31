@@ -3,7 +3,7 @@
     <el-container>
       <el-header>
         <div class="logo">
-          <el-button class="logobutton" type="text">TaskIt</el-button>
+          <el-button class="logobutton" type="text">{{username}}</el-button>
         </div>
         <div class="options">
           <el-button class="logout" color="#ccbfff" @click="onLogOut()">
@@ -16,21 +16,96 @@
 
       <el-container>
         <el-aside width="300px">
-          <template #default="scope">
+          <!-- <template #default="scope"> -->
             <div class="card">
               <span>Lists</span>
               <el-divider content-position="center">o</el-divider>
               <el-table
-                :data="listTableData"
-                height="55vh"
+                :data="tableData"
                 stripe
-                style="color: black"
-                @click="onGetTaskFromTaskList(scope.$index)"
+                border
+                @row-click="onGetTaskFromTaskList(scope)"
               >
-                <el-table-column prop="description" />
+              <template #default="scope">
+                <el-table-column prop="list_name" label="List Name" />
+                <el-table-column>
+                <div style="width: 395px; margin: auto; padding: 20px">
+                  <el-button
+                    type="submit"
+                    class="submit"
+                    style="border-radius: 10px; width: 30%"
+                    @click="onGetTaskFromTaskList(scope)"
+                  >
+                    something
+                  </el-button>
+                  </div>
+                </el-table-column>
+                </template>
               </el-table>
+              <el-button
+                round
+                class="addtasklistbutton"
+                @click="add_task_list_drawer = true"
+              >
+                New Task List
+              </el-button>
+              <el-drawer
+                v-model="add_task_list_drawer"
+                :direction="direction"
+                :with-header="false"
+              >
+                <span>Create New Task List</span>
+                <el-form>
+                  <h1>TaskIt</h1>
+                  <el-row>
+                    <el-divider style="margin: 0px; padding: 0px"
+                      >New Task List
+                    </el-divider>
+                  </el-row>
+                  <el-row justify="center">
+                    <p
+                      style="
+                        font-family: 'Noteworthy Light';
+                        font-style: italic;
+                        padding-bottom: 10px;
+                      "
+                    >
+                      Please fill in this form to create a new task list.
+                    </p>
+                  </el-row>
+                  <el-row>
+                    <b>Task List Name</b>
+                  </el-row>
+                  <el-row>
+                    <input
+                      type="taskName"
+                      v-model="task_list_params.list_name"
+                      placeholder="Enter Task List Name"
+                      required
+                    />
+                  </el-row>
+                  <div>
+                    <el-button
+                      type="submit"
+                      class="submit"
+                      style="border-radius: 10px; width: 30%"
+                      @click="onAddTaskList()"
+                    >
+                      Add Task List
+                    </el-button>
+                  </div>
+                  <div style="width: 395px; margin: auto; padding: 20px">
+                    <el-alert
+                      v-if="showError"
+                      type="error"
+                      @close="this.showError = false"
+                      >{{ error }}</el-alert
+                    >
+                  </div>
+                </el-form>
+              </el-drawer>
             </div>
-          </template>
+          <!-- </template> -->
         </el-aside>
         <el-main>
           <div class="maincard">
@@ -57,7 +132,7 @@
                 sortable
                 label="Duration"
               />
-              <el-table-column prop="weight" sortable label="Weight" />\
+              <el-table-column prop="weight" sortable label="Weight" />
               <el-table-column prop="notes" sortable label="Task Notes" />
               <el-table-column prop="state" fixed="right" label="State" />
               <el-table-column fixed="right" label="">
@@ -376,6 +451,9 @@ export default {
         notes: "",
         state: "NS",
       },
+      task_list_params: {
+        list_name: "",
+      },
       edit_task_params: {
         id: "",
         description: "",
@@ -395,7 +473,9 @@ export default {
       username: "",
       add_task_drawer: false,
       edit_drawer: false,
+      add_task_list_drawer: false,
       error: "",
+      direction: "ltr",
       showError: false,
       options: [
         {
@@ -411,7 +491,89 @@ export default {
           label: "Complete",
         },
       ],
-      tableData: [],
+      tableData: [
+        {
+          description: "poop",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "list1",
+          id: 1,
+        },
+        {
+          description: "eat poop",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "list1",
+          id: 2,
+        },
+        {
+          description: "vomit poop",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "list1",
+          id: 3,
+        },
+        {
+          description: "howard",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "list2",
+          id: 4,
+        },
+        {
+          description: "is",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "list2",
+          id: 5,
+        },
+        {
+          description: "fat",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "list2",
+          id: 6,
+        },
+        {
+          description: "penis",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "",
+          id: 7,
+        },
+        {
+          description: "vagene",
+          due_datetime: "2022-03-08T12:00:00-05:00",
+          estimated_duration: "5",
+          weight: "5",
+          notes: "toilet paper",
+          state: "NS",
+          list: "",
+          id: 8,
+        },
+      ],
+      listData: [],
       listTableData: [],
       TaskFromListData: [],
     };
@@ -424,17 +586,24 @@ export default {
           Authorization: "Token " + localStorage.getItem("token"),
         },
       })
+      // .then((response) => {
+      //   this.tableData = response.data.sort((a, b) =>
+      //     a.priority < b.priority ? 1 : -1
+      //   );
+      // })
+      .catch(() => {
+        alert("You are not logged in!");
+        window.location.href = "../login";
+      });
+    axios_instance
+      .get("/api/task_list/", {
+        headers: {
+          Authorization: "Token " + localStorage.getItem("token"),
+        },
+      })
       .then((response) => {
-        this.tableData = response.data.sort((a, b) =>
-          a.priority < b.priority ? 1 : -1
-        );
-        for (var i = 0; i < this.tableData.length; i++) {
-          if (
-            this.listTableData.includes(this.tableData[i]).tasklist == false
-          ) {
-            this.listTableData.push(this.tableData[i].tasklist);
-          }
-        }
+        this.listData = response.data;
+        // this.listData.push({ list_name: "general" });
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -475,6 +644,26 @@ export default {
           });
       } else {
         this.error = "Tasks must have a description!";
+        this.showError = true;
+      }
+    },
+    onAddTaskList() {
+      if (this.task_list_params.list_name != "") {
+        axios_instance
+          .post("/api/task_list/", this.task_list_params, {
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            (this.error = response), location.reload(true);
+          })
+          .catch(() => {
+            this.error = "Error creating task list";
+            this.showError = true;
+          });
+      } else {
+        this.error = "Task list must have a name!";
         this.showError = true;
       }
     },
@@ -524,26 +713,34 @@ export default {
       location.reload(true);
     },
     setDescriptionForEditTask(id) {
-      var task = this.tableData[id];
-      this.edit_task_params.id = task.id;
-      this.edit_task_params.description = task.description;
-      this.edit_task_params.due_datetime = task.due_datetime;
-      this.edit_task_params.estimated_duration = task.estimated_duration;
-      this.edit_task_params.weight = task.weight;
-      this.edit_task_params.state = task.state;
-      this.edit_task_params.notes = task.notes;
+      this.username = id;
+      // var task = this.tableData[id];
+      // this.edit_task_params.id = task.id;
+      // this.edit_task_params.description = task.description;
+      // this.edit_task_params.due_datetime = task.due_datetime;
+      // this.edit_task_params.estimated_duration = task.estimated_duration;
+      // this.edit_task_params.weight = task.weight;
+      // this.edit_task_params.state = task.state;
+      // this.edit_task_params.notes = task.notes;
+      // this.edit_task_params.tasklist = task.tasklist;
     },
     onGetTaskFromTaskList(id) {
-      var task = this.tableData[id];
-      for (var i = 0; i < this.tableData.length; i++) {
-        var list = task.tasklist;
-        if (this.tableData[i].tasklist == null) {
-          //tasks with no lists should just be included in all lists
-          this.TaskFromListData.push(this.tableData[i]);
-        } else if (this.tableData[i].tasklist == list) {
-          this.TaskFromListData.push(this.tableData[i]);
-        }
-      }
+      this.TaskFromListData = [];
+      //sessionStorage.clear();
+      this.username = id;
+      // var list = this.listData[id]["list_name"];
+      // if (list == "general") {
+        // for (var i = 0; i < this.tableData.length; i++) {
+        //   if (this.tableData[i]["list"] == "") {
+        //     this.TaskFromListData.push(this.tableData[i]);
+        //   }
+        // }
+      // }
+      // for (var j = 0; j < this.tableData.length; j++) {
+      //   if (this.tableData[j].tasklist == list.list_name) {
+      //     this.TaskFromListData.push(this.tableData[j]);
+      //   }
+      // }
     },
   },
 };
@@ -604,6 +801,16 @@ body {
   font-style: normal;
   right: 8vh;
   bottom: 1vh;
+}
+.viewtasks .addtasklistbutton {
+  display: inline-flex;
+  transform: translateY(+50%);
+  font-size: 15px;
+  background-color: #ffffff;
+  border-color: #9277ff;
+  border-width: 2px;
+  font-family: Futura, "Trebuchet MS";
+  color: #9277ff;
 }
 .viewtasks .el-main {
   position: relative;
