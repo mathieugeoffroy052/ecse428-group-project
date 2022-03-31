@@ -23,11 +23,11 @@ Feature: Add task to list
     Given "obi-wan.kenobi@gar.gov" is logged in
     When The user attempts to add the task of "obi-wan.kenobi@gar.gov" called "Train Anakin" to the list with name "Students to train"
     Then "obi-wan.kenobi@gar.gov" shall have a task called "Train Anakin" in the list with name "Students to train"
-    And The message "Task added to list succesfully." shall be displayed
+    And The message "Task created succesfully." shall be displayed
 
   Scenario: Successfully add a task to a list from another list (alternate flow)
     Given "obi-wan.kenobi@gar.gov" is logged in
     When The user attempts to add the task of "obi-wan.kenobi@gar.gov" called "Train Luke" to the list with name "Things for Luke"
     Then "obi-wan.kenobi@gar.gov" shall have a task called "Train Luke" in the list with name "Things for Luke"
     Then "obi-wan.kenobi@gar.gov" shall not have a task called "Train Luke" in the list with name "Students to train"
-    And The message "Task added to list succesfully." shall be displayed
+    And The message "Task created succesfully." shall be displayed
