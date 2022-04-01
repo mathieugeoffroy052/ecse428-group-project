@@ -283,17 +283,6 @@
                     maxlength="200"
                   />
                 </el-row>
-                <el-row>
-                  <b>Task List</b>
-                </el-row>
-                <el-row>
-                  <input
-                    type="taskName"
-                    v-model="task_params.tasklist"
-                    placeholder="Enter list"
-                    required
-                  />
-                </el-row>
                 <hr />
                 <div>
                   <el-button
@@ -578,21 +567,6 @@ export default {
         });
     },
     onAddTask() {
-      console.log(this.task_params.due_datetime);
-      this.showError = false;
-      var listname = this.task_params.tasklist;
-      if (this.task_params.tasklist != "") {
-        for (var i = 0; i < this.listData.length; i++) {
-          if (this.listData[i]["list_name"] == listname) {
-            this.task_params.tasklist = this.listData[i]["id"];
-            break;
-          }
-        }
-        if (this.task_params.tasklist == listname) {
-          this.error = "list name does not exist!";
-          this.showError = true;
-        }
-      }
       if (this.task_params.description != "") {
         axios_instance
           .post("/api/tasks/", this.task_params, {
@@ -646,20 +620,6 @@ export default {
       location.reload(true);
     },
     onEditTask: function () {
-      console.log(this.edit_task_params.due_datetime);
-      var listname = this.edit_task_params.tasklist;
-      if (this.edit_task_params.tasklist != "") {
-        for (var i = 0; i < this.listData.length; i++) {
-          if (this.listData[i]["list_name"] == listname) {
-            this.edit_task_params.tasklist = this.listData[i]["id"];
-            break;
-          }
-        }
-        if (this.edit_task_params.tasklist == listname) {
-          this.error = "Tasks must have a description!";
-          this.showError = true;
-        }
-      }
       if (this.edit_task_params.description != "") {
         axios_instance
           .put("/api/tasks/", this.edit_task_params, {
