@@ -322,6 +322,9 @@ import { ArrowDown } from "@element-plus/icons-vue";
 
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
+  headers: {
+    Authorization: "Token " + localStorage.getItem("token"),
+  },
 });
 export default {
   name: "Tasks",
@@ -357,9 +360,9 @@ export default {
       direction: "ltr",
       showError: false,
       taskStateOptions: {
-        "NS": "Not Started",
-        "IP": "In Progress",
-        "C": "Completed",
+        NS: "Not Started",
+        IP: "In Progress",
+        C: "Completed",
       },
       tableData: [],
       listData: [],
@@ -368,11 +371,7 @@ export default {
   created: function () {
     this.username = localStorage.getItem("token");
     axios_instance
-      .get("/api/tasks/", {
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-      })
+      .get("/api/tasks/")
       .then((response) => {
         this.tableData = response.data.sort((a, b) =>
           a.priority < b.priority ? 1 : -1
@@ -387,14 +386,9 @@ export default {
         window.location.href = "../login";
       });
     axios_instance
-      .get("/api/task_list/", {
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-      })
+      .get("/api/task_list/")
       .then((response) => {
-        this.listData = response.data.sort(
-        );
+        this.listData = response.data.sort();
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -403,29 +397,15 @@ export default {
   },
   methods: {
     onLogOut() {
-      axios_instance
-        .post(
-          "/accounts/logout/",
-          {},
-          {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          }
-        )
-        .then(() => {
-          localStorage.removeItem("token");
-          window.location.href = "../login";
-        });
+      axios_instance.post("/accounts/logout/", {}).then(() => {
+        localStorage.removeItem("token");
+        window.location.href = "../login";
+      });
     },
     onAddTask() {
       if (this.task_params.task_description != "") {
         axios_instance
-          .post("/api/tasks/", this.task_params, {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          })
+          .post("/api/tasks/", this.task_params)
           .then((response) => {
             (this.error = response), location.reload(true);
           })
@@ -441,11 +421,7 @@ export default {
     onAddTaskList() {
       if (this.task_list_params.list_name != "") {
         axios_instance
-          .post("/api/task_list/", this.task_list_params, {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          })
+          .post("/api/task_list/", this.task_list_params)
           .then((response) => {
             (this.error = response), location.reload(true);
           })
@@ -462,12 +438,7 @@ export default {
       var new_id = this.tableData[id]["id"];
       this.delete_task.id = new_id;
       axios_instance
-        .delete("/api/tasks/", {
-          headers: {
-            Authorization: "Token " + localStorage.getItem("token"),
-          },
-          data: this.delete_task,
-        })
+        .delete("/api/tasks/", {data: this.delete_task})
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
@@ -478,11 +449,7 @@ export default {
       this.task_state.state = state;
       var new_id = this.tableData[id]["id"];
       axios_instance
-        .put("/api/update-state/" + new_id, this.task_state, {
-          headers: {
-            Authorization: "Token " + localStorage.getItem("token"),
-          },
-        })
+        .put("/api/update-state/" + new_id, this.task_state)
         .then(alert("Edited Successfully!"));
       location.reload(true);
     },
@@ -491,11 +458,7 @@ export default {
     },
     edit_task_list_name({id, list_name}) {
       axios_instance
-        .put("/api/edit-name/" + id, {"list_name":list_name}, {
-          headers: {
-            Authorization: "Token " + localStorage.getItem("token"),
-          },
-        })
+        .put("/api/edit-name/" + id, { list_name: list_name })
         .then((response) => {
           console.log(response)
           this.currentTasklist = ""
