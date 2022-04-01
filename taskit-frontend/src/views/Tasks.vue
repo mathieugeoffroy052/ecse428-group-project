@@ -23,13 +23,13 @@
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
                   <div
-                    v-on:dblclick="editTaskList(scope.row.id)"
-                    v-if="scope?.row && currentTasklist != scope?.row.id"
+                    v-on:dblclick="editTaskList(scope.$index)"
+                    v-if="scope?.row && currentTasklist != scope.$index"
                   >
                     {{ scope.row.list_name }}
                   </div>
                   <el-input
-                    v-if="scope?.row && currentTasklist === scope?.row.id"
+                    v-if="scope?.row && currentTasklist === scope.$index"
                     v-model="scope.row.list_name"
                     v-on:keyup.enter="edit_task_list_name(scope.row)"
                   ></el-input>
@@ -416,7 +416,7 @@ export default {
       })
       .then((response) => {
         this.listData = response.data.sort();
-        // this.listData.push({ list_name: "general" });
+        this.listData.push({ list_name: "general" });
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -461,12 +461,12 @@ export default {
       }
     },
     onAddTaskList() {
-      // if(this.task_list_params.list_name.toLowerCase() == "general"){
-      //   this.task_list_params.list_name = "";
-      //   this.error = "Cannot add general tasklist!";
-      //   this.showError = true;
-      // }
-      if (this.task_list_params.list_name != "") {
+      if(this.task_list_params.list_name.toLowerCase() == "general"){
+        this.task_list_params.list_name = "";
+        this.error = "Cannot add general tasklist!";
+        this.showError = true;
+      }
+      else if (this.task_list_params.list_name != "") {
         axios_instance
           .post("/api/task_list/", this.task_list_params, {
             headers: {
@@ -538,7 +538,7 @@ export default {
       
     },
     edit_task_list_name({ id, list_name }) {
-      if(this.listData[id]["list_name"].toLowerCase != "general"){
+      if(this.listData[id]["list_name"].toLowerCase() != "general"){
               axios_instance
         .put(
           "/api/edit-name/" + id,
