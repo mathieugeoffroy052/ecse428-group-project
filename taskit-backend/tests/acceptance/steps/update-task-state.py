@@ -56,13 +56,3 @@ def step_impl(context, task_name, new_state):
 def step_impl(context):
     if context.response != None:
         assert_that(context.response.status_code, equal_to(403))
-
-
-@then('The error message "{error}" shall be shown')
-def step_impl(context, error):
-    first_digit = context.response.status_code // 100
-    assert_that(first_digit, equal_to(4))
-    assert_that(
-        error in json.dumps(context.response.data),
-        f"Expected response containing {error} but received {context.response.data}",
-    )

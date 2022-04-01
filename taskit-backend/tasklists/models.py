@@ -18,8 +18,15 @@ class TaskList(models.Model):
     """
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    list_name = models.CharField(max_length=20)
+    list_name = models.CharField(max_length=35)
     objects = TaskListManager()
+
+    # Prevent duplicate list names for a given user
+    class Meta:
+        unique_together = (
+            "owner",
+            "list_name",
+        )
 
 
 class TaskManager(models.Manager):

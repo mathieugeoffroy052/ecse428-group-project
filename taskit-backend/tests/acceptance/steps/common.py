@@ -3,14 +3,13 @@ from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from tasklists.models import Task, TaskList
-from hamcrest import assert_that, equal_to, not_none, none
+from hamcrest import assert_that, equal_to, none, not_none
 
 User = get_user_model()
 
 
 def get_task_status_from_string(status_string):
     if status_string == "In progress" or status_string == "IP":
-        print("Here's the problem! " + status_string)
         return Task.TaskState.InProgress
     elif status_string == "Not started" or status_string == "NS":
         return Task.TaskState.NotStarted
@@ -36,13 +35,18 @@ def step_impl(context, email, password):
 
 
 @given('"{email}" is logged in')
-def step_impl(context, email):
+def user_is_logged_in(context, email):
     user = User.objects.filter(email=email).first()
     resp = context.client.post(
         reverse("login"),
         {"username": str(user), "password": context.user_pwd[str(user)]},
     )
     context.client.credentials(HTTP_AUTHORIZATION="Token " + resp.data["token"])
+
+
+@given('"{email}" is logged in to their account')
+def step_impl(context, email):
+    user_is_logged_in(context, email)
 
 
 @given("The following tasks exist")
@@ -79,6 +83,7 @@ def given_the_following_tasks_exist(context):
         )
         if "state" in context.table.headings and row["state"] != "NULL":
             task.state = get_task_status_from_string(row["state"])
+        task.save()
         print(
             f"Created task {task} (name '{task.description}', list '{task.tasklist}')"
         )
@@ -89,24 +94,27 @@ def step_impl(context):
     given_the_following_tasks_exist(context)
 
 
-@given('"{email}" is logged in to their account')
-def step_impl(context, email):
-    user = User.objects.filter(email=email).first()
-    context.client.force_authenticate(user=user)
-    print(f"Logging in user {email}")
-
-
 @given("All users are logged out")
 def step_impl(context):
     client = context.client
     client.logout()
 
 
+@given("The following lists exist")
+def step_impl(context):
+    for row in context.table:
+        owner = User.objects.filter(email=row["owner"]).first()
+        list_name = row["list_name"]
+        TaskList.objects.create_task_list(owner, list_name)
+
+
 @then('The message "{message}" shall be displayed')
 def step_impl(context, message):
     msg = context.response.data["success"]
     assert_that(msg, not_none())
-    assert_that(message in msg)
+    assert_that(
+        message in msg, f"Expected message containing '{message}' but received '{msg}'."
+    )
 
 
 @then('The error message "{error}" shall be displayed')
@@ -121,9 +129,31 @@ def step_impl(context, error):
         )
 
 
+@then('an error message "{error}" shall be raised')
+def step_impl(context, error):
+    e = context.error
+    if context.error is not None:
+        assert_that(e.message, equal_to(error))
+    else:
+        assert_that(
+            error in str(context.response.data),
+            f"Expected response containing '{error}' but received {context.response.data}.",
+        )
+
+
 @then("The user shall be at the login page")
 def step_impl(context):
     pass
+
+
+@then('the number of lists in the system shall be "{num_lists}"')
+def then_the_number_of_lists_in_the_system_shall_be(_, num_lists):
+    assert_that(len(TaskList.objects.all()), equal_to(int(num_lists)))
+
+
+@then('the number of task lists in the system shall be "{num_lists}"')
+def step_impl(context, num_lists):
+    then_the_number_of_lists_in_the_system_shall_be(context, num_lists)
 
 
 @then(
@@ -154,3 +184,32 @@ def step_impl(
 
     task_status = get_task_status_from_string(new_state)
     assert_that(task.state, equal_to(task_status))
+
+
+@then(
+    '"{email}" shall have a task called "{task_name}" with due date "{due_date}", duration "{duration}", weight "{weight}", state "{state}", and note "{note}"'
+)
+def step_impl(context, email, task_name, due_date, duration, weight, state, note):
+    task = Task.objects.filter(description=task_name).first()
+    assert_that(task.owner, equal_to(User.objects.filter(email=email).first()))
+    assert_that(task.description, equal_to(task_name))
+    if due_date != "NULL":
+        assert_that(task.due_datetime.strftime("%Y-%m-%d"), equal_to(due_date))
+    else:
+        assert_that(task.due_datetime, none())
+    if duration != "NULL":
+        assert_that(
+            str(int(task.estimated_duration.total_seconds())),
+            equal_to(duration),
+        )
+    else:
+        assert_that(task.estimated_duration, none())
+
+    if weight != "NULL":
+        assert_that(str(task.weight), equal_to(weight))
+    else:
+        assert_that(task.weight, none())
+
+    task_status = get_task_status_from_string(state)
+    assert_that(task.state, equal_to(task_status))
+    assert_that(task.notes, equal_to(note))
