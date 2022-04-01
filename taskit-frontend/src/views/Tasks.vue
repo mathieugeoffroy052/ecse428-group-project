@@ -415,13 +415,19 @@
                 <el-row>
                   <b>Task List</b>
                 </el-row>
-                <el-row>
-                  <input
-                    type="taskName"
+                <el-row justify="left">
+                  <el-select
                     v-model="edit_task_params.tasklist"
-                    placeholder="Enter list"
-                    required
-                  />
+                    class="m-2"
+                    placeholder="Select Task List"
+                  >
+                    <el-option
+                      v-for="list in listData"
+                      :key="list.id"
+                      :label="list.list_name"
+                      :value="list.id"
+                    />
+                  </el-select>
                 </el-row>
                 <hr />
                 <div style="width: 395px; margin: auto; padding: 20px">
