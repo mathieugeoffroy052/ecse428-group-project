@@ -19,30 +19,26 @@
           <div class="card">
             <span>Lists</span>
             <el-divider content-position="center">o</el-divider>
-            <el-table :data="listData" stripe border>
+            <el-table
+              :data="listData"
+              stripe
+              border
+              @row-click="onGetTaskFromTaskList"
+            >
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
                   <div
                     v-on:dblclick="editTaskList(scope.$index)"
                     v-if="scope?.row && currentTasklist != scope.$index"
                   >
-                    {{ scope.row.list_name }}
+                    {{ scope?.row.list_name }}
                   </div>
                   <el-input
                     v-if="scope?.row && currentTasklist === scope.$index"
                     v-model="scope.row.list_name"
                     v-on:keyup.enter="edit_task_list_name(scope.row)"
                   ></el-input>
-                  <div style="width: 395px; margin: auto; padding: 20px">
-                    <el-button
-                      type="submit"
-                      class="submit"
-                      style="border-radius: 10px; width: 30%"
-                      @click="onGetTaskFromTaskList(scope.$index)"
-                    >
-                      Get task
-                    </el-button>
-                  </div>
+                  <div style="width: 395px; margin: auto; padding: 20px"></div>
                 </template>
               </el-table-column>
             </el-table>
@@ -461,12 +457,11 @@ export default {
       }
     },
     onAddTaskList() {
-      if(this.task_list_params.list_name.toLowerCase() == "general"){
+      if (this.task_list_params.list_name.toLowerCase() == "general") {
         this.task_list_params.list_name = "";
         this.error = "Cannot add general tasklist!";
         this.showError = true;
-      }
-      else if (this.task_list_params.list_name != "") {
+      } else if (this.task_list_params.list_name != "") {
         axios_instance
           .post("/api/task_list/", this.task_list_params, {
             headers: {
@@ -513,10 +508,11 @@ export default {
         .then(alert("Edited Successfully!"));
       location.reload(true);
     },
-    onGetTaskFromTaskList(id) {
+    onGetTaskFromTaskList(row) {
       this.TaskFromListData = [];
-      var list = this.listData[id]["list_name"];
-      if (list == "general") {
+
+      var listname = row.list_name;
+      if (listname == "general") {
         for (var i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i]["tasklist"] == null) {
             this.TaskFromListData.push(this.tableData[i]);
@@ -524,35 +520,34 @@ export default {
         }
       } else {
         for (var j = 0; j < this.tableData.length; j++) {
-          if (this.tableData[j].tasklist == list) {
+          if (this.tableData[j].tasklist == listname) {
             this.TaskFromListData.push(this.tableData[j]);
           }
         }
       }
     },
     editTaskList(tasklistId) {
-      console.log(this.listData[tasklistId]["list_name"].toLowerCase())
-      if(this.listData[tasklistId]["list_name"].toLowerCase() != "general"){
+      console.log(this.listData[tasklistId]["list_name"].toLowerCase());
+      if (this.listData[tasklistId]["list_name"].toLowerCase() != "general") {
         this.currentTasklist = tasklistId;
       }
-      
     },
     edit_task_list_name({ id, list_name }) {
-      if(this.listData[id]["list_name"].toLowerCase() != "general"){
-              axios_instance
-        .put(
-          "/api/edit-name/" + id,
-          { list_name: list_name },
-          {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response);
-          this.currentTasklist = "";
-        });
+      if (this.listData[id]["list_name"].toLowerCase() != "general") {
+        axios_instance
+          .put(
+            "/api/edit-name/" + id,
+            { list_name: list_name },
+            {
+              headers: {
+                Authorization: "Token " + localStorage.getItem("token"),
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+            this.currentTasklist = "";
+          });
       }
     },
   },
