@@ -602,7 +602,7 @@ export default {
             this.showError = true;
           });
       } else {
-        this.error = "list name does not exist!";
+        this.error = "Task list must have a name!";
         this.showError = true;
       }
     },
