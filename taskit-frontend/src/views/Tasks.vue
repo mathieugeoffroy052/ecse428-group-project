@@ -19,20 +19,23 @@
           <div class="card">
             <span>Lists</span>
             <el-divider content-position="center">o</el-divider>
-              <el-table :data="listData" stripe border>
-                <el-table-column prop="list_name" label="List Name">
-                  <template v-slot="scope">
-                    <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && currentTasklist != scope?.row.id">
-                      {{ scope.row.list_name }}
-                    </div>
-                    <el-input
-                        v-if="scope?.row && currentTasklist === scope?.row.id"
-                        v-model="scope.row.list_name"
-                        v-on:keyup.enter="edit_task_list_name(scope.row)"
-                    ></el-input>
-                  </template>
-                </el-table-column>
-              </el-table>
+            <el-table :data="listData" stripe border>
+              <el-table-column prop="list_name" label="List Name">
+                <template v-slot="scope">
+                  <div
+                    v-on:dblclick="editTaskList(scope.row.id)"
+                    v-if="scope?.row && currentTasklist != scope?.row.id"
+                  >
+                    {{ scope.row.list_name }}
+                  </div>
+                  <el-input
+                    v-if="scope?.row && currentTasklist === scope?.row.id"
+                    v-model="scope.row.list_name"
+                    v-on:keyup.enter="edit_task_list_name(scope.row)"
+                  ></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
             <el-button
               round
               class="addtasklistbutton"
@@ -41,8 +44,8 @@
               New Task List
             </el-button>
             <el-drawer
-              v-model= "add_task_list_drawer"
-              :direction= "direction"
+              v-model="add_task_list_drawer"
+              :direction="direction"
               :with-header="false"
             >
               <span>Create New Task List</span>
@@ -115,7 +118,7 @@
               border
               style="color: black"
             >
-              <el-table-column type="expand" width=40>
+              <el-table-column type="expand" width="40">
                 <template #default="props">
                   <p>Duration: {{ props.row.estimated_duration }}</p>
                   <p>Weight: {{ props.row.weight }}</p>
@@ -124,11 +127,15 @@
                 </template>
               </el-table-column>
               <el-table-column prop="description" label="Description" />
-              <el-table-column prop="due_datetime" sortable label="Due Date" width=230 />
-              <el-table-column label="" width=150>
+              <el-table-column
+                prop="due_datetime"
+                sortable
+                label="Due Date"
+                width="230"
+              />
+              <el-table-column label="" width="150">
                 <template #default="scope">
-                <el-row justify="center">
-                  
+                  <el-row justify="center">
                     <el-button
                       color="#FF8989"
                       size="small"
@@ -150,11 +157,10 @@
                       @click="onEditState(scope.$index, 'C')"
                     >
                     </el-button>
-                  
-                </el-row>
+                  </el-row>
                 </template>
               </el-table-column>
-              <el-table-column label="Operations" width=150>
+              <el-table-column label="Operations" width="150">
                 <template #default="scope">
                   <el-button
                     size="small"
@@ -245,7 +251,6 @@
                 </el-row>
                 <el-row style="padding-bottom: 15px">
                   <el-time-picker
-          
                     v-model="task_params.estimated_duration"
                     placeholder="Enter Task Duration"
                     value-format="HH:mm:ss"
@@ -257,7 +262,6 @@
                     "
                   >
                   </el-time-picker>
-                  
                 </el-row>
 
                 <el-row>
@@ -278,6 +282,23 @@
                     placeholder="Enter Task Notes/Details"
                     maxlength="200"
                   />
+                </el-row>
+                <el-row>
+                  <b>Task List</b>
+                </el-row>
+                <el-row justify="left">
+                  <el-select
+                    v-model="selectedTasklist"
+                    class="m-2"
+                    placeholder="Select Task List"
+                  >
+                    <el-option
+                      v-for="list in listData"
+                      :key="list.id"
+                      :label="list.list_name"
+                      :value="list.id"
+                    />
+                  </el-select>
                 </el-row>
                 <hr />
                 <div>
@@ -320,7 +341,7 @@
 
 <script>
 import axios from "axios";
-
+import { ref } from "vue";
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
 });
@@ -336,6 +357,7 @@ export default {
         weight: "",
         notes: "",
         state: "NS",
+        tasklist: null,
       },
       task_list_params: {
         list_name: "",
@@ -370,6 +392,8 @@ export default {
       ],
       tableData: [],
       listData: [],
+      selectedTasklist: null,
+      value: ref(""),
     };
   },
   created: function () {
@@ -385,8 +409,8 @@ export default {
           a.priority < b.priority ? 1 : -1
         );
         for (var i = 0; i < this.tableData.length; i++) {
-            const date = new Date(this.tableData[i]["due_datetime"]);
-            this.tableData[i]["due_datetime"] = date.toLocaleString();
+          const date = new Date(this.tableData[i]["due_datetime"]);
+          this.tableData[i]["due_datetime"] = date.toLocaleString();
         }
       })
       .catch(() => {
@@ -400,8 +424,7 @@ export default {
         },
       })
       .then((response) => {
-        this.listData = response.data.sort(
-        );
+        this.listData = response.data.sort();
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -494,20 +517,24 @@ export default {
       location.reload(true);
     },
     editTaskList(tasklistId) {
-      this.currentTasklist = tasklistId
+      this.currentTasklist = tasklistId;
     },
-    edit_task_list_name({id, list_name}) {
+    edit_task_list_name({ id, list_name }) {
       axios_instance
-        .put("/api/edit-name/" + id, {"list_name":list_name}, {
-          headers: {
-            Authorization: "Token " + localStorage.getItem("token"),
-          },
-        })
+        .put(
+          "/api/edit-name/" + id,
+          { list_name: list_name },
+          {
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+            },
+          }
+        )
         .then((response) => {
-          console.log(response)
-          this.currentTasklist = ""
+          console.log(response);
+          this.currentTasklist = "";
         });
-      }
+    },
   },
 };
 </script>
