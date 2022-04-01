@@ -343,7 +343,6 @@
 <script>
 import axios from "axios";
 import { ArrowDown } from "@element-plus/icons-vue";
-import { ref } from "vue";
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
   headers: {
@@ -365,7 +364,6 @@ export default {
         weight: "",
         notes: "",
         state: "NS",
-        tasklist: null,
       },
       task_list_params: {
         list_name: "",
@@ -392,7 +390,6 @@ export default {
       tableData: [],
       listData: [],
       selectedTasklist: null,
-      value: ref(""),
     };
   },
   created: function () {
