@@ -40,7 +40,7 @@
                       style="border-radius: 10px; width: 30%"
                       @click="onGetTaskFromTaskList(scope.$index)"
                     >
-                      something
+                      Get task
                     </el-button>
                   </div>
                 </template>
@@ -416,7 +416,7 @@ export default {
       })
       .then((response) => {
         this.listData = response.data.sort();
-        this.listData.push({ list_name: "general" });
+        // this.listData.push({ list_name: "general" });
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -461,6 +461,11 @@ export default {
       }
     },
     onAddTaskList() {
+      // if(this.task_list_params.list_name.toLowerCase() == "general"){
+      //   this.task_list_params.list_name = "";
+      //   this.error = "Cannot add general tasklist!";
+      //   this.showError = true;
+      // }
       if (this.task_list_params.list_name != "") {
         axios_instance
           .post("/api/task_list/", this.task_list_params, {
@@ -526,10 +531,15 @@ export default {
       }
     },
     editTaskList(tasklistId) {
-      this.currentTasklist = tasklistId;
+      console.log(this.listData[tasklistId]["list_name"].toLowerCase())
+      if(this.listData[tasklistId]["list_name"].toLowerCase() != "general"){
+        this.currentTasklist = tasklistId;
+      }
+      
     },
     edit_task_list_name({ id, list_name }) {
-      axios_instance
+      if(this.listData[id]["list_name"].toLowerCase != "general"){
+              axios_instance
         .put(
           "/api/edit-name/" + id,
           { list_name: list_name },
@@ -543,6 +553,7 @@ export default {
           console.log(response);
           this.currentTasklist = "";
         });
+      }
     },
   },
 };
