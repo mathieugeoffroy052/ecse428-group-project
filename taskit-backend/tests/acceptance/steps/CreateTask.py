@@ -1,11 +1,12 @@
 from pickle import NONE
-from tasklists.models import Task
+from tasklists.models import Task, TaskList
 from accounts.models import User
 from behave import *
 from datetime import datetime, timedelta
 from django.urls import reverse
 from hamcrest import assert_that, equal_to, not_none, none
 import optional
+from django.contrib.auth import get_user_model
 
 
 optional.init_opt_()
@@ -76,6 +77,22 @@ def step_impl(context, email, name, due_date, estimated_duration, weight, notes)
         context.error = e
 
 
+@when(
+    'The user attempts to add the task of "{email}" called "{task_name}" to the list with name "{tasklist_name}"'
+)
+def step_impl(context, email, task_name, tasklist_name):
+    tasklist_id = TaskList.objects.filter(list_name=tasklist_name).first().id
+    request_data = {
+        "description": task_name,
+        "tasklist": tasklist_id,
+    }
+    try:
+        context.response = context.client.post(reverse("task"), request_data)
+        print(context.response)
+    except Exception as e:
+        context.error = e
+
+
 @then('the task "{name}" shall exist in the system')
 def step_impl(context, name):
     assert_that(context.response.status_code, equal_to(201))
@@ -104,6 +121,30 @@ def step_impl(context, email, name, due_date, estimated_duration, weight, notes)
         assert_that(str(task.notes), equal_to(notes))
     else:
         assert_that(task.notes, equal_to(""))
+
+
+@then(
+    '"{email}" shall have a task called "{task_name}" in the list with name "{tasklist_name}"'
+)
+def step_impl(context, email, task_name, tasklist_name):
+    user = get_user_model().objects.filter(email=email).first()
+    tasklist = TaskList.objects.filter(list_name=tasklist_name).first()
+    task = Task.objects.filter(
+        owner=user, description=task_name, tasklist=tasklist
+    ).first()
+    assert_that(task, not_none())
+
+
+@then(
+    '"{email}" shall not have a task called "{task_name}" in the list with name "{tasklist_name}"'
+)
+def step_impl(context, email, task_name, tasklist_name):
+    user = get_user_model().objects.filter(email=email).first()
+    tasklist = TaskList.objects.filter(list_name=tasklist_name).first()
+    task = Task.objects.filter(
+        owner=user, description=task_name, tasklist=tasklist
+    ).first()
+    assert_that(task, none())
 
 
 @then('the number of tasks in the system shall be "5"')
