@@ -289,7 +289,7 @@
                 </el-row>
                 <el-row justify="left">
                   <el-select
-                    v-model="selectedTasklist"
+                    v-model="task_params.tasklist"
                     class="m-2"
                     placeholder="Select Task List"
                   >
@@ -364,6 +364,7 @@ export default {
         weight: "",
         notes: "",
         state: "NS",
+        tasklist: null,
       },
       task_list_params: {
         list_name: "",
@@ -389,7 +390,6 @@ export default {
       },
       tableData: [],
       listData: [],
-      selectedTasklist: null,
     };
   },
   created: function () {
