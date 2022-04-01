@@ -166,14 +166,6 @@ def list_task_list(request):
     serializer = TaskListSerializer(tasklists, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
-def list_task_list(request):
-    """
-    GET
-    """
-    tasklists = TaskList.objects.filter(owner=request.user)
-    serializer = TaskListSerializer(tasklists, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 def post_task_list(request):
     """
