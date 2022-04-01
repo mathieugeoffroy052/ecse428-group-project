@@ -52,14 +52,38 @@
               <el-table :data="listData" stripe border>
                 <el-table-column prop="list_name" label="List Name">
                   <template v-slot="scope">
-                    <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && currentTasklist != scope?.row.id">
-                      {{ scope.row.list_name }}
-                    </div>
-                    <el-input
-                        v-if="scope?.row && currentTasklist === scope?.row.id"
-                        v-model="scope.row.list_name"
-                        v-on:keyup.enter="edit_task_list_name(scope.row)"
-                    ></el-input>
+                    <el-row>
+                      <el-space wrap>
+                        <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && currentTasklist != scope?.row.id">
+                          {{ scope.row.list_name }}
+                        </div>
+                        <div>
+                          <el-input
+                            v-if="scope?.row && currentTasklist === scope?.row.id"
+                            v-model="scope.row.list_name"
+                            v-on:keyup.enter="edit_task_list_name(scope.row)"
+                          ></el-input>
+                        </div>
+                        <div>
+                          <el-popconfirm
+                            confirm-button-text="OK"
+                            cancel-button-text="No, Thanks"
+                            @confirm="onDeleteList(scope.$index)"
+                            icon-color="red"
+                            title="Are you sure to delete this list?"
+                            font-family="Noteworthy Light"
+                          >
+                            <template #reference>
+                              <el-button type="danger" circle>
+                                <el-icon >
+                                  <delete/>
+                                </el-icon>
+                              </el-button>
+                            </template>
+                          </el-popconfirm>
+                        </div>
+                      </el-space>
+                    </el-row>
                   </template>
                 </el-table-column>
               </el-table>
@@ -366,7 +390,7 @@
 
 <script>
 import axios from "axios";
-import { ArrowDown } from "@element-plus/icons-vue";
+import { ArrowDown, Delete } from "@element-plus/icons-vue";
 
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
@@ -375,20 +399,11 @@ const axios_instance = axios.create({
   },
 });
 
-// const handleClose = () => {
-//   ElMessageBox.confirm('Are you sure you want to skip?')
-//     .then(() => {
-//       done();
-//     })
-//     .catch(() => {
-//       // catch error
-//     });
-// };
-
 export default {
   name: "Tasks",
   components: {
     ArrowDown,
+    Delete,
   },
   data() {
     return {
@@ -408,6 +423,9 @@ export default {
         state: "",
       },
       delete_task: {
+        id: "",
+      },
+      delete_list:{
         id: "",
       },
       state: "",
@@ -496,6 +514,13 @@ export default {
         this.error = "Task list must have a name!";
         this.showError = true;
       }
+    },
+    onDeleteList: function (id) {
+      var new_id = this.listData[id]["id"];
+      this.delete_list.id = new_id;
+      axios_instance.delete("/api/task_list/", {data: this.delete_list})
+        .then(alert("Deleted Successfully!"));
+      location.reload(true);
     },
     onDeleteTask: function (id) {
       var new_id = this.tableData[id]["id"];
