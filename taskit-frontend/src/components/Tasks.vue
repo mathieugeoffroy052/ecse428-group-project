@@ -122,7 +122,6 @@
                 <template #default="props">
                   <p>Duration: {{ props.row.estimated_duration }}</p>
                   <p>Weight: {{ props.row.weight }}</p>
-                  <p>State: {{ props.row.state }}</p>
                   <p>Notes: {{ props.row.notes }}</p>
                 </template>
               </el-table-column>
@@ -136,27 +135,30 @@
               <el-table-column label="" width="150">
                 <template #default="scope">
                   <el-row justify="center">
-                    <el-button
-                      color="#FF8989"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'NS')"
+                    <el-dropdown
+                      trigger="click"
+                      @command="(option) => onEditState(scope.$index, option)"
                     >
-                    </el-button>
-                    <el-button
-                      color="#FCFF89"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'IP')"
-                    >
-                    </el-button>
-                    <el-button
-                      color="#9CFF89"
-                      size="small"
-                      circle
-                      @click="onEditState(scope.$index, 'C')"
-                    >
-                    </el-button>
+                      <el-button type="default">
+                        {{ taskStateOptions[scope.row.state] }}
+                        <el-icon class="el-icon--right">
+                          <arrow-down />
+                        </el-icon>
+                      </el-button>
+                      <template #dropdown>
+                        <el-dropdown-menu>
+                          <el-dropdown-item command="NS">
+                            {{ taskStateOptions["NS"] }}
+                          </el-dropdown-item>
+                          <el-dropdown-item command="IP">
+                            {{ taskStateOptions["IP"] }}
+                          </el-dropdown-item>
+                          <el-dropdown-item command="C">
+                            {{ taskStateOptions["C"] }}
+                          </el-dropdown-item>
+                        </el-dropdown-menu>
+                      </template>
+                    </el-dropdown>
                   </el-row>
                 </template>
               </el-table-column>
@@ -239,7 +241,6 @@
                       background-color: #eeeeee;
                       padding-top: 7px;
                     "
-                    value-format="YYYY-MM-DDThh:mm"
                   >
                   </el-date-picker>
                 </el-row>
@@ -341,12 +342,19 @@
 
 <script>
 import axios from "axios";
-import { ref } from "vue";
+import { ArrowDown } from "@element-plus/icons-vue";
+
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
+  headers: {
+    Authorization: "Token " + localStorage.getItem("token"),
+  },
 });
 export default {
   name: "Tasks",
+  components: {
+    ArrowDown,
+  },
   data() {
     return {
       currentTasklist: "",
@@ -376,20 +384,11 @@ export default {
       error: "",
       direction: "ltr",
       showError: false,
-      options: [
-        {
-          value: "NS",
-          label: "Not Started",
-        },
-        {
-          value: "IP",
-          label: "In Progress",
-        },
-        {
-          value: "CP",
-          label: "Complete",
-        },
-      ],
+      taskStateOptions: {
+        NS: "Not Started",
+        IP: "In Progress",
+        C: "Completed",
+      },
       tableData: [],
       listData: [],
       selectedTasklist: null,
@@ -399,11 +398,7 @@ export default {
   created: function () {
     this.username = localStorage.getItem("token");
     axios_instance
-      .get("/api/tasks/", {
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-      })
+      .get("/api/tasks/")
       .then((response) => {
         this.tableData = response.data.sort((a, b) =>
           a.priority < b.priority ? 1 : -1
@@ -418,11 +413,7 @@ export default {
         window.location.href = "../login";
       });
     axios_instance
-      .get("/api/task_list/", {
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-      })
+      .get("/api/task_list/")
       .then((response) => {
         this.listData = response.data.sort();
       })
@@ -433,29 +424,15 @@ export default {
   },
   methods: {
     onLogOut() {
-      axios_instance
-        .post(
-          "/accounts/logout/",
-          {},
-          {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          }
-        )
-        .then(() => {
-          localStorage.removeItem("token");
-          window.location.href = "../login";
-        });
+      axios_instance.post("/accounts/logout/", {}).then(() => {
+        localStorage.removeItem("token");
+        window.location.href = "../login";
+      });
     },
     onAddTask() {
       if (this.task_params.task_description != "") {
         axios_instance
-          .post("/api/tasks/", this.task_params, {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          })
+          .post("/api/tasks/", this.task_params)
           .then((response) => {
             (this.error = response), location.reload(true);
           })
@@ -471,11 +448,7 @@ export default {
     onAddTaskList() {
       if (this.task_list_params.list_name != "") {
         axios_instance
-          .post("/api/task_list/", this.task_list_params, {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          })
+          .post("/api/task_list/", this.task_list_params)
           .then((response) => {
             (this.error = response), location.reload(true);
           })
@@ -492,12 +465,7 @@ export default {
       var new_id = this.tableData[id]["id"];
       this.delete_task.id = new_id;
       axios_instance
-        .delete("/api/tasks/", {
-          headers: {
-            Authorization: "Token " + localStorage.getItem("token"),
-          },
-          data: this.delete_task,
-        })
+        .delete("/api/tasks/", {data: this.delete_task})
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
@@ -508,11 +476,7 @@ export default {
       this.task_state.state = state;
       var new_id = this.tableData[id]["id"];
       axios_instance
-        .put("/api/update-state/" + new_id, this.task_state, {
-          headers: {
-            Authorization: "Token " + localStorage.getItem("token"),
-          },
-        })
+        .put("/api/update-state/" + new_id, this.task_state)
         .then(alert("Edited Successfully!"));
       location.reload(true);
     },
@@ -521,15 +485,7 @@ export default {
     },
     edit_task_list_name({ id, list_name }) {
       axios_instance
-        .put(
-          "/api/edit-name/" + id,
-          { list_name: list_name },
-          {
-            headers: {
-              Authorization: "Token " + localStorage.getItem("token"),
-            },
-          }
-        )
+        .put("/api/edit-name/" + id, { list_name: list_name })
         .then((response) => {
           console.log(response);
           this.currentTasklist = "";
