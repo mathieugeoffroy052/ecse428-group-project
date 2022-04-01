@@ -381,7 +381,7 @@
                     arrow-control
                     v-model="edit_task_params.estimated_duration"
                     placeholder="Enter Task Duration"
-                    value-format="hh:mm:ss"
+                    value-format="HH:mm:ss"
                     style="
                       height: 45px;
                       width: 600px;
@@ -572,6 +572,7 @@ export default {
         });
     },
     onAddTask() {
+      console.log(this.task_params.due_datetime);
       this.showError = false;
       var listname = this.task_params.tasklist;
       if (this.task_params.tasklist != "") {
@@ -639,15 +640,16 @@ export default {
       location.reload(true);
     },
     onEditTask: function () {
-      var listname = this.task_params.tasklist;
-      if (this.task_params.tasklist != "") {
+      console.log(this.edit_task_params.due_datetime);
+      var listname = this.edit_task_params.tasklist;
+      if (this.edit_task_params.tasklist != "") {
         for (var i = 0; i < this.listData.length; i++) {
           if (this.listData[i]["list_name"] == listname) {
-            this.task_params.tasklist = this.listData[i]["id"];
+            this.edit_task_params.tasklist = this.listData[i]["id"];
             break;
           }
         }
-        if (this.task_params.tasklist == listname) {
+        if (this.edit_task_params.tasklist == listname) {
           this.error = "Tasks must have a description!";
           this.showError = true;
         }
@@ -688,7 +690,8 @@ export default {
       var task = this.tableData[id];
       this.edit_task_params.id = task.id;
       this.edit_task_params.description = task.description;
-      this.edit_task_params.due_datetime = task.due_datetime;
+      const d = new Date(task.due_datetime);
+      this.edit_task_params.due_datetime = d.toISOString();
       this.edit_task_params.estimated_duration = task.estimated_duration;
       this.edit_task_params.weight = task.weight;
       this.edit_task_params.state = task.state;
