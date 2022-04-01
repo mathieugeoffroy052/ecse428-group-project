@@ -31,14 +31,13 @@
                     v-on:dblclick="editTaskList(scope.$index)"
                     v-if="scope?.row && currentTasklist != scope.$index"
                   >
-                    {{ scope?.row.list_name }}
+                    {{ scope.row.list_name }}
                   </div>
                   <el-input
                     v-if="scope?.row && currentTasklist === scope.$index"
                     v-model="scope.row.list_name"
                     v-on:keyup.enter="edit_task_list_name(scope.row)"
                   ></el-input>
-                  <div style="width: 395px; margin: auto; padding: 20px"></div>
                 </template>
               </el-table-column>
             </el-table>
