@@ -343,7 +343,7 @@
 <script>
 import axios from "axios";
 import { ArrowDown } from "@element-plus/icons-vue";
-
+import { ref } from "vue";
 const axios_instance = axios.create({
   baseURL: process.env.VUE_APP_BACKEND_URL,
   headers: {
@@ -465,7 +465,7 @@ export default {
       var new_id = this.tableData[id]["id"];
       this.delete_task.id = new_id;
       axios_instance
-        .delete("/api/tasks/", {data: this.delete_task})
+        .delete("/api/tasks/", { data: this.delete_task })
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
