@@ -6,9 +6,6 @@
           <el-button class="logobutton" type="text">TaskIt</el-button>
         </div>
         <div>
-          <el-button class="logout" @click="tutorial_one = true"
-            >Tutorial
-          </el-button>
           <el-button class="logout" @click="(disable1 = true), (visibility1 = false), (tutorial_four = true), (tutorial_three = false)" v-if="tutorial_three"
             >Next Step
           </el-button>
@@ -16,14 +13,24 @@
             v-model="tutorial_one"
             title="Welcome!"
             width="30%"
-            :before-close="handleClose"
           >
             <span>Welcome to TaskIt! Would you like to view a quick tutorial?</span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-popconfirm
+                            confirm-button-text="OK"
+                            cancel-button-text="No, Thanks"
+                            @confirm="hasSeen()"
+                            icon-color="red"
+                            title="Are you sure want to skip the tutorial?"
+                            font-family="Noteworthy Light"
+                          >
+                <template #reference>
+                  <el-button>Skip Tutorial</el-button>
+                </template>
+                </el-popconfirm>
                 <el-button type="primary" @click="(tutorial_one = false), (tutorial_two = true)"
-                  >Confirm</el-button
+                  >Yes</el-button
                 >
               </span>
             </template>
@@ -32,12 +39,10 @@
             v-model="tutorial_two"
             title="Let's Get Started!"
             width="30%"
-            :before-close="handleClose"
           >
             <span>Here are a few things to know before we start. Click the 'Next Step' button when you are ready to move forward.</span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
                 <el-button type="primary" @click="(tutorial_two = false), (disable1 = false), (visibility1 = true), (tutorial_three = true)"
                   >Confirm</el-button
                 >
@@ -48,12 +53,10 @@
             v-model="tutorial_four"
             title="Creating a task"
             width="30%"
-            :before-close="handleClose"
           >
             <span>You can create a new task by clicking the '+' at the bottom right of your screen.</span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
                 <el-button type="primary" @click="(tutorial_four = false), (tutorial_five = true)"
                   >Confirm</el-button
                 >
@@ -64,12 +67,10 @@
             v-model="tutorial_five"
             title="Creating a task list"
             width="30%"
-            :before-close="handleClose"
           >
             <span>You can create a new list by clicking the 'New Task List' botton on the left side of your screen.</span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
                 <el-button type="primary" @click="(tutorial_five = false), (tutorial_six = true)"
                   >Confirm</el-button
                 >
@@ -80,12 +81,10 @@
             v-model="tutorial_six"
             title="Editing ad Deleting a Task"
             width="30%"
-            :before-close="handleClose"
           >
             <span>Once a task is created, you can edit and delete it.</span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
                 <el-button type="primary" @click="(tutorial_six = false), (tutorial_seven = true)"
                   >Confirm</el-button
                 >
@@ -96,12 +95,10 @@
             v-model="tutorial_seven"
             title="Editing and Deleting a List"
             width="30%"
-            :before-close="handleClose"
           >
             <span>Once a list is created, you can edit and delete it. You can change the name of a list by double clicking on it. To delete, click the delete button in the task </span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
                 <el-button type="primary" @click="(tutorial_seven = false), (tutorial_eight = true)"
                   >Confirm</el-button
                 >
@@ -112,13 +109,11 @@
             v-model="tutorial_eight"
             title="The End"
             width="30%"
-            :before-close="handleClose"
           >
             <span>The tutorial is now over! You can now proceed to tasking! </span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
-                <el-button type="primary" @click="(tutorial_eight = false)"
+                <el-button type="primary" @click="(tutorial_eight = false), hasSeen()"
                   >Confirm</el-button
                 >
               </span>
@@ -532,7 +527,7 @@ export default {
         C: "Completed",
       },
       tableData: [],
-      tutorial_one: false,
+      tutorial_one: (sessionStorage.getItem("hasSeenTutorial").toLowerCase() === "false"),
       tutorial_two: false,
       tutorial_three:false,
       tutorial_four: false,
@@ -575,6 +570,10 @@ export default {
       });
   },
   methods: {
+    hasSeen() {
+      this.tutorial_one = false;
+      sessionStorage.setItem("hasSeenTutorial", true);
+    },
     onLogOut() {
       axios_instance.post("/accounts/logout/", {}).then(() => {
         localStorage.removeItem("token");
