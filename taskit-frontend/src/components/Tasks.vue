@@ -13,18 +13,21 @@
             v-model="tutorial_one"
             title="Welcome!"
             width="30%"
+            :show-close="false"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
           >
-            <span>Welcome to TaskIt! Would you like to view a quick tutorial?</span>
+            <p style="hyphens: auto;">Welcome to TaskIt! Would you like to view a quick tutorial?</p>
             <template #footer>
               <span class="dialog-footer">
                 <el-popconfirm
-                            confirm-button-text="OK"
-                            cancel-button-text="No, Thanks"
-                            @confirm="hasSeen()"
-                            icon-color="red"
-                            title="Are you sure want to skip the tutorial?"
-                            font-family="Noteworthy Light"
-                          >
+                  confirm-button-text="OK"
+                  cancel-button-text="No, Thanks"
+                  @confirm="hasSeen()"
+                  icon-color="red"
+                  title="Are you sure want to skip the tutorial?"
+                  font-family="Noteworthy Light"
+                >
                 <template #reference>
                   <el-button>Skip Tutorial</el-button>
                 </template>
@@ -39,8 +42,11 @@
             v-model="tutorial_two"
             title="Let's Get Started!"
             width="30%"
+            :show-close="false"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
           >
-            <span>Here are a few things to know before we start. Click the 'Next Step' button when you are ready to move forward.</span>
+            <span>Here are a few things to know before we start. To move on to the next part, click the 'Next Step' button in the header.</span>
             <template #footer>
               <span class="dialog-footer">
                 <el-button type="primary" @click="(tutorial_two = false), (disable1 = false), (visibility1 = true), (tutorial_three = true)"
@@ -51,42 +57,51 @@
           </el-dialog>
           <el-dialog
             v-model="tutorial_four"
-            title="Creating a task"
+            title="Creating a Task"
             width="30%"
+            :show-close="false"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
           >
             <span>You can create a new task by clicking the '+' at the bottom right of your screen.</span>
             <template #footer>
               <span class="dialog-footer">
                 <el-button type="primary" @click="(tutorial_four = false), (tutorial_five = true)"
-                  >Confirm</el-button
+                  >Next</el-button
                 >
               </span>
             </template>
           </el-dialog>
           <el-dialog
             v-model="tutorial_five"
-            title="Creating a task list"
+            title="Creating a Task List"
             width="30%"
+            :show-close="false"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
           >
             <span>You can create a new list by clicking the 'New Task List' botton on the left side of your screen.</span>
             <template #footer>
               <span class="dialog-footer">
                 <el-button type="primary" @click="(tutorial_five = false), (tutorial_six = true)"
-                  >Confirm</el-button
+                  >Next</el-button
                 >
               </span>
             </template>
           </el-dialog>
           <el-dialog
             v-model="tutorial_six"
-            title="Editing ad Deleting a Task"
+            title="Editing and Deleting a Task"
             width="30%"
+            :show-close="false"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
           >
-            <span>Once a task is created, you can edit and delete it.</span>
+            <span>Once a task is created, you can edit and delete it using the buttons in the operations column of the table.</span>
             <template #footer>
               <span class="dialog-footer">
                 <el-button type="primary" @click="(tutorial_six = false), (tutorial_seven = true)"
-                  >Confirm</el-button
+                  >Next</el-button
                 >
               </span>
             </template>
@@ -95,6 +110,9 @@
             v-model="tutorial_seven"
             title="Editing and Deleting a List"
             width="30%"
+            :show-close="false"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
           >
             <span>Once a list is created, you can edit and delete it. You can change the name of a list by double clicking on it. To delete, click the delete button in the task </span>
             <template #footer>
@@ -109,12 +127,15 @@
             v-model="tutorial_eight"
             title="The End"
             width="30%"
+            :show-close="false"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
           >
-            <span>The tutorial is now over! You can now proceed to tasking! </span>
+            <span >The tutorial is now over! You can now proceed to tasking! </span>
             <template #footer>
               <span class="dialog-footer">
                 <el-button type="primary" @click="(tutorial_eight = false), hasSeen()"
-                  >Confirm</el-button
+                  >Close</el-button
                 >
               </span>
             </template>
@@ -136,7 +157,7 @@
               class="box-item"
               :disabled="disable1"
               effect="dark"
-              content="All of your lists"
+              content="All of your lists will be here."
               placement="right"
               :visible="visibility1"
             >
@@ -252,10 +273,10 @@
               :disabled="disable1"
               class="box-item"
               effect="dark"
-              content="All of your current tasks"
               placement="right"
               :visible="visibility1"
             >
+              <template #content> All of your current tasks will be listed here. <br> You will be able to see all of its information, as well as the edit and delete buttons </template>
               <span>Current Task List</span>
             </el-tooltip>
             <el-divider content-position="center">o</el-divider>
