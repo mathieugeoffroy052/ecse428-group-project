@@ -483,7 +483,7 @@ export default {
         }
       } else {
         for (var j = 0; j < this.tableData.length; j++) {
-          if (this.tableData[j].tasklist == listname) {
+          if(this.tableData[j]["tasklist"] != null & this.tableData[j]["tasklist"] == row.id){
             this.TaskFromListData.push(this.tableData[j]);
           }
         }
