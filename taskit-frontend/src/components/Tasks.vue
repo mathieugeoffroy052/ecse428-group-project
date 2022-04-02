@@ -24,11 +24,14 @@
               stripe
               border
               @row-click="onGetTaskFromTaskList"
-              height= "600px"
+              height="600px"
             >
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
-                    <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && currentTasklist != scope?.row.id">
+                  <div
+                    v-on:dblclick="editTaskList(scope.row.id)"
+                    v-if="scope?.row && currentTasklist != scope?.row.id"
+                  >
                     {{ scope.row.list_name }}
                   </div>
                   <el-input
@@ -454,7 +457,7 @@ export default {
       var new_id = this.tableData[id]["id"];
       this.delete_task.id = new_id;
       axios_instance
-        .delete("/api/tasks/", {data: this.delete_task})
+        .delete("/api/tasks/", { data: this.delete_task })
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
@@ -489,16 +492,16 @@ export default {
     editTaskList(tasklistId) {
       this.currentTasklist = tasklistId;
     },
-    edit_task_list_name({id, list_name}) {
-      if(list_name.toLowerCase() != "general"){
-              axios_instance
-        .put("/api/edit-name/" + id, { list_name: list_name })
-        .then((response) => {
-          console.log(response)
-          this.currentTasklist = ""
-        });
+    edit_task_list_name({ id, list_name }) {
+      if (list_name.toLowerCase() != "general") {
+        axios_instance
+          .put("/api/edit-name/" + id, { list_name: list_name })
+          .then((response) => {
+            console.log(response);
+            this.currentTasklist = "";
+          });
       }
-    }
+    },
   },
 };
 </script>
