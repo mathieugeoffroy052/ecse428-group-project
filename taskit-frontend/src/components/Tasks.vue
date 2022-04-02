@@ -588,6 +588,13 @@ export default {
       location.reload(true);
     },
     onEditTask: function () {
+      if(isNaN(this.edit_task_params.tasklist)){
+        for(var i = 0; i<this.listData.length; i++){
+          if(this.listData[i]["list_name"] == this.edit_task_params.tasklist){
+            this.edit_task_params.tasklist = this.listData[i]["id"];
+          }
+        }
+      }
       if (this.edit_task_params.description != "") {
         axios_instance
           .put("/api/tasks/", this.edit_task_params, {
