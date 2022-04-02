@@ -9,6 +9,9 @@
           <el-button class="logout" @click="tutorial_one = true"
             >Tutorial
           </el-button>
+          <el-button class="logout" @click="(disable1 = true), (visibility1 = false), (tutorial_four = true), (tutorial_three = false)" v-if="tutorial_three"
+            >Next Step
+          </el-button>
           <el-dialog
             v-model="tutorial_one"
             title="Welcome!"
@@ -18,8 +21,104 @@
             <span>Welcome to TaskIt! Would you like to view a quick tutorial?</span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">Skip</el-button>
-                <el-button type="primary" @click="(tutorial_one = false), (disable = false), (visibility = true)"
+                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-button type="primary" @click="(tutorial_one = false), (tutorial_two = true)"
+                  >Confirm</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_two"
+            title="Let's Get Started!"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>Here are a few things to know before we start. Click the 'Next Step' button when you are ready to move forward.</span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-button type="primary" @click="(tutorial_two = false), (disable1 = false), (visibility1 = true), (tutorial_three = true)"
+                  >Confirm</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_four"
+            title="Creating a task"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>You can create a new task by clicking the '+' at the bottom right of your screen.</span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-button type="primary" @click="(tutorial_four = false), (tutorial_five = true)"
+                  >Confirm</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_five"
+            title="Creating a task list"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>You can create a new list by clicking the 'New Task List' botton on the left side of your screen.</span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-button type="primary" @click="(tutorial_five = false), (tutorial_six = true)"
+                  >Confirm</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_six"
+            title="Editing ad Deleting a Task"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>Once a task is created, you can edit and delete it.</span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-button type="primary" @click="(tutorial_six = false), (tutorial_seven = true)"
+                  >Confirm</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_seven"
+            title="Editing and Deleting a List"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>Once a list is created, you can edit and delete it. You can change the name of a list by double clicking on it. To delete, click the delete button in the task </span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-button type="primary" @click="(tutorial_seven = false), (tutorial_eight = true)"
+                  >Confirm</el-button
+                >
+              </span>
+            </template>
+          </el-dialog>
+          <el-dialog
+            v-model="tutorial_eight"
+            title="The End"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <span>The tutorial is now over! You can now proceed to tasking! </span>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">Skip Tutorial</el-button>
+                <el-button type="primary" @click="(tutorial_eight = false)"
                   >Confirm</el-button
                 >
               </span>
@@ -40,11 +139,11 @@
           <div class="card">
             <el-tooltip
               class="box-item"
-              :disabled="disable"
+              :disabled="disable1"
               effect="dark"
               content="All of your lists"
               placement="right"
-              :visible="visibility"
+              :visible="visibility1"
             >
               <span>Lists</span>
             </el-tooltip>
@@ -155,32 +254,23 @@
         <el-main>
           <div class="maincard">
             <el-tooltip
-              :disabled="disable"
+              :disabled="disable1"
               class="box-item"
               effect="dark"
-              content="All the current tasks in a list"
+              content="All of your current tasks"
               placement="right"
-              :visible="visibility"
+              :visible="visibility1"
             >
               <span>Current Task List</span>
             </el-tooltip>
             <el-divider content-position="center">o</el-divider>
-            <el-tooltip
-              class="box-item"
-              :disabled="disable"
-              effect="dark"
-              content="Add a New task to Current Task List"
-              placement="top-start"
-              :visible="visibility"
+            <el-button
+              class="addtaskbutton"
+              circle
+              @click="add_task_drawer = true"
             >
-             <el-button
-                class="addtaskbutton"
-                circle
-                @click="add_task_drawer = true"
-              >
-                +
-              </el-button>
-            </el-tooltip>
+              +
+            </el-button>
             <el-table
               :data="tableData"
               height="55vh"
@@ -443,9 +533,17 @@ export default {
       },
       tableData: [],
       tutorial_one: false,
-      disable: true,
-      visibility: false,
-      has_seen_t : sessionStorage.getItem("hasSeenTutorial"),
+      tutorial_two: false,
+      tutorial_three:false,
+      tutorial_four: false,
+      tutorial_five: false,
+      tutorial_six: false,
+      tutorial_seven: false,
+      tutorial_eight: false,
+      tutorial_nine: false,
+      tutorial_ten: false,
+      disable1: true,
+      visibility1: false,
       listData: [],
     };
   },
@@ -488,7 +586,8 @@ export default {
         axios_instance
           .post("/api/tasks/", this.task_params)
           .then((response) => {
-            (this.error = response), location.reload(true);
+            this.error = response;
+            location.reload(true);
           })
           .catch(() => {
             this.error = "Error creating task";
@@ -504,7 +603,8 @@ export default {
         axios_instance
           .post("/api/task_list/", this.task_list_params)
           .then((response) => {
-            (this.error = response), location.reload(true);
+            this.error = response;
+            location.reload(true);
           })
           .catch(() => {
             this.error = "Error creating task list";

@@ -102,7 +102,9 @@ export default {
 
         axios_instance
           .post("/accounts/signup", this.signUpForm)
-          .then(() => (window.location.href = "../login"))
+          .then(() => {
+            window.location.href = "../login";
+            })
           .catch((error) => {
             if (error.response.status === 409) {
               this.error =
