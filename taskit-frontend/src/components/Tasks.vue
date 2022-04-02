@@ -3,7 +3,14 @@
     <el-container>
       <el-header>
         <div class="logo">
-          <el-button class="logobutton" type="text">TaskIt</el-button>
+          <el-button class="logobutton" type="text">
+            <div style="display: flex; justify-content: center;">
+              <h1 style="margin-top: 10px; padding: 5px" >TaskIt</h1>
+              <div>
+                <img style="margin-top: 30px" src="../assets/icon-light.png" alt="checkbox icon"  width="32" height="32"/>
+              </div>
+            </div>
+          </el-button>
         </div>
         <div class="options">
           <el-button class="logout" color="#ccbfff" @click="onLogOut()">
