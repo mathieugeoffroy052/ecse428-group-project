@@ -3,7 +3,20 @@
     <el-container>
       <el-header>
         <div class="logo">
-          <el-button class="logobutton" type="text">TaskIt</el-button>
+          <el-button class="logobutton" type="text">
+            <div style="display: flex; justify-content: center">
+              <h1 style="margin-top: 10px; padding: 5px">TaskIt</h1>
+              <div>
+                <img
+                  style="margin-top: 30px"
+                  src="../assets/icon-light.png"
+                  alt="checkbox icon"
+                  width="32"
+                  height="32"
+                />
+              </div>
+            </div>
+          </el-button>
         </div>
         <div>
           <el-button
@@ -514,6 +527,23 @@
                     maxlength="200"
                   />
                 </el-row>
+                <el-row>
+                  <b>Task List</b>
+                </el-row>
+                <el-row justify="left">
+                  <el-select
+                    v-model="task_params.tasklist"
+                    class="m-2"
+                    placeholder="Select Task List"
+                  >
+                    <el-option
+                      v-for="list in listData"
+                      :key="list.id"
+                      :label="list.list_name"
+                      :value="list.id"
+                    />
+                  </el-select>
+                </el-row>
                 <hr />
                 <div>
                   <el-button
@@ -580,6 +610,7 @@ export default {
         weight: "",
         notes: "",
         state: "NS",
+        tasklist: null,
       },
       task_list_params: {
         list_name: "",
