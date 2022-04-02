@@ -158,6 +158,7 @@ def task_list(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+
 def list_task_list(request):
     """
     GET
