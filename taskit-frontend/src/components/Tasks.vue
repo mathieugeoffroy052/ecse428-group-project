@@ -223,13 +223,18 @@
               <span>Lists</span>
             </el-tooltip>
             <el-divider content-position="center">o</el-divider>
-            <el-table :data="listData" stripe border>
+            <el-table :data="listData" stripe border @row-click="onGetTaskFromTaskList" height="67vh">
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
                   <el-row justify=" ">
                     <div
                       v-on:dblclick="editTaskList(scope.row.id)"
-                      v-if="scope?.row && currentTasklist != scope?.row.id"
+                      v-if="scope?.row && currentTasklist != scope?.row.id && scope?.row.list_name.toLowerCase() != 'general'"
+                    >
+                      {{ scope.row.list_name }}
+                    </div>
+                    <div
+                      v-if="scope?.row && currentTasklist != scope?.row.id && scope?.row.list_name.toLowerCase() == 'general'"
                     >
                       {{ scope.row.list_name }}
                     </div>
@@ -357,7 +362,7 @@
               +
             </el-button>
             <el-table
-              :data="tableData"
+              :data="TaskFromListData"
               height="55vh"
               border
               style="color: black"
@@ -431,7 +436,6 @@
                 </template>
               </el-table-column>
             </el-table>
-
             <el-drawer
               v-model="add_task_drawer"
               title="I am the title"
@@ -786,6 +790,8 @@ export default {
       disable1: true,
       visibility1: false,
       listData: [],
+      listTableData: [],
+      TaskFromListData: [],
     };
   },
   created: function () {
@@ -809,6 +815,7 @@ export default {
       .get("/api/task_list/")
       .then((response) => {
         this.listData = response.data.sort();
+        this.listData.unshift({ list_name: "general" });
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -844,7 +851,11 @@ export default {
       }
     },
     onAddTaskList() {
-      if (this.task_list_params.list_name != "") {
+      if (this.task_list_params.list_name.toLowerCase() == "general") {
+        this.task_list_params.list_name = "";
+        this.error = "Cannot add general tasklist!";
+        this.showError = true;
+      } else if (this.task_list_params.list_name != "") {
         axios_instance
           .post("/api/task_list/", this.task_list_params)
           .then((response) => {
@@ -914,6 +925,23 @@ export default {
         .then(alert("Edited Successfully!"));
       location.reload(true);
     },
+    onGetTaskFromTaskList(row) {
+      this.TaskFromListData = [];
+      var listname = row.list_name;
+      if (listname == "general") {
+        for (var i = 0; i < this.tableData.length; i++) {
+          if (this.tableData[i]["tasklist"] == null) {
+            this.TaskFromListData.push(this.tableData[i]);
+          }
+        }
+      } else {
+        for (var j = 0; j < this.tableData.length; j++) {
+          if(this.tableData[j]["tasklist"] != null & this.tableData[j]["tasklist"] == row.id){
+            this.TaskFromListData.push(this.tableData[j]);
+          }
+        }
+      }
+    },
     setDescriptionForEditTask(id) {
       this.showError = false;
       var task = this.tableData[id];
@@ -937,12 +965,14 @@ export default {
       this.currentTasklist = tasklistId;
     },
     edit_task_list_name({ id, list_name }) {
-      axios_instance
-        .put("/api/edit-name/" + id, { list_name: list_name })
-        .then((response) => {
-          console.log(response);
-          this.currentTasklist = "";
-        });
+      if (list_name.toLowerCase() != "general") {
+        axios_instance
+          .put("/api/edit-name/" + id, { list_name: list_name })
+          .then((response) => {
+            console.log(response);
+            this.currentTasklist = "";
+          });
+      }
     },
     addTaskDrawer: function(){
       this.add_task_drawer = true;
@@ -1007,7 +1037,6 @@ body {
   right: 8vh;
   bottom: 1vh;
 }
-
 .viewtasks .addtasklistbutton {
   display: inline-flex;
   transform: translateY(+50%);
