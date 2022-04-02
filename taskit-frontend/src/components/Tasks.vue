@@ -239,7 +239,7 @@
                           font-family="Noteworthy Light"
                         >
                           <template #reference>
-                            <el-button type="danger" circle>
+                            <el-button type="danger" circle v-if="scope?.row && currentTasklist === scope?.row.id">
                               <el-icon>
                                 <delete />
                               </el-icon>
