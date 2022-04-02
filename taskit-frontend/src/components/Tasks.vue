@@ -36,7 +36,6 @@
                   @confirm="hasSeen()"
                   icon-color="red"
                   title="Are you sure want to skip the tutorial?"
-                  font-family="Noteworthy Light"
                 >
                   <template #reference>
                     <el-button>Skip Tutorial</el-button>
@@ -214,8 +213,7 @@
             <el-table :data="listData" stripe border>
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
-                  <el-row>
-                    <el-space wrap>
+                  <el-row justify=" " >
                       <div
                         v-on:dblclick="editTaskList(scope.row.id)"
                         v-if="scope?.row && currentTasklist != scope?.row.id"
@@ -235,8 +233,7 @@
                           cancel-button-text="No, Thanks"
                           @confirm="onDeleteList(scope.$index)"
                           icon-color="red"
-                          title="Are you sure to delete this list?"
-                          font-family="Noteworthy Light"
+                          title="Are you sure you want to delete this list?"
                         >
                           <template #reference>
                             <el-button type="danger" circle v-if="scope?.row && currentTasklist === scope?.row.id">
@@ -247,7 +244,6 @@
                           </template>
                         </el-popconfirm>
                       </div>
-                    </el-space>
                   </el-row>
                 </template>
               </el-table-column>
@@ -408,7 +404,6 @@
                     @confirm="onDeleteTask(scope.$index)"
                     icon-color="red"
                     title="Are you sure to delete this task?"
-                    font-family="Noteworthy Light"
                   >
                     <template #reference>
                       <el-button size="small" type="danger"> Delete </el-button>
