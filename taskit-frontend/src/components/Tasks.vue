@@ -6,7 +6,15 @@
           <el-button class="logobutton" type="text">TaskIt</el-button>
         </div>
         <div>
-          <el-button class="logout" @click="(disable1 = true), (visibility1 = false), (tutorial_four = true), (tutorial_three = false)" v-if="tutorial_three"
+          <el-button
+            class="logout"
+            @click="
+              (disable1 = true),
+                (visibility1 = false),
+                (tutorial_four = true),
+                (tutorial_three = false)
+            "
+            v-if="tutorial_three"
             >Next Step
           </el-button>
           <el-dialog
@@ -17,7 +25,9 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <p style="hyphens: auto;">Welcome to TaskIt! Would you like to view a quick tutorial?</p>
+            <p style="hyphens: auto">
+              Welcome to TaskIt! Would you like to view a quick tutorial?
+            </p>
             <template #footer>
               <span class="dialog-footer">
                 <el-popconfirm
@@ -28,11 +38,13 @@
                   title="Are you sure want to skip the tutorial?"
                   font-family="Noteworthy Light"
                 >
-                <template #reference>
-                  <el-button>Skip Tutorial</el-button>
-                </template>
+                  <template #reference>
+                    <el-button>Skip Tutorial</el-button>
+                  </template>
                 </el-popconfirm>
-                <el-button type="primary" @click="(tutorial_one = false), (tutorial_two = true)"
+                <el-button
+                  type="primary"
+                  @click="(tutorial_one = false), (tutorial_two = true)"
                   >Yes</el-button
                 >
               </span>
@@ -46,10 +58,20 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span>Here are a few things to know before we start. To move on to the next part, click the 'Next Step' button in the header.</span>
+            <span
+              >Here are a few things to know before we start. To move on to the
+              next part, click the 'Next Step' button in the header.</span
+            >
             <template #footer>
               <span class="dialog-footer">
-                <el-button type="primary" @click="(tutorial_two = false), (disable1 = false), (visibility1 = true), (tutorial_three = true)"
+                <el-button
+                  type="primary"
+                  @click="
+                    (tutorial_two = false),
+                      (disable1 = false),
+                      (visibility1 = true),
+                      (tutorial_three = true)
+                  "
                   >Confirm</el-button
                 >
               </span>
@@ -63,10 +85,15 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span>You can create a new task by clicking the '+' at the bottom right of your screen.</span>
+            <span
+              >You can create a new task by clicking the '+' at the bottom right
+              of your screen.</span
+            >
             <template #footer>
               <span class="dialog-footer">
-                <el-button type="primary" @click="(tutorial_four = false), (tutorial_five = true)"
+                <el-button
+                  type="primary"
+                  @click="(tutorial_four = false), (tutorial_five = true)"
                   >Next</el-button
                 >
               </span>
@@ -80,10 +107,15 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span>You can create a new list by clicking the 'New Task List' botton on the left side of your screen.</span>
+            <span
+              >You can create a new list by clicking the 'New Task List' botton
+              on the left side of your screen.</span
+            >
             <template #footer>
               <span class="dialog-footer">
-                <el-button type="primary" @click="(tutorial_five = false), (tutorial_six = true)"
+                <el-button
+                  type="primary"
+                  @click="(tutorial_five = false), (tutorial_six = true)"
                   >Next</el-button
                 >
               </span>
@@ -97,10 +129,15 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span>Once a task is created, you can edit and delete it using the buttons in the operations column of the table.</span>
+            <span
+              >Once a task is created, you can edit and delete it using the
+              buttons in the operations column of the table.</span
+            >
             <template #footer>
               <span class="dialog-footer">
-                <el-button type="primary" @click="(tutorial_six = false), (tutorial_seven = true)"
+                <el-button
+                  type="primary"
+                  @click="(tutorial_six = false), (tutorial_seven = true)"
                   >Next</el-button
                 >
               </span>
@@ -114,10 +151,16 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span>Once a list is created, you can edit and delete it. You can change the name of a list by double clicking on it. To delete, click the delete button in the task </span>
+            <span
+              >Once a list is created, you can edit and delete it. You can
+              change the name of a list by double clicking on it. To delete,
+              click the delete button in the task
+            </span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button type="primary" @click="(tutorial_seven = false), (tutorial_eight = true)"
+                <el-button
+                  type="primary"
+                  @click="(tutorial_seven = false), (tutorial_eight = true)"
                   >Confirm</el-button
                 >
               </span>
@@ -131,10 +174,14 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span >The tutorial is now over! You can now proceed to tasking! </span>
+            <span
+              >The tutorial is now over! You can now proceed to tasking!
+            </span>
             <template #footer>
               <span class="dialog-footer">
-                <el-button type="primary" @click="(tutorial_eight = false), hasSeen()"
+                <el-button
+                  type="primary"
+                  @click="(tutorial_eight = false), hasSeen()"
                   >Close</el-button
                 >
               </span>
@@ -164,44 +211,47 @@
               <span>Lists</span>
             </el-tooltip>
             <el-divider content-position="center">o</el-divider>
-              <el-table :data="listData" stripe border>
-                <el-table-column prop="list_name" label="List Name">
-                  <template v-slot="scope">
-                    <el-row>
-                      <el-space wrap>
-                        <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && currentTasklist != scope?.row.id">
-                          {{ scope.row.list_name }}
-                        </div>
-                        <div>
-                          <el-input
-                            v-if="scope?.row && currentTasklist === scope?.row.id"
-                            v-model="scope.row.list_name"
-                            v-on:keyup.enter="edit_task_list_name(scope.row)"
-                          ></el-input>
-                        </div>
-                        <div>
-                          <el-popconfirm
-                            confirm-button-text="OK"
-                            cancel-button-text="No, Thanks"
-                            @confirm="onDeleteList(scope.$index)"
-                            icon-color="red"
-                            title="Are you sure to delete this list?"
-                            font-family="Noteworthy Light"
-                          >
-                            <template #reference>
-                              <el-button type="danger" circle>
-                                <el-icon >
-                                  <delete/>
-                                </el-icon>
-                              </el-button>
-                            </template>
-                          </el-popconfirm>
-                        </div>
-                      </el-space>
-                    </el-row>
-                  </template>
-                </el-table-column>
-              </el-table>
+            <el-table :data="listData" stripe border>
+              <el-table-column prop="list_name" label="List Name">
+                <template v-slot="scope">
+                  <el-row>
+                    <el-space wrap>
+                      <div
+                        v-on:dblclick="editTaskList(scope.row.id)"
+                        v-if="scope?.row && currentTasklist != scope?.row.id"
+                      >
+                        {{ scope.row.list_name }}
+                      </div>
+                      <div>
+                        <el-input
+                          v-if="scope?.row && currentTasklist === scope?.row.id"
+                          v-model="scope.row.list_name"
+                          v-on:keyup.enter="edit_task_list_name(scope.row)"
+                        ></el-input>
+                      </div>
+                      <div>
+                        <el-popconfirm
+                          confirm-button-text="OK"
+                          cancel-button-text="No, Thanks"
+                          @confirm="onDeleteList(scope.$index)"
+                          icon-color="red"
+                          title="Are you sure to delete this list?"
+                          font-family="Noteworthy Light"
+                        >
+                          <template #reference>
+                            <el-button type="danger" circle>
+                              <el-icon>
+                                <delete />
+                              </el-icon>
+                            </el-button>
+                          </template>
+                        </el-popconfirm>
+                      </div>
+                    </el-space>
+                  </el-row>
+                </template>
+              </el-table-column>
+            </el-table>
             <el-button
               round
               class="addtasklistbutton"
@@ -210,8 +260,8 @@
               New Task List
             </el-button>
             <el-drawer
-              v-model= "add_task_list_drawer"
-              :direction= "direction"
+              v-model="add_task_list_drawer"
+              :direction="direction"
               :with-header="false"
             >
               <span>Create New Task List</span>
@@ -276,7 +326,11 @@
               placement="right"
               :visible="visibility1"
             >
-              <template #content> All of your current tasks will be listed here. <br> You will be able to see all of its information, as well as the edit and delete buttons </template>
+              <template #content>
+                All of your current tasks will be listed here. <br />
+                You will be able to see all of its information, as well as the
+                edit and delete buttons
+              </template>
               <span>Current Task List</span>
             </el-tooltip>
             <el-divider content-position="center">o</el-divider>
@@ -293,7 +347,7 @@
               border
               style="color: black"
             >
-              <el-table-column type="expand" width=40>
+              <el-table-column type="expand" width="40">
                 <template #default="props">
                   <p>Duration: {{ props.row.estimated_duration }}</p>
                   <p>Weight: {{ props.row.weight }}</p>
@@ -301,8 +355,13 @@
                 </template>
               </el-table-column>
               <el-table-column prop="description" label="Description" />
-              <el-table-column prop="due_datetime" sortable label="Due Date" width=230 />
-              <el-table-column label="" width=150>
+              <el-table-column
+                prop="due_datetime"
+                sortable
+                label="Due Date"
+                width="230"
+              />
+              <el-table-column label="" width="150">
                 <template #default="scope">
                   <el-row justify="center">
                     <el-dropdown
@@ -332,7 +391,7 @@
                   </el-row>
                 </template>
               </el-table-column>
-              <el-table-column label="Operations" width=150>
+              <el-table-column label="Operations" width="150">
                 <template #default="scope">
                   <el-button
                     size="small"
@@ -433,7 +492,6 @@
                     "
                   >
                   </el-time-picker>
-                  
                 </el-row>
 
                 <el-row>
@@ -531,7 +589,7 @@ export default {
       delete_task: {
         id: "",
       },
-      delete_list:{
+      delete_list: {
         id: "",
       },
       state: "",
@@ -548,9 +606,10 @@ export default {
         C: "Completed",
       },
       tableData: [],
-      tutorial_one: (sessionStorage.getItem("hasSeenTutorial").toLowerCase() === "false"),
+      tutorial_one:
+        sessionStorage.getItem("hasSeenTutorial").toLowerCase() === "false",
       tutorial_two: false,
-      tutorial_three:false,
+      tutorial_three: false,
       tutorial_four: false,
       tutorial_five: false,
       tutorial_six: false,
@@ -572,8 +631,8 @@ export default {
           a.priority < b.priority ? 1 : -1
         );
         for (var i = 0; i < this.tableData.length; i++) {
-            const date = new Date(this.tableData[i]["due_datetime"]);
-            this.tableData[i]["due_datetime"] = date.toLocaleString();
+          const date = new Date(this.tableData[i]["due_datetime"]);
+          this.tableData[i]["due_datetime"] = date.toLocaleString();
         }
       })
       .catch(() => {
@@ -638,7 +697,8 @@ export default {
     onDeleteList: function (id) {
       var new_id = this.listData[id]["id"];
       this.delete_list.id = new_id;
-      axios_instance.delete("/api/task_list/", {data: this.delete_list})
+      axios_instance
+        .delete("/api/task_list/", { data: this.delete_list })
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
@@ -646,7 +706,7 @@ export default {
       var new_id = this.tableData[id]["id"];
       this.delete_task.id = new_id;
       axios_instance
-        .delete("/api/tasks/", {data: this.delete_task})
+        .delete("/api/tasks/", { data: this.delete_task })
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
@@ -662,16 +722,16 @@ export default {
       location.reload(true);
     },
     editTaskList(tasklistId) {
-      this.currentTasklist = tasklistId
+      this.currentTasklist = tasklistId;
     },
-    edit_task_list_name({id, list_name}) {
+    edit_task_list_name({ id, list_name }) {
       axios_instance
         .put("/api/edit-name/" + id, { list_name: list_name })
         .then((response) => {
-          console.log(response)
-          this.currentTasklist = ""
+          console.log(response);
+          this.currentTasklist = "";
         });
-      }
+    },
   },
 };
 </script>

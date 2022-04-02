@@ -90,7 +90,10 @@ export default {
           })
           .then((response) => {
             localStorage.setItem("token", response.data.token);
-            sessionStorage.setItem("hasSeenTutorial", response.data.has_seen_tutorial);
+            sessionStorage.setItem(
+              "hasSeenTutorial",
+              response.data.has_seen_tutorial
+            );
             this.logInForm.email = "";
             this.logInForm.password = "";
             if (response.data.expiry != "") {

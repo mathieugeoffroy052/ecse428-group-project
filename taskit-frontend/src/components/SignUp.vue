@@ -104,7 +104,7 @@ export default {
           .post("/accounts/signup", this.signUpForm)
           .then(() => {
             window.location.href = "../login";
-            })
+          })
           .catch((error) => {
             if (error.response.status === 409) {
               this.error =
