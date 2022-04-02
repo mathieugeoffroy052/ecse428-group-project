@@ -408,7 +408,7 @@ export default {
       .get("/api/task_list/")
       .then((response) => {
         this.listData = response.data.sort();
-        this.listData.push({ list_name: "general" });
+        this.listData.unshift({ list_name: "general" });
       })
       .catch(() => {
         alert("You are not logged in!");
