@@ -25,7 +25,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <p style="hyphens: auto">
+            <p style="word-break: normal">
               Welcome to TaskIt! Would you like to view a quick tutorial?
             </p>
             <template #footer>
@@ -58,7 +58,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span
+            <span style="word-break: normal"
               >Here are a few things to know before we start. To move on to the
               next part, click the 'Next Step' button in the header.</span
             >
@@ -85,7 +85,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span
+            <span style="word-break: normal"
               >You can create a new task by clicking the '+' at the bottom right
               of your screen.</span
             >
@@ -107,7 +107,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span
+            <span style="word-break: normal"
               >You can create a new list by clicking the 'New Task List' botton
               on the left side of your screen.</span
             >
@@ -129,7 +129,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span
+            <span style="word-break: normal"
               >Once a task is created, you can edit and delete it using the
               buttons in the operations column of the table.</span
             >
@@ -151,7 +151,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span
+            <span style="word-break: normal"
               >Once a list is created, you can edit and delete it. You can
               change the name of a list by double clicking on it. To delete,
               click the delete button in the task
@@ -174,7 +174,7 @@
             :close-on-click-modal="false"
             :close-on-press-escape="false"
           >
-            <span
+            <span style="word-break: normal"
               >The tutorial is now over! You can now proceed to tasking!
             </span>
             <template #footer>
@@ -589,9 +589,6 @@ export default {
       delete_task: {
         id: "",
       },
-      delete_list: {
-        id: "",
-      },
       state: "",
       username: "",
       add_task_drawer: false,
@@ -695,12 +692,15 @@ export default {
       }
     },
     onDeleteList: function (id) {
-      var new_id = this.listData[id]["id"];
-      this.delete_list.id = new_id;
       axios_instance
-        .delete("/api/task_list/", { data: this.delete_list })
-        .then(alert("Deleted Successfully!"));
-      location.reload(true);
+        .delete("/api/task_list/", { data: { id: this.listData[id]["id"] } })
+        .then(() => {
+          alert("Deleted Successfully!");
+          location.reload(true);
+        })
+        .catch(() => {
+          alert("Failed to Delete!");
+        });
     },
     onDeleteTask: function (id) {
       var new_id = this.tableData[id]["id"];
