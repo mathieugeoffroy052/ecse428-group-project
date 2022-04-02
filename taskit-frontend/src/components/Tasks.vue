@@ -28,14 +28,11 @@
             >
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
-                  <div
-                    v-on:dblclick="editTaskList(scope.$index)"
-                    v-if="scope?.row && currentTasklist != scope.$index"
-                  >
+                    <div v-on:dblclick="editTaskList(scope.row.id)" v-if="scope?.row && currentTasklist != scope?.row.id">
                     {{ scope.row.list_name }}
                   </div>
                   <el-input
-                    v-if="scope?.row && currentTasklist === scope.$index"
+                    v-if="scope?.row && currentTasklist === scope?.row.id"
                     v-model="scope.row.list_name"
                     v-on:keyup.enter="edit_task_list_name(scope.row)"
                   ></el-input>
@@ -474,7 +471,6 @@ export default {
     },
     onGetTaskFromTaskList(row) {
       this.TaskFromListData = [];
-
       var listname = row.list_name;
       if (listname == "general") {
         for (var i = 0; i < this.tableData.length; i++) {
@@ -491,19 +487,18 @@ export default {
       }
     },
     editTaskList(tasklistId) {
-      console.log(this.listData[tasklistId]["list_name"].toLowerCase());
-      if (this.listData[tasklistId]["list_name"].toLowerCase() != "general") {
-        this.currentTasklist = tasklistId;
-      }
+      this.currentTasklist = tasklistId;
     },
     edit_task_list_name({id, list_name}) {
-      axios_instance
+      if(list_name.toLowerCase() != "general"){
+              axios_instance
         .put("/api/edit-name/" + id, { list_name: list_name })
         .then((response) => {
           console.log(response)
           this.currentTasklist = ""
         });
       }
+    }
   },
 };
 </script>
