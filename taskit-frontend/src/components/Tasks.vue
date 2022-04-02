@@ -352,7 +352,7 @@
             <el-button
               class="addtaskbutton"
               circle
-              @click="add_task_drawer = true"
+              @click="addTaskDrawer"
             >
               +
             </el-button>
@@ -411,8 +411,8 @@
                   <el-button
                     size="small"
                     @click="
+                      setDescriptionForEditTask(scope.$index);
                       edit_drawer = true;
-                      onEditTask();
                     "
                   >
                     Edit
@@ -570,11 +570,138 @@
               title="I am the title2"
               :with-header="false"
             >
-              <el-row justify="center">
+              <span>Edit Task</span>
+              <el-form @submit.prevent="handleSubmit" :model="addTaskForm">
+                <h1>TaskIt</h1>
+                <el-row>
+                  <el-divider style="margin: 0px; padding: 0px"
+                    >Edit Task
+                  </el-divider>
+                </el-row>
+                <el-row justify="center">
+                  <p
+                    style="
+                      font-family: 'Noteworthy Light';
+                      font-style: italic;
+                      padding-bottom: 10px;
+                    "
+                  >
+                    Please fill in this form to edit your task.
+                  </p>
+                </el-row>
+                <el-row>
+                  <b>Task Description</b>
+                </el-row>
+                <el-row>
+                  <input
+                    id="test"
+                    type="updateTaskName"
+                    v-model="edit_task_params.description"
+                    placeholder="Enter Task description"
+                    required
+                  />
+                </el-row>
+                <el-row>
+                  <label class="required" for="pswd"
+                    ><b>Task Due Date</b></label
+                  >
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <el-date-picker
+                    v-model="edit_task_params.due_datetime"
+                    type="datetime"
+                    placeholder="Select date and time"
+                    style="
+                      height: 45px;
+                      width: 600px;
+                      background-color: #eeeeee;
+                      padding-top: 7px;
+                    "
+                    value-format="YYYY-MM-DDThh:mm"
+                  >
+                  </el-date-picker>
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <label class="required" for="pswd"
+                    ><b>Task Duration</b></label
+                  >
+                </el-row>
+                <el-row>
+                  <el-time-picker
+                    arrow-control
+                    v-model="edit_task_params.estimated_duration"
+                    placeholder="Enter Task Duration"
+                    value-format="HH:mm:ss"
+                    style="
+                      height: 45px;
+                      width: 600px;
+                      background-color: #eeeeee;
+                      padding-top: 7px;
+                    "
+                  >
+                  </el-time-picker>
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <label class="required" for="pswd-repeat"
+                    ><b>Task Weight</b></label
+                  >
+                </el-row>
+                <el-row>
+                  <el-input-number v-model="edit_task_params.weight" :min="1" />
+                </el-row>
+                <el-row style="padding-top: 15px">
+                  <label class="required" for="pswd">
+                    <b>Task notes</b>
+                  </label>
+                </el-row>
+                <el-row>
+                  <input
+                    id="test"
+                    type="updateTaskName"
+                    required
+                    v-model="edit_task_params.notes"
+                  />
+                </el-row>
+                <el-row>
+                  <b>Task List</b>
+                </el-row>
+                <el-row justify="left">
+                  <el-select
+                    v-model="edit_task_params.tasklist"
+                    class="m-2"
+                    placeholder="Select Task List"
+                  >
+                    <el-option
+                      v-for="list in listData"
+                      :key="list.id"
+                      :label="list.list_name"
+                      :value="list.id"
+                    />
+                  </el-select>
+                </el-row>
+                <hr />
+                <div style="width: 395px; margin: auto; padding: 20px">
+                  <el-button
+                    type="submit"
+                    class="submit"
+                    style="border-radius: 10px; width: 30%"
+                    @click="onEditTask()"
+                  >
+                    Edit task
+                  </el-button>
+                  <el-alert
+                    v-if="showError"
+                    type="error"
+                    @close="this.showError = false"
+                    >{{ error }}</el-alert
+                  >
+                </div>
+              </el-form>
+              <!-- <el-row justify="center">
                 <span>Edit Task</span>
                 <el-divider content-position="center">o</el-divider>
               </el-row>
-              <el-divider content-position="center">o</el-divider>
+              <el-divider content-position="center">o</el-divider> -->
             </el-drawer>
           </div>
         </el-main>
@@ -611,6 +738,16 @@ export default {
         notes: "",
         state: "NS",
         tasklist: null,
+      },
+      edit_task_params: {
+        id: "",
+        description: "",
+        due_datetime: "",
+        estimated_duration: "",
+        weight: "",
+        state: "",
+        notes: "",
+        tasklist: "",
       },
       task_list_params: {
         list_name: "",
@@ -690,7 +827,7 @@ export default {
       });
     },
     onAddTask() {
-      if (this.task_params.task_description != "") {
+      if (this.task_params.description != "") {
         axios_instance
           .post("/api/tasks/", this.task_params)
           .then((response) => {
@@ -742,8 +879,32 @@ export default {
         .then(alert("Deleted Successfully!"));
       location.reload(true);
     },
-    onEditTask() {
-      this.test = "";
+    onEditTask: function () {
+      if(isNaN(this.edit_task_params.tasklist)){
+        for(var i = 0; i<this.listData.length; i++){
+          if(this.listData[i]["list_name"] == this.edit_task_params.tasklist){
+            this.edit_task_params.tasklist = this.listData[i]["id"];
+          }
+        }
+      }
+      if (this.edit_task_params.description != "") {
+        axios_instance
+          .put("/api/tasks/", this.edit_task_params, {
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+            },
+          })
+          .then((response) => {
+            (this.error = response), location.reload(true);
+          })
+          .catch(() => {
+            this.error = "Error editing task";
+            this.showError = true;
+          });
+      } else {
+        this.error = "Tasks must have a description!";
+        this.showError = true;
+      }
     },
     onEditState: function (id, state) {
       this.task_state.state = state;
@@ -752,6 +913,25 @@ export default {
         .put("/api/update-state/" + new_id, this.task_state)
         .then(alert("Edited Successfully!"));
       location.reload(true);
+    },
+    setDescriptionForEditTask(id) {
+      this.showError = false;
+      var task = this.tableData[id];
+      this.edit_task_params.id = task.id;
+      this.edit_task_params.description = task.description;
+      const d = new Date(task.due_datetime);
+      this.edit_task_params.due_datetime = d.toISOString();
+      this.edit_task_params.estimated_duration = task.estimated_duration;
+      this.edit_task_params.weight = task.weight;
+      this.edit_task_params.state = task.state;
+      this.edit_task_params.notes = task.notes;
+      var list_id = task.tasklist;
+      this.edit_task_params.tasklist = "";
+      for (var i = 0; i < this.listData.length; i++) {
+        if (this.listData[i]["id"] == list_id) {
+          this.edit_task_params.tasklist = this.listData[i]["list_name"];
+        }
+      }
     },
     editTaskList(tasklistId) {
       this.currentTasklist = tasklistId;
@@ -764,6 +944,10 @@ export default {
           this.currentTasklist = "";
         });
     },
+    addTaskDrawer: function(){
+      this.add_task_drawer = true;
+      this.showError = false;
+    }
   },
 };
 </script>
@@ -924,6 +1108,7 @@ body {
   color: rgb(255, 255, 255);
 }
 input[type="taskName"],
+input[type="updateTaskName"],
 input[type="taskLength"],
 input[type="taskCategory"],
 input[type="taskNotes"] {
