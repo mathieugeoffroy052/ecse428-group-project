@@ -30,7 +30,12 @@
                 <template v-slot="scope">
                   <div
                     v-on:dblclick="editTaskList(scope.row.id)"
-                    v-if="scope?.row && currentTasklist != scope?.row.id"
+                    v-if="scope?.row && currentTasklist != scope?.row.id && scope?.row.list_name.toLowerCase() != 'general'"
+                  >
+                    {{ scope.row.list_name }}
+                  </div>
+                    <div
+                    v-if="scope?.row && currentTasklist != scope?.row.id && scope?.row.list_name.toLowerCase() == 'general'"
                   >
                     {{ scope.row.list_name }}
                   </div>
