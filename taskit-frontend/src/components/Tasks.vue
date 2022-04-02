@@ -108,7 +108,7 @@
             <el-button
               class="addtaskbutton"
               circle
-              @click="add_task_drawer = true"
+              @click="addTaskDrawer"
             >
               +
             </el-button>
@@ -652,6 +652,10 @@ export default {
           this.currentTasklist = "";
         });
     },
+    addTaskDrawer: function(){
+      this.add_task_drawer = true;
+      this.showError = false;
+    }
   },
 };
 </script>
