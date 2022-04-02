@@ -213,37 +213,43 @@
             <el-table :data="listData" stripe border>
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
-                  <el-row justify=" " >
-                      <div
-                        v-on:dblclick="editTaskList(scope.row.id)"
-                        v-if="scope?.row && currentTasklist != scope?.row.id"
+                  <el-row justify=" ">
+                    <div
+                      v-on:dblclick="editTaskList(scope.row.id)"
+                      v-if="scope?.row && currentTasklist != scope?.row.id"
+                    >
+                      {{ scope.row.list_name }}
+                    </div>
+                    <div>
+                      <el-input
+                        v-if="scope?.row && currentTasklist === scope?.row.id"
+                        v-model="scope.row.list_name"
+                        v-on:keyup.enter="edit_task_list_name(scope.row)"
+                      ></el-input>
+                    </div>
+                    <div>
+                      <el-popconfirm
+                        confirm-button-text="OK"
+                        cancel-button-text="No, Thanks"
+                        @confirm="onDeleteList(scope.$index)"
+                        icon-color="red"
+                        title="Are you sure you want to delete this list?"
                       >
-                        {{ scope.row.list_name }}
-                      </div>
-                      <div>
-                        <el-input
-                          v-if="scope?.row && currentTasklist === scope?.row.id"
-                          v-model="scope.row.list_name"
-                          v-on:keyup.enter="edit_task_list_name(scope.row)"
-                        ></el-input>
-                      </div>
-                      <div>
-                        <el-popconfirm
-                          confirm-button-text="OK"
-                          cancel-button-text="No, Thanks"
-                          @confirm="onDeleteList(scope.$index)"
-                          icon-color="red"
-                          title="Are you sure you want to delete this list?"
-                        >
-                          <template #reference>
-                            <el-button type="danger" circle v-if="scope?.row && currentTasklist === scope?.row.id">
-                              <el-icon>
-                                <delete />
-                              </el-icon>
-                            </el-button>
-                          </template>
-                        </el-popconfirm>
-                      </div>
+                        <template #reference>
+                          <el-button
+                            type="danger"
+                            circle
+                            v-if="
+                              scope?.row && currentTasklist === scope?.row.id
+                            "
+                          >
+                            <el-icon>
+                              <delete />
+                            </el-icon>
+                          </el-button>
+                        </template>
+                      </el-popconfirm>
+                    </div>
                   </el-row>
                 </template>
               </el-table-column>
