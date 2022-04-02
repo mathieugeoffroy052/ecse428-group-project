@@ -8,10 +8,16 @@
             @submit.prevent="handleSubmit"
             :model="signUpForm"
           >
-            <div style="display: flex; justify-content: center;">
-              <h1 style="padding: 5px; padding-bottom: 5px" >TaskIt</h1>
+            <div style="display: flex; justify-content: center">
+              <h1 style="padding: 5px; padding-bottom: 5px">TaskIt</h1>
               <div>
-                <img style="margin-top: 35px" src="../assets/icon-dark.png" alt="checkbox icon"  width="32" height="32"/>
+                <img
+                  style="margin-top: 35px"
+                  src="../assets/icon-dark.png"
+                  alt="checkbox icon"
+                  width="32"
+                  height="32"
+                />
               </div>
             </div>
             <el-row>
@@ -107,7 +113,9 @@ export default {
 
         axios_instance
           .post("/accounts/signup", this.signUpForm)
-          .then(() => (window.location.href = "../login"))
+          .then(() => {
+            window.location.href = "../login";
+          })
           .catch((error) => {
             if (error.response.status === 409) {
               this.error =
