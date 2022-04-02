@@ -120,7 +120,7 @@ export default {
 </script>
 
 <style>
-@import "generalStyle.css";
+@import "../assets/generalStyle.css";
 * {
   box-sizing: border-box;
 }
