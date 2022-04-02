@@ -24,6 +24,7 @@
               stripe
               border
               @row-click="onGetTaskFromTaskList"
+              height= "600px"
             >
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
