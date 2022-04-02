@@ -3,7 +3,18 @@
     <el-main>
       <el-row>
         <div class="card">
-          <h1>Taskit</h1>
+          <div style="display: flex; justify-content: center">
+            <h1 style="padding: 5px; padding-bottom: 5px">TaskIt</h1>
+            <div>
+              <img
+                style="margin-top: 35px"
+                src="../assets/icon-dark.png"
+                alt="checkbox icon"
+                width="32"
+                height="32"
+              />
+            </div>
+          </div>
           <el-row>
             <el-divider style="margin: 0px; padding: 0px; padding-bottom: 20px"
               >Log In</el-divider
@@ -90,6 +101,10 @@ export default {
           })
           .then((response) => {
             localStorage.setItem("token", response.data.token);
+            sessionStorage.setItem(
+              "hasSeenTutorial",
+              response.data.has_seen_tutorial
+            );
             this.logInForm.email = "";
             this.logInForm.password = "";
             if (response.data.expiry != "") {
