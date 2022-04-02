@@ -113,7 +113,7 @@ export default {
 </script>
 
 <style>
-@import "generalStyle.css";
+@import "../assets/generalStyle.css";
 .card {
   border-style: solid;
   border-radius: 5px;
