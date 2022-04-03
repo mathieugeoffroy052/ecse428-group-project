@@ -223,18 +223,32 @@
               <span>Lists</span>
             </el-tooltip>
             <el-divider content-position="center">o</el-divider>
-            <el-table :data="listData" stripe border @row-click="onGetTaskFromTaskList" height="67vh">
+            <el-table
+              :data="listData"
+              stripe
+              border
+              @row-click="onGetTaskFromTaskList"
+              height="67vh"
+            >
               <el-table-column prop="list_name" label="List Name">
                 <template v-slot="scope">
                   <el-row justify=" ">
                     <div
                       v-on:dblclick="editTaskList(scope.row.id)"
-                      v-if="scope?.row && currentTasklist != scope?.row.id && scope?.row.list_name.toLowerCase() != 'general'"
+                      v-if="
+                        scope?.row &&
+                        currentTasklist != scope?.row.id &&
+                        scope?.row.list_name.toLowerCase() != 'general'
+                      "
                     >
                       {{ scope.row.list_name }}
                     </div>
                     <div
-                      v-if="scope?.row && currentTasklist != scope?.row.id && scope?.row.list_name.toLowerCase() == 'general'"
+                      v-if="
+                        scope?.row &&
+                        currentTasklist != scope?.row.id &&
+                        scope?.row.list_name.toLowerCase() == 'general'
+                      "
                     >
                       {{ scope.row.list_name }}
                     </div>
@@ -354,11 +368,7 @@
               <span>Current Task List</span>
             </el-tooltip>
             <el-divider content-position="center">o</el-divider>
-            <el-button
-              class="addtaskbutton"
-              circle
-              @click="addTaskDrawer"
-            >
+            <el-button class="addtaskbutton" circle @click="addTaskDrawer">
               +
             </el-button>
             <el-table
@@ -376,7 +386,7 @@
               </el-table-column>
               <el-table-column prop="description" label="Description" />
               <el-table-column
-                prop="due_datetime"
+                prop="date_string"
                 sortable
                 label="Due Date"
                 width="230"
@@ -736,9 +746,9 @@ export default {
       currentTasklist: "",
       task_params: {
         description: "",
-        due_datetime: "",
+        due_datetime: null,
         estimated_duration: "",
-        weight: "",
+        weight: null,
         notes: "",
         state: "NS",
         tasklist: null,
@@ -803,9 +813,14 @@ export default {
           a.priority < b.priority ? 1 : -1
         );
         for (var i = 0; i < this.tableData.length; i++) {
-          const date = new Date(this.tableData[i]["due_datetime"]);
-          this.tableData[i]["due_datetime"] = date.toLocaleString();
+          this.tableData[i]["datetimeString"] = this.tableData[i][
+            "due_datetime"
+          ]
+            ? new Date(this.tableData[i]["due_datetime"]).toLocaleString()
+            : "";
         }
+        // hack to display all tasks on page load
+        this.TaskFromListData = [...this.tableData];
       })
       .catch(() => {
         alert("You are not logged in!");
@@ -891,9 +906,9 @@ export default {
       location.reload(true);
     },
     onEditTask: function () {
-      if(isNaN(this.edit_task_params.tasklist)){
-        for(var i = 0; i<this.listData.length; i++){
-          if(this.listData[i]["list_name"] == this.edit_task_params.tasklist){
+      if (isNaN(this.edit_task_params.tasklist)) {
+        for (var i = 0; i < this.listData.length; i++) {
+          if (this.listData[i]["list_name"] == this.edit_task_params.tasklist) {
             this.edit_task_params.tasklist = this.listData[i]["id"];
           }
         }
@@ -936,7 +951,10 @@ export default {
         }
       } else {
         for (var j = 0; j < this.tableData.length; j++) {
-          if(this.tableData[j]["tasklist"] != null & this.tableData[j]["tasklist"] == row.id){
+          if (
+            (this.tableData[j]["tasklist"] != null) &
+            (this.tableData[j]["tasklist"] == row.id)
+          ) {
             this.TaskFromListData.push(this.tableData[j]);
           }
         }
@@ -944,11 +962,10 @@ export default {
     },
     setDescriptionForEditTask(id) {
       this.showError = false;
-      var task = this.tableData[id];
+      var task = this.TaskFromListData[id];
       this.edit_task_params.id = task.id;
       this.edit_task_params.description = task.description;
-      const d = new Date(task.due_datetime);
-      this.edit_task_params.due_datetime = d.toISOString();
+      this.edit_task_params.due_datetime = task.due_datetime;
       this.edit_task_params.estimated_duration = task.estimated_duration;
       this.edit_task_params.weight = task.weight;
       this.edit_task_params.state = task.state;
@@ -974,10 +991,10 @@ export default {
           });
       }
     },
-    addTaskDrawer: function(){
+    addTaskDrawer: function () {
       this.add_task_drawer = true;
       this.showError = false;
-    }
+    },
   },
 };
 </script>
