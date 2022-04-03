@@ -962,7 +962,7 @@ export default {
     },
     setDescriptionForEditTask(id) {
       this.showError = false;
-      var task = this.tableData[id];
+      var task = this.TaskFromListData[id];
       this.edit_task_params.id = task.id;
       this.edit_task_params.description = task.description;
       this.edit_task_params.due_datetime = task.due_datetime;
